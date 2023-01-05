@@ -9,7 +9,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
-public class LoginJFX extends LoginGraphicController {
+public class LoginJFX {
+    private final Login login;
     @FXML
     private TextField emailTxtFld;
     @FXML
@@ -24,7 +25,7 @@ public class LoginJFX extends LoginGraphicController {
     private Button signUpBtn;
 
     public LoginJFX(Login login) {
-        super(login);
+        this.login = login;
     }
 
     @FXML

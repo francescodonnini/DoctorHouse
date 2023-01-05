@@ -60,7 +60,7 @@ public class UserDatabase implements UserDao {
             statement.setString(2, request.getFiscalCode());
             statement.setString(3, request.getFirstName());
             statement.setString(4, request.getEmail().getEmail());
-            statement.setInt(5, request.getGenderIsoCode());
+            statement.setInt(5, request.getGender().isoCode);
             statement.setString(6, request.getLastName());
             statement.setString(7, request.getPassword());
             return statement.execute();

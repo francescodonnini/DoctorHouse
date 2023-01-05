@@ -7,7 +7,7 @@ public class UserRegistrationRequestBean {
     private EmailBean email;
     private String fiscalCode;
     private String firstName;
-    private int genderIsoCode;
+    private GenderBean gender;
     private String lastName;
     private String password;
 
@@ -43,12 +43,12 @@ public class UserRegistrationRequestBean {
         this.firstName = firstName;
     }
 
-    public int getGenderIsoCode() {
-        return genderIsoCode;
+    public GenderBean getGender() {
+        return gender;
     }
 
-    public void setGenderIsoCode(int genderIsoCode) {
-        this.genderIsoCode = genderIsoCode;
+    public void setGender(GenderBean gender) {
+        this.gender = gender;
     }
 
     public String getLastName() {

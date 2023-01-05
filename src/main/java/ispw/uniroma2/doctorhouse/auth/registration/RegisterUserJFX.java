@@ -1,21 +1,15 @@
 package ispw.uniroma2.doctorhouse.auth.registration;
 
 import ispw.uniroma2.doctorhouse.auth.beans.EmailBean;
+import ispw.uniroma2.doctorhouse.auth.beans.GenderBean;
 import ispw.uniroma2.doctorhouse.auth.beans.UserRegistrationRequestBean;
 import ispw.uniroma2.doctorhouse.auth.exceptions.EmailNotValid;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.util.StringConverter;
 
 public class RegisterUserJFX extends RegisterUserGraphicController {
-
     @FXML
     private Label birthDateErrorLbl;
 
@@ -41,7 +35,7 @@ public class RegisterUserJFX extends RegisterUserGraphicController {
     private TextField fiscalCodeTxtFld;
 
     @FXML
-    private ChoiceBox<Integer> genderPicker;
+    private ChoiceBox<GenderBean> genderPicker;
 
     @FXML
     private Label lastNameRequiredLbl;
@@ -70,34 +64,34 @@ public class RegisterUserJFX extends RegisterUserGraphicController {
 
     @FXML
     private void initialize() {
-        genderPicker.getItems().addAll(0, 1, 2);
-        genderPicker.setValue(0);
+        genderPicker.getItems().addAll(GenderBean.NOT_KNOWN, GenderBean.MALE, GenderBean.FEMALE, GenderBean.NOT_APPLICABLE);
+        genderPicker.setValue(genderPicker.getItems().get(0));
         genderPicker.setConverter(new StringConverter<>() {
             @Override
-            public String toString(Integer i) {
+            public String toString(GenderBean i) {
                 switch (i) {
-                    case 0:
+                    case NOT_KNOWN:
                         return "Not specified";
-                    case 1:
+                    case MALE:
                         return "Male";
-                    case 2:
+                    case FEMALE:
                         return "Female";
                     default:
-                        return "";
+                        return "Not applicable";
                 }
             }
 
             @Override
-            public Integer fromString(String i) {
+            public GenderBean fromString(String i) {
                 switch (i) {
                     case "Not specified":
-                        return 0;
+                        return GenderBean.NOT_KNOWN;
                     case "Male":
-                        return 1;
+                        return GenderBean.MALE;
                     case "Female":
-                        return 2;
+                        return GenderBean.FEMALE;
                     default:
-                        return 9;
+                        return GenderBean.NOT_APPLICABLE;
                 }
             }
         });

@@ -11,9 +11,6 @@ public class UserRegistrationRequestBean {
     private String lastName;
     private String password;
 
-    public UserRegistrationRequestBean() {
-    }
-
     public LocalDate getBirthDate() {
         return birthDate;
     }

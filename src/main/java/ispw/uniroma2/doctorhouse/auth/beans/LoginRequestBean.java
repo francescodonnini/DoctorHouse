@@ -4,9 +4,6 @@ public class LoginRequestBean {
     private EmailBean email;
     private String password;
 
-    public LoginRequestBean() {
-    }
-
     public EmailBean getEmail() {
         return email;
     }

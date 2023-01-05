@@ -6,9 +6,6 @@ package ispw.uniroma2.doctorhouse.auth.beans;
 public class FiscalCodeBean {
     private String fiscalCode;
 
-    public FiscalCodeBean() {
-    }
-
     public String getFiscalCode() {
         return fiscalCode;
     }

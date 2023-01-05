@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  */
 public class EmailBean {
     // The Email class uses a regular expression taken from https://learn.microsoft.com/en-us/dotnet/standard/base-types/how-to-verify-that-strings-are-in-valid-email-format?redirectedfrom=MSDN to check if a string passed by Email#setEmail is a valid email
-    private final Pattern EMAIL_PATTERN = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
+    private final Pattern emailPattern = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 
     private String email;
 
@@ -20,7 +20,7 @@ public class EmailBean {
 
     public void setEmail(String email) throws EmailNotValid {
         email = email.strip();
-        Matcher m = EMAIL_PATTERN.matcher(email);
+        Matcher m = emailPattern.matcher(email);
         if (m.find(0) && m.hitEnd()) {
             this.email = email;
         } else {

@@ -15,6 +15,8 @@ import java.time.LocalDate;
 import java.time.Period;
 
 public class RegisterUserJFX extends RegisterUserGraphicController {
+    private final String fieldRequiredMessage = "This field is required!";
+
     @FXML
     private Label birthDateErrorLbl;
 
@@ -125,8 +127,7 @@ public class RegisterUserJFX extends RegisterUserGraphicController {
                 .and(emailErrorLbl.textProperty().isNotEmpty())
                 .and(fiscalCodeErrorLbl.textProperty().isNotEmpty())
                 .and(confirmPasswordErrorLbl.textProperty().isNotEmpty())
-                .and(birthDateErrorLbl.textProperty().isNotEmpty())
-                );
+                .and(birthDateErrorLbl.textProperty().isNotEmpty()));
         //get text fields content
         String name = nameTxtFld.getText();
         String password = passwordTxtFld.getText();
@@ -137,13 +138,13 @@ public class RegisterUserJFX extends RegisterUserGraphicController {
         LocalDate dataPicker = birthDatePicker.getValue();
         //Check name text field content
         if (name.trim().isEmpty()) {
-            nameRequiredLbl.textProperty().set("This field is required!");
+            nameRequiredLbl.textProperty().set(fieldRequiredMessage);
         } else {
             nameRequiredLbl.textProperty().set("");
         }
         //Check email text field content
         if (email.trim().isEmpty()) {
-            emailErrorLbl.textProperty().set("This field is required");
+            emailErrorLbl.textProperty().set(fieldRequiredMessage);
         } else {
             emailErrorLbl.textProperty().set("");
         }
@@ -155,31 +156,30 @@ public class RegisterUserJFX extends RegisterUserGraphicController {
 
         } catch (EmailNotValid e) {
             emailErrorLbl.textProperty().set("Invalid email!");
-
         }
         //check password text field content
         if (password.isEmpty()) {
-            passwordErrorLbl.textProperty().set("This field is required");
+            passwordErrorLbl.textProperty().set(fieldRequiredMessage);
         } else {
             passwordErrorLbl.textProperty().set("");
         }
 
         //check lastName text field content
         if (lastName.trim().isEmpty()) {
-            lastNameRequiredLbl.textProperty().set("This field is required");
+            lastNameRequiredLbl.textProperty().set(fieldRequiredMessage);
         } else {
             lastNameRequiredLbl.textProperty().set("");
         }
         //check fiscalCode text field content
         if (fiscalCode.trim().isEmpty()) {
-            fiscalCodeErrorLbl.textProperty().set("This field is required");
+            fiscalCodeErrorLbl.textProperty().set(fieldRequiredMessage);
 
         } else {
             fiscalCodeErrorLbl.textProperty().set("");
         }
         //check confirmPassword text field content
         if (confirmPassword.isEmpty() || !password.equals(confirmPassword)) {
-            confirmPasswordErrorLbl.textProperty().set("Password do not match");
+            confirmPasswordErrorLbl.textProperty().set("Passwords do not match");
 
         } else {
             confirmPasswordErrorLbl.textProperty().set("");
@@ -194,7 +194,7 @@ public class RegisterUserJFX extends RegisterUserGraphicController {
                 birthDateErrorLbl.textProperty().set("");
             }
         } else {
-            birthDateErrorLbl.textProperty().set("This field is required");
+            birthDateErrorLbl.textProperty().set(fieldRequiredMessage);
 
         }
         if (!cannotSubmit.get()) {

@@ -42,7 +42,7 @@ public class UserDatabase implements UserDao {
                         fiscalCode,
                         firstName,
                         email,
-                        gender.orElse(Gender.NotKnown),
+                        gender.orElse(Gender.NOT_KNOWN),
                         lastName
                 ));
             }

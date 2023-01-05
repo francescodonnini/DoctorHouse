@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.time.Period;
 
 public class RegisterUserJFX extends RegisterUserGraphicController {
-    private final String fieldRequiredMessage = "This field is required!";
+    private static final String fieldRequiredMessage = "This field is required!";
 
     @FXML
     private Label birthDateErrorLbl;

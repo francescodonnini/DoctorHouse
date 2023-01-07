@@ -1,14 +1,14 @@
 package ispw.uniroma2.doctorhouse.auth.beans;
 
 public class LoginRequestBean {
-    private EmailBean email;
+    private String email;
     private String password;
 
-    public EmailBean getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(EmailBean email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 

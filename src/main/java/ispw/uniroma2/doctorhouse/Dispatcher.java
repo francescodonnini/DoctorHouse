@@ -2,6 +2,7 @@ package ispw.uniroma2.doctorhouse;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
 
@@ -24,11 +25,11 @@ public class Dispatcher {
         factories.put(action, factory);
     }
 
-    public void tryForward(Class<?> controllerClass, Properties args) throws InvalidDestination {
+    public void tryForward(Class<?> controllerClass, Properties args) {
         load(controllerClass, args);
     }
 
-    private void load(Class<?> controllerClass, Properties args) throws InvalidDestination {
+    private void load(Class<?> controllerClass, Properties args) {
         try {
             String fxml = controllerClass.getPackageName()
                     .replace(Dispatcher.class.getPackageName(), "")
@@ -42,11 +43,12 @@ public class Dispatcher {
             if (factories.containsKey(controllerClass)) {
                 loader.setControllerFactory(factories.get(controllerClass));
             }
-            root.setCenter(loader.load());
+            Node view = loader.load();
+            root.setCenter(view);
             EndPoint controller = loader.getController();
             controller.onEnter(args);
         } catch (IOException e) {
-            throw new InvalidDestination();
+            throw new UnsupportedOperationException();
         }
     }
 }

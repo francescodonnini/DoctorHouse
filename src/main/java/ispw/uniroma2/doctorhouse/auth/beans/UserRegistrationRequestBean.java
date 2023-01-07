@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class UserRegistrationRequestBean {
     private LocalDate birthDate;
-    private EmailBean email;
+    private String email;
     private String fiscalCode;
     private String firstName;
     private GenderBean gender;
@@ -19,11 +19,11 @@ public class UserRegistrationRequestBean {
         this.birthDate = birthDate;
     }
 
-    public EmailBean getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(EmailBean email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 

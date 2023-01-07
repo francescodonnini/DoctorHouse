@@ -1,6 +1,7 @@
 package ispw.uniroma2.doctorhouse.auth.registration;
 
 import ispw.uniroma2.doctorhouse.auth.beans.UserRegistrationRequestBean;
+import ispw.uniroma2.doctorhouse.auth.exceptions.DuplicateEmail;
 import ispw.uniroma2.doctorhouse.dao.UserDao;
 
 public class RegisterUser {
@@ -10,9 +11,7 @@ public class RegisterUser {
         this.dao = dao;
     }
 
-    void register(UserRegistrationRequestBean request) throws Exception {
-        if (!dao.create(request)) {
-            throw new Exception();
-        }
+    boolean register(UserRegistrationRequestBean request) throws DuplicateEmail {
+        return dao.create(request);
     }
 }

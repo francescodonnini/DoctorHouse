@@ -2,11 +2,9 @@ package ispw.uniroma2.doctorhouse.auth.registration;
 
 import ispw.uniroma2.doctorhouse.Dispatcher;
 import ispw.uniroma2.doctorhouse.EndPoint;
-import ispw.uniroma2.doctorhouse.InvalidDestination;
-import ispw.uniroma2.doctorhouse.auth.beans.EmailBean;
 import ispw.uniroma2.doctorhouse.auth.beans.GenderBean;
 import ispw.uniroma2.doctorhouse.auth.beans.UserRegistrationRequestBean;
-import ispw.uniroma2.doctorhouse.auth.exceptions.EmailNotValid;
+import ispw.uniroma2.doctorhouse.auth.exceptions.DuplicateEmail;
 import ispw.uniroma2.doctorhouse.auth.login.LoginJFX;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -117,11 +115,7 @@ public class RegisterUserJFX implements EndPoint {
 
     @FXML
     private void login(ActionEvent event) {
-        try {
-            dispatcher.tryForward(LoginJFX.class, null);
-        } catch (InvalidDestination e) {
-            signUpErrorLbl.setText("Cannot go to login panel!");
-        }
+        dispatcher.tryForward(LoginJFX.class, null);
     }
 
     @FXML
@@ -153,14 +147,6 @@ public class RegisterUserJFX implements EndPoint {
             emailErrorLbl.textProperty().set(fieldRequiredMessage);
         } else {
             emailErrorLbl.textProperty().set("");
-        }
-        EmailBean emailBean = new EmailBean();
-        try {
-            emailBean.setEmail(email);
-            emailErrorLbl.textProperty().set("");
-
-        } catch (EmailNotValid e) {
-            emailErrorLbl.textProperty().set("Invalid email!");
         }
         //check password text field content
         if (password.isEmpty()) {
@@ -199,19 +185,25 @@ public class RegisterUserJFX implements EndPoint {
         }
         if (!cannotSubmit.get()) {
             UserRegistrationRequestBean request = new UserRegistrationRequestBean();
+            request.setBirthDate(birthDate);
             request.setFirstName(name);
-            request.setEmail(emailBean);
+            request.setEmail(email);
+            request.setGender(genderPicker.getValue());
+            request.setFiscalCode(fiscalCode);
+            request.setLastName(lastName);
+            request.setPassword(password);
             try {
-                register.register(request);
-                dispatcher.tryForward(LoginJFX.class, null);
-            } catch (Exception e) {
-                signUpErrorLbl.setText("An error occurred! Try again!");
+                // TODO: add visual cue that notify the user that the registration process was successful
+                if (register.register(request)) {
+                    dispatcher.tryForward(LoginJFX.class, null);
+                }
+            } catch (DuplicateEmail e) {
+                signUpErrorLbl.setText("The email entered already exists! Try another one!");
             }
         }
     }
 
     @Override
     public void onEnter(Properties properties) {
-
     }
 }

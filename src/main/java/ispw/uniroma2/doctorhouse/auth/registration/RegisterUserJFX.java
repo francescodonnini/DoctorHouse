@@ -1,9 +1,13 @@
 package ispw.uniroma2.doctorhouse.auth.registration;
 
+import ispw.uniroma2.doctorhouse.Dispatcher;
+import ispw.uniroma2.doctorhouse.EndPoint;
+import ispw.uniroma2.doctorhouse.InvalidDestination;
 import ispw.uniroma2.doctorhouse.auth.beans.EmailBean;
 import ispw.uniroma2.doctorhouse.auth.beans.GenderBean;
 import ispw.uniroma2.doctorhouse.auth.beans.UserRegistrationRequestBean;
 import ispw.uniroma2.doctorhouse.auth.exceptions.EmailNotValid;
+import ispw.uniroma2.doctorhouse.auth.login.LoginJFX;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
@@ -13,60 +17,51 @@ import javafx.util.StringConverter;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Properties;
 
-public class RegisterUserJFX extends RegisterUserGraphicController {
+public class RegisterUserJFX implements EndPoint {
     private static final String fieldRequiredMessage = "This field is required!";
-
+    private final RegisterUser register;
     @FXML
     private Label birthDateErrorLbl;
-
     @FXML
     private DatePicker birthDatePicker;
-
     @FXML
     private Label confirmPasswordErrorLbl;
-
     @FXML
     private TextField confirmPasswordTxtFld;
-
     @FXML
     private Label emailErrorLbl;
-
     @FXML
     private TextField emailTxtFld;
-
     @FXML
     private Label fiscalCodeErrorLbl;
-
     @FXML
     private TextField fiscalCodeTxtFld;
-
     @FXML
     private ChoiceBox<GenderBean> genderPicker;
-
     @FXML
     private Label lastNameRequiredLbl;
-
     @FXML
     private TextField lastNameTxtFld;
-
     @FXML
     private Label nameRequiredLbl;
-
     @FXML
     private TextField nameTxtFld;
-
     @FXML
     private Label passwordErrorLbl;
-
     @FXML
     private TextField passwordTxtFld;
-
     @FXML
     private Button signUpBtn;
+    @FXML
+    private Label signUpErrorLbl;
 
-    public RegisterUserJFX(RegisterUser register) {
-        super(register);
+    private final Dispatcher dispatcher;
+
+    public RegisterUserJFX(Dispatcher dispatcher, RegisterUser register) {
+        this.dispatcher = dispatcher;
+        this.register = register;
     }
 
     @FXML
@@ -116,6 +111,17 @@ public class RegisterUserJFX extends RegisterUserGraphicController {
         confirmPasswordErrorLbl.visibleProperty().bind(confirmPasswordErrorLbl.managedProperty());
         birthDateErrorLbl.managedProperty().bind(birthDateErrorLbl.textProperty().isNotEmpty());
         birthDateErrorLbl.visibleProperty().bind(birthDateErrorLbl.managedProperty());
+        signUpErrorLbl.managedProperty().bind(signUpErrorLbl.textProperty().isNotEmpty());
+        signUpErrorLbl.visibleProperty().bind(signUpErrorLbl.managedProperty());
+    }
+
+    @FXML
+    private void login(ActionEvent event) {
+        try {
+            dispatcher.tryForward(LoginJFX.class, null);
+        } catch (InvalidDestination e) {
+            signUpErrorLbl.setText("Cannot go to login panel!");
+        }
     }
 
     @FXML
@@ -135,7 +141,7 @@ public class RegisterUserJFX extends RegisterUserGraphicController {
         String email = emailTxtFld.getText();
         String fiscalCode = fiscalCodeTxtFld.getText();
         String confirmPassword = confirmPasswordTxtFld.getText();
-        LocalDate dataPicker = birthDatePicker.getValue();
+        LocalDate birthDate = birthDatePicker.getValue();
         //Check name text field content
         if (name.trim().isEmpty()) {
             nameRequiredLbl.textProperty().set(fieldRequiredMessage);
@@ -148,7 +154,6 @@ public class RegisterUserJFX extends RegisterUserGraphicController {
         } else {
             emailErrorLbl.textProperty().set("");
         }
-
         EmailBean emailBean = new EmailBean();
         try {
             emailBean.setEmail(email);
@@ -163,7 +168,6 @@ public class RegisterUserJFX extends RegisterUserGraphicController {
         } else {
             passwordErrorLbl.textProperty().set("");
         }
-
         //check lastName text field content
         if (lastName.trim().isEmpty()) {
             lastNameRequiredLbl.textProperty().set(fieldRequiredMessage);
@@ -173,35 +177,41 @@ public class RegisterUserJFX extends RegisterUserGraphicController {
         //check fiscalCode text field content
         if (fiscalCode.trim().isEmpty()) {
             fiscalCodeErrorLbl.textProperty().set(fieldRequiredMessage);
-
         } else {
             fiscalCodeErrorLbl.textProperty().set("");
         }
         //check confirmPassword text field content
         if (confirmPassword.isEmpty() || !password.equals(confirmPassword)) {
             confirmPasswordErrorLbl.textProperty().set("Passwords do not match");
-
         } else {
             confirmPasswordErrorLbl.textProperty().set("");
         }
         //check dataPicker content
-        if (dataPicker != null) {
-            Period period = Period.between(dataPicker, LocalDate.now().plusDays(1));
+        if (birthDate != null) {
+            Period period = Period.between(birthDate, LocalDate.now().plusDays(1));
             if (period.getYears() < 18) {
                 birthDateErrorLbl.textProperty().set("You must be at least 18 years old");
-
             } else {
                 birthDateErrorLbl.textProperty().set("");
             }
         } else {
             birthDateErrorLbl.textProperty().set(fieldRequiredMessage);
-
         }
         if (!cannotSubmit.get()) {
             UserRegistrationRequestBean request = new UserRegistrationRequestBean();
             request.setFirstName(name);
             request.setEmail(emailBean);
-            register.register(request);
+            try {
+                register.register(request);
+                dispatcher.tryForward(LoginJFX.class, null);
+            } catch (Exception e) {
+                signUpErrorLbl.setText("An error occurred! Try again!");
+            }
         }
+    }
+
+    @Override
+    public void onEnter(Properties properties) {
+
     }
 }

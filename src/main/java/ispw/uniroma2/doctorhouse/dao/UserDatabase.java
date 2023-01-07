@@ -16,16 +16,29 @@ import java.util.Optional;
 import java.util.Properties;
 
 public class UserDatabase implements UserDao {
-    private final Properties credentials;
+    private static UserDatabase instance;
+    private final Connection connection;
 
-    public UserDatabase(Properties credentials) {
-        this.credentials = credentials;
+    private UserDatabase(Connection connection) {
+        this.connection = connection;
+    }
+
+    public static UserDatabase getInstance(Properties credentials) {
+        if (instance == null) {
+            try {
+                Connection connection = DriverManager.getConnection(credentials.getProperty("url"), credentials);
+                instance = new UserDatabase(connection);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return instance;
     }
 
     @Override
     public Optional<User> get(LoginRequestBean loginRequest) {
-        try (Connection connection = DriverManager.getConnection(credentials.getProperty("url"), credentials)) {
-            PreparedStatement statement = connection.prepareStatement("SELECT birthDate, fiscalCode, firstName, email, gender, lastName FROM users WHERE email = ? AND password_hash = PASSWORD(?);");
+        try {
+            PreparedStatement statement = connection.prepareStatement("CALL login_as_patient(?, ?);");
             statement.setString(1, loginRequest.getEmail().getEmail());
             statement.setString(2, loginRequest.getPassword());
             statement.execute();
@@ -54,8 +67,8 @@ public class UserDatabase implements UserDao {
 
     @Override
     public boolean create(UserRegistrationRequestBean request) {
-        try (Connection connection = DriverManager.getConnection(credentials.getProperty("url"), credentials)) {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO users (birthDate, fiscalCode, firstName, email, gender, lastName, password_hash) VALUES(?, ?, ?, ?, ?, ?, PASSWORD(?));");
+        try {
+            PreparedStatement statement = connection.prepareStatement("CALL register_as_patient(?, ?, ?, ?, ?, ?, ?);");
             statement.setDate(1, Date.valueOf(request.getBirthDate()));
             statement.setString(2, request.getFiscalCode());
             statement.setString(3, request.getFirstName());

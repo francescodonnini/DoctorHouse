@@ -1,15 +1,22 @@
 package ispw.uniroma2.doctorhouse.auth.login;
 
+import ispw.uniroma2.doctorhouse.Dispatcher;
+import ispw.uniroma2.doctorhouse.EndPoint;
+import ispw.uniroma2.doctorhouse.InvalidDestination;
 import ispw.uniroma2.doctorhouse.auth.beans.EmailBean;
 import ispw.uniroma2.doctorhouse.auth.beans.LoginRequestBean;
 import ispw.uniroma2.doctorhouse.auth.exceptions.EmailNotValid;
 import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
+import ispw.uniroma2.doctorhouse.auth.registration.RegisterUserJFX;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
-public class LoginJFX extends LoginGraphicController {
+import java.util.Properties;
+
+public class LoginJFX implements EndPoint {
+    private final Login login;
     @FXML
     private TextField emailTxtFld;
     @FXML
@@ -23,8 +30,11 @@ public class LoginJFX extends LoginGraphicController {
     @FXML
     private Button signUpBtn;
 
-    public LoginJFX(Login login) {
-        super(login);
+    private final Dispatcher dispatcher;
+
+    public LoginJFX(Dispatcher dispatcher, Login login) {
+        this.dispatcher = dispatcher;
+        this.login = login;
     }
 
     @FXML
@@ -47,5 +57,19 @@ public class LoginJFX extends LoginGraphicController {
         } catch (UserNotFound ex) {
             errorLbl.textProperty().set("Wrong email or password!");
         }
+    }
+
+    @FXML
+    private void signup() {
+        try {
+            dispatcher.tryForward(RegisterUserJFX.class, null);
+        } catch (InvalidDestination e) {
+            errorLbl.setText("Cannot go to panel for registration!");
+        }
+    }
+
+    @Override
+    public void onEnter(Properties properties) {
+
     }
 }

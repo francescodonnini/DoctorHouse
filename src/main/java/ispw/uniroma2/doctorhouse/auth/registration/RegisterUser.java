@@ -10,7 +10,9 @@ public class RegisterUser {
         this.dao = dao;
     }
 
-    void register(UserRegistrationRequestBean request) {
-        dao.create(request);
+    void register(UserRegistrationRequestBean request) throws Exception {
+        if (!dao.create(request)) {
+            throw new Exception();
+        }
     }
 }

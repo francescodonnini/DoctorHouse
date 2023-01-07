@@ -8,73 +8,71 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-          xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="ispw.uniroma2.doctorhouse.auth.login.LoginJFX">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ispw.uniroma2.doctorhouse.auth.login.LoginJFX">
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity"/>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
-        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
-        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
-        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
-        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
-        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
-        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
-        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
-        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
+        <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
     </rowConstraints>
     <TextField fx:id="emailTxtFld" promptText="Email" GridPane.rowIndex="1">
         <GridPane.margin>
-      <Insets bottom="10.0" left="10.0" right="10.0"/>
+      <Insets bottom="10.0" left="10.0" right="10.0" />
         </GridPane.margin>
     </TextField>
     <TextField fx:id="passwordTxtFld" promptText="Password" GridPane.rowIndex="3">
         <GridPane.margin>
-      <Insets bottom="10.0" left="10.0" right="10.0"/>
+      <Insets bottom="10.0" left="10.0" right="10.0" />
         </GridPane.margin>
     </TextField>
     <Button fx:id="loginBtn" mnemonicParsing="false" onAction="#login" text="Login" GridPane.rowIndex="5">
         <GridPane.margin>
-            <Insets left="10.0"/>
+            <Insets left="10.0" />
         </GridPane.margin>
     </Button>
     <Label text="Email:">
         <GridPane.margin>
-            <Insets left="10.0"/>
+            <Insets left="10.0" />
         </GridPane.margin>
     </Label>
     <Label text="Password:" GridPane.rowIndex="2">
         <GridPane.margin>
-            <Insets left="10.0"/>
+            <Insets left="10.0" />
         </GridPane.margin>
     </Label>
     <Label text="Forgot your password?" GridPane.rowIndex="6">
         <GridPane.margin>
-            <Insets left="10.0" top="20.0"/>
+            <Insets left="10.0" top="20.0" />
         </GridPane.margin>
     </Label>
     <Label text="You are not registered yet?" GridPane.rowIndex="8">
         <GridPane.margin>
-            <Insets left="10.0" top="20.0"/>
+            <Insets left="10.0" top="20.0" />
         </GridPane.margin>
     </Label>
     <Button fx:id="recoverPasswordBtn" mnemonicParsing="false" text="Recover your password" GridPane.rowIndex="7">
         <GridPane.margin>
-            <Insets left="10.0"/>
+            <Insets left="10.0" />
         </GridPane.margin>
     </Button>
-    <Button fx:id="signUpBtn" mnemonicParsing="false" text="Sign Up" GridPane.rowIndex="9">
+    <Button fx:id="signUpBtn" mnemonicParsing="false" onAction="#signup" text="Sign Up" GridPane.rowIndex="9">
         <GridPane.margin>
-            <Insets left="10.0"/>
+            <Insets left="10.0" />
         </GridPane.margin>
     </Button>
     <Label fx:id="errorLbl" textFill="RED" visible="false" GridPane.rowIndex="4">
         <GridPane.margin>
-          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
         </GridPane.margin>
     </Label>
 </GridPane>

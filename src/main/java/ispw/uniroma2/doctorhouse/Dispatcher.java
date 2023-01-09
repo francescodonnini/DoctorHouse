@@ -26,6 +26,7 @@ public class Dispatcher {
     }
 
     public void tryForward(Class<?> controllerClass, Properties args) {
+        //load the fxml file with the same name of graphic controller
         load(controllerClass, args);
     }
 

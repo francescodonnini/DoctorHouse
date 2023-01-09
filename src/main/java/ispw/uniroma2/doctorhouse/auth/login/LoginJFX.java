@@ -4,6 +4,7 @@ import ispw.uniroma2.doctorhouse.Dispatcher;
 import ispw.uniroma2.doctorhouse.EndPoint;
 import ispw.uniroma2.doctorhouse.auth.beans.LoginRequestBean;
 import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
+import ispw.uniroma2.doctorhouse.patienthomepage.HomePageJFX;
 import ispw.uniroma2.doctorhouse.auth.registration.RegisterUserJFX;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -42,6 +43,7 @@ public class LoginJFX implements EndPoint {
 
     @FXML
     private void login() {
+
         try {
             String email = emailTxtFld.getText().trim();
             String password = passwordTxtFld.getText();
@@ -49,6 +51,7 @@ public class LoginJFX implements EndPoint {
             loginRequest.setEmail(email);
             loginRequest.setPassword(password);
             login.login(loginRequest);
+            dispatcher.tryForward(HomePageJFX.class, null);
         } catch (UserNotFound ex) {
             errorLbl.textProperty().set("Wrong email or password!");
         }

@@ -8,4 +8,6 @@ module ispw.uniroma2.doctorhouse {
     opens ispw.uniroma2.doctorhouse.auth.login to javafx.fxml;
     opens ispw.uniroma2.doctorhouse.auth.registration to javafx.fxml;
     exports ispw.uniroma2.doctorhouse;
+    exports ispw.uniroma2.doctorhouse.patienthomepage;
+    opens ispw.uniroma2.doctorhouse.patienthomepage to javafx.fxml;
 }

@@ -2,7 +2,6 @@ package ispw.uniroma2.doctorhouse.patienthomepage;
 
 import ispw.uniroma2.doctorhouse.Dispatcher;
 import ispw.uniroma2.doctorhouse.EndPoint;
-import ispw.uniroma2.doctorhouse.RequestPrescription.RequestPrescriptionJFX;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -12,9 +11,6 @@ import java.util.Properties;
 public class HomePageJFX implements EndPoint {
 
     @FXML
-    private Button home;
-
-    @FXML
     private Button notification;
 
     @FXML
@@ -22,9 +18,10 @@ public class HomePageJFX implements EndPoint {
 
     private final Dispatcher dispatcher;
 
-    public HomePageJFX() {
-        this.dispatcher = new Dispatcher();
+    public HomePageJFX(Dispatcher dispatcher) {
+        this.dispatcher = dispatcher;
     }
+
 
     @FXML
     void goToNotification(ActionEvent event) {
@@ -33,7 +30,7 @@ public class HomePageJFX implements EndPoint {
 
     @FXML
     void goToPrescription(ActionEvent event) {
-        //This method will be implemented
+
     }
 
     @Override

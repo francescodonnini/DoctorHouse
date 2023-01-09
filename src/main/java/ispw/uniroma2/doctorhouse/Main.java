@@ -1,10 +1,12 @@
 package ispw.uniroma2.doctorhouse;
 
+import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescriptionJFX;
 import ispw.uniroma2.doctorhouse.auth.login.Login;
 import ispw.uniroma2.doctorhouse.auth.login.LoginJFX;
 import ispw.uniroma2.doctorhouse.auth.registration.RegisterUser;
 import ispw.uniroma2.doctorhouse.auth.registration.RegisterUserJFX;
 import ispw.uniroma2.doctorhouse.dao.UserDatabase;
+import ispw.uniroma2.doctorhouse.patienthomepage.HomePageJFX;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -27,6 +29,8 @@ public class Main extends Application {
             p.load(getClass().getResourceAsStream("credentials/u_login"));
             dispatcher.add(RegisterUserJFX.class, c -> new RegisterUserJFX(dispatcher, new RegisterUser(UserDatabase.getInstance(p))));
             dispatcher.add(LoginJFX.class, c -> new LoginJFX(dispatcher, new Login(UserDatabase.getInstance(p))));
+            dispatcher.add(HomePageJFX.class, c -> new HomePageJFX(dispatcher));
+            dispatcher.add(RequestPrescriptionJFX.class, c -> new RequestPrescriptionJFX(dispatcher));
         } catch (IOException e) {
             Platform.exit();
         }

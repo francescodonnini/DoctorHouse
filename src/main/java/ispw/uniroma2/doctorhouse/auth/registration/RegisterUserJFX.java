@@ -205,5 +205,6 @@ public class RegisterUserJFX implements EndPoint {
 
     @Override
     public void onEnter(Properties properties) {
+        //This class do not implement this method
     }
 }

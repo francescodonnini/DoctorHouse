@@ -1,13 +1,19 @@
 package ispw.uniroma2.doctorhouse.requestprescription;
 
 import ispw.uniroma2.doctorhouse.Dispatcher;
+import ispw.uniroma2.doctorhouse.EndPoint;
+import ispw.uniroma2.doctorhouse.notification.NotificationJFX;
+import ispw.uniroma2.doctorhouse.patienthomepage.HomePageJFX;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
-public class RequestPrescriptionJFX {
+import java.util.Properties;
+
+public class RequestPrescriptionJFX implements EndPoint {
+
     @FXML
     private Button enter;
 
@@ -33,18 +39,21 @@ public class RequestPrescriptionJFX {
     }
 
     @FXML
-    void enter(ActionEvent event) {
-        //this method will be implemented
+    void enter() {
+        //This method will be implemented
     }
 
     @FXML
-    void goToHomePage(ActionEvent event) {
-        //this method will be implemented
+    void goToHomePage() {
+        dispatcher.tryForward(HomePageJFX.class, null);
     }
 
     @FXML
-    void goToNotification(ActionEvent event) {
-        //this method will be implemented
+    void goToNotification() {
+        dispatcher.tryForward(NotificationJFX.class, null);
     }
-
+    @Override
+    public void onEnter(Properties properties) {
+        //this class does not implement this method
+    }
 }

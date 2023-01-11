@@ -1,19 +1,19 @@
-package ispw.uniroma2.doctorhouse.patienthomepage;
+package ispw.uniroma2.doctorhouse.notification;
 
 import ispw.uniroma2.doctorhouse.Dispatcher;
 import ispw.uniroma2.doctorhouse.EndPoint;
-import ispw.uniroma2.doctorhouse.notification.NotificationJFX;
+import ispw.uniroma2.doctorhouse.patienthomepage.HomePageJFX;
 import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescriptionJFX;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
+
 import java.util.Properties;
 
-public class HomePageJFX implements EndPoint {
+public class NotificationJFX implements EndPoint {
 
     @FXML
-    private BorderPane root;
+    private Button homePage;
 
     @FXML
     private Button notification;
@@ -23,25 +23,21 @@ public class HomePageJFX implements EndPoint {
 
     private final Dispatcher dispatcher;
 
-    public HomePageJFX(Dispatcher dispatcher) {
+    public NotificationJFX(Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
     }
 
-
     @FXML
-    void goToNotification() {
-        dispatcher.tryForward(NotificationJFX.class, null);
+    void goToHome() {
+        dispatcher.tryForward(HomePageJFX.class, null);
     }
 
     @FXML
     void goToPrescription() {
         dispatcher.tryForward(RequestPrescriptionJFX.class, null);
     }
-
     @Override
     public void onEnter(Properties properties) {
-        //This class do not implement this method
+        //This class does not implement this method
     }
-
-
 }

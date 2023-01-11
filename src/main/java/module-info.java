@@ -10,4 +10,8 @@ module ispw.uniroma2.doctorhouse {
     exports ispw.uniroma2.doctorhouse;
     exports ispw.uniroma2.doctorhouse.patienthomepage;
     opens ispw.uniroma2.doctorhouse.patienthomepage to javafx.fxml;
+    exports ispw.uniroma2.doctorhouse.requestprescription;
+    opens ispw.uniroma2.doctorhouse.requestprescription to javafx.fxml;
+    exports ispw.uniroma2.doctorhouse.notification;
+    opens ispw.uniroma2.doctorhouse.notification to javafx.fxml;
 }

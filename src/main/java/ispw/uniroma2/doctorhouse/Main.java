@@ -7,6 +7,7 @@ import ispw.uniroma2.doctorhouse.auth.registration.RegisterUserJFX;
 import ispw.uniroma2.doctorhouse.dao.UserDatabase;
 import ispw.uniroma2.doctorhouse.notification.NotificationJFX;
 import ispw.uniroma2.doctorhouse.patienthomepage.HomePageJFX;
+import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescription;
 import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescriptionJFX;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -31,7 +32,7 @@ public class Main extends Application {
             dispatcher.add(RegisterUserJFX.class, c -> new RegisterUserJFX(dispatcher, new RegisterUser(UserDatabase.getInstance(p))));
             dispatcher.add(LoginJFX.class, c -> new LoginJFX(dispatcher, new Login(UserDatabase.getInstance(p))));
             dispatcher.add(HomePageJFX.class, c -> new HomePageJFX(dispatcher));
-            dispatcher.add(RequestPrescriptionJFX.class, c -> new RequestPrescriptionJFX(dispatcher));
+            dispatcher.add(RequestPrescriptionJFX.class, c -> new RequestPrescriptionJFX(dispatcher, new RequestPrescription()));
             dispatcher.add(NotificationJFX.class, c -> new NotificationJFX(dispatcher));
         } catch (IOException e) {
             Platform.exit();

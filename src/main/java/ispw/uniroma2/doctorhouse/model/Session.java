@@ -13,7 +13,7 @@ public class Session {
             session = new Session(user);
     }
 
-    public Session getSession() {
+    public static Session getSession() {
         if(session == null) {
             throw new IllegalStateException();
         } else return session;

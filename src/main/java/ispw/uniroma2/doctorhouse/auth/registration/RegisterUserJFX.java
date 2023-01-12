@@ -18,7 +18,7 @@ import java.time.Period;
 import java.util.Properties;
 
 public class RegisterUserJFX implements EndPoint {
-    private static final String fieldRequiredMessage = "This field is required!";
+    private static final String FIELDREQUIREDMESSAGE = "This field is required!";
     private final RegisterUser register;
     @FXML
     private Label birthDateErrorLbl;
@@ -114,12 +114,12 @@ public class RegisterUserJFX implements EndPoint {
     }
 
     @FXML
-    private void login(ActionEvent event) {
+    private void login() {
         dispatcher.tryForward(LoginJFX.class, null);
     }
 
     @FXML
-    void register(ActionEvent event) {
+    void register() {
         BooleanProperty cannotSubmit = new SimpleBooleanProperty();
         cannotSubmit.bind(nameRequiredLbl.textProperty().isNotEmpty()
                 .and(passwordErrorLbl.textProperty().isNotEmpty())
@@ -138,31 +138,31 @@ public class RegisterUserJFX implements EndPoint {
         LocalDate birthDate = birthDatePicker.getValue();
         //Check name text field content
         if (name.trim().isEmpty()) {
-            nameRequiredLbl.textProperty().set(fieldRequiredMessage);
+            nameRequiredLbl.textProperty().set(FIELDREQUIREDMESSAGE);
         } else {
             nameRequiredLbl.textProperty().set("");
         }
         //Check email text field content
         if (email.trim().isEmpty()) {
-            emailErrorLbl.textProperty().set(fieldRequiredMessage);
+            emailErrorLbl.textProperty().set(FIELDREQUIREDMESSAGE);
         } else {
             emailErrorLbl.textProperty().set("");
         }
         //check password text field content
         if (password.isEmpty()) {
-            passwordErrorLbl.textProperty().set(fieldRequiredMessage);
+            passwordErrorLbl.textProperty().set(FIELDREQUIREDMESSAGE);
         } else {
             passwordErrorLbl.textProperty().set("");
         }
         //check lastName text field content
         if (lastName.trim().isEmpty()) {
-            lastNameRequiredLbl.textProperty().set(fieldRequiredMessage);
+            lastNameRequiredLbl.textProperty().set(FIELDREQUIREDMESSAGE);
         } else {
             lastNameRequiredLbl.textProperty().set("");
         }
         //check fiscalCode text field content
         if (fiscalCode.trim().isEmpty()) {
-            fiscalCodeErrorLbl.textProperty().set(fieldRequiredMessage);
+            fiscalCodeErrorLbl.textProperty().set(FIELDREQUIREDMESSAGE);
         } else {
             fiscalCodeErrorLbl.textProperty().set("");
         }
@@ -181,7 +181,7 @@ public class RegisterUserJFX implements EndPoint {
                 birthDateErrorLbl.textProperty().set("");
             }
         } else {
-            birthDateErrorLbl.textProperty().set(fieldRequiredMessage);
+            birthDateErrorLbl.textProperty().set(FIELDREQUIREDMESSAGE);
         }
         if (!cannotSubmit.get()) {
             UserRegistrationRequestBean request = new UserRegistrationRequestBean();

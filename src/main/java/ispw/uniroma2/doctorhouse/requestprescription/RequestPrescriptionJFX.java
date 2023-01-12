@@ -2,9 +2,10 @@ package ispw.uniroma2.doctorhouse.requestprescription;
 
 import ispw.uniroma2.doctorhouse.Dispatcher;
 import ispw.uniroma2.doctorhouse.EndPoint;
+import ispw.uniroma2.doctorhouse.auth.beans.RequestPrescriptionBean;
+import ispw.uniroma2.doctorhouse.model.Session;
 import ispw.uniroma2.doctorhouse.notification.NotificationJFX;
 import ispw.uniroma2.doctorhouse.patienthomepage.HomePageJFX;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -33,14 +34,20 @@ public class RequestPrescriptionJFX implements EndPoint {
     private Text text;
 
     private final Dispatcher dispatcher;
+    private final RequestPrescription requestPrescription;
 
-    public RequestPrescriptionJFX(Dispatcher dispatcher) {
+    public RequestPrescriptionJFX(Dispatcher dispatcher, RequestPrescription requestPrescription) {
         this.dispatcher = dispatcher;
+        this.requestPrescription = requestPrescription;
     }
 
     @FXML
     void enter() {
-        //This method will be implemented
+        Session session = Session.getSession();
+        RequestPrescriptionBean requestPrescriptionBean = new RequestPrescriptionBean();
+        requestPrescriptionBean.setUser(session.getUser());
+        requestPrescriptionBean.setMessage(message.getText());
+        requestPrescription.addPrescriptionRequest(requestPrescriptionBean);
     }
 
     @FXML

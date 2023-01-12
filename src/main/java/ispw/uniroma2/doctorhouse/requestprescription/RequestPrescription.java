@@ -5,6 +5,6 @@ import ispw.uniroma2.doctorhouse.auth.beans.RequestPrescriptionBean;
 public class RequestPrescription {
 
     public void addPrescriptionRequest(RequestPrescriptionBean prescriptionRequest) {
-        System.out.println(prescriptionRequest.getUser().getLastName() + prescriptionRequest.getMessage());
+
     }
 }

@@ -1,7 +1,6 @@
 package ispw.uniroma2.doctorhouse.model;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ClockInterval {

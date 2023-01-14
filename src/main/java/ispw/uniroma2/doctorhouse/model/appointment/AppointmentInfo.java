@@ -11,7 +11,7 @@ public abstract class AppointmentInfo {
     private final Specialty specialty;
     private final Office office;
 
-    public AppointmentInfo(Doctor doctor, User patient, Specialty specialty, Office office) {
+    protected AppointmentInfo(Doctor doctor, User patient, Specialty specialty, Office office) {
         this.doctor = doctor;
         this.patient = patient;
         this.specialty = specialty;

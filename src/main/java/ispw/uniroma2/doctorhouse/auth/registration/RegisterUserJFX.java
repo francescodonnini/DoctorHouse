@@ -8,7 +8,6 @@ import ispw.uniroma2.doctorhouse.auth.exceptions.DuplicateEmail;
 import ispw.uniroma2.doctorhouse.auth.login.LoginJFX;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.StringConverter;
@@ -18,7 +17,7 @@ import java.time.Period;
 import java.util.Properties;
 
 public class RegisterUserJFX implements EndPoint {
-    private static final String FIELDREQUIREDMESSAGE = "This field is required!";
+    private static final String FIELD_REQUIRED_MESSAGE = "This field is required!";
     private final RegisterUser register;
     @FXML
     private Label birthDateErrorLbl;
@@ -138,31 +137,31 @@ public class RegisterUserJFX implements EndPoint {
         LocalDate birthDate = birthDatePicker.getValue();
         //Check name text field content
         if (name.trim().isEmpty()) {
-            nameRequiredLbl.textProperty().set(FIELDREQUIREDMESSAGE);
+            nameRequiredLbl.textProperty().set(FIELD_REQUIRED_MESSAGE);
         } else {
             nameRequiredLbl.textProperty().set("");
         }
         //Check email text field content
         if (email.trim().isEmpty()) {
-            emailErrorLbl.textProperty().set(FIELDREQUIREDMESSAGE);
+            emailErrorLbl.textProperty().set(FIELD_REQUIRED_MESSAGE);
         } else {
             emailErrorLbl.textProperty().set("");
         }
         //check password text field content
         if (password.isEmpty()) {
-            passwordErrorLbl.textProperty().set(FIELDREQUIREDMESSAGE);
+            passwordErrorLbl.textProperty().set(FIELD_REQUIRED_MESSAGE);
         } else {
             passwordErrorLbl.textProperty().set("");
         }
         //check lastName text field content
         if (lastName.trim().isEmpty()) {
-            lastNameRequiredLbl.textProperty().set(FIELDREQUIREDMESSAGE);
+            lastNameRequiredLbl.textProperty().set(FIELD_REQUIRED_MESSAGE);
         } else {
             lastNameRequiredLbl.textProperty().set("");
         }
         //check fiscalCode text field content
         if (fiscalCode.trim().isEmpty()) {
-            fiscalCodeErrorLbl.textProperty().set(FIELDREQUIREDMESSAGE);
+            fiscalCodeErrorLbl.textProperty().set(FIELD_REQUIRED_MESSAGE);
         } else {
             fiscalCodeErrorLbl.textProperty().set("");
         }
@@ -181,7 +180,7 @@ public class RegisterUserJFX implements EndPoint {
                 birthDateErrorLbl.textProperty().set("");
             }
         } else {
-            birthDateErrorLbl.textProperty().set(FIELDREQUIREDMESSAGE);
+            birthDateErrorLbl.textProperty().set(FIELD_REQUIRED_MESSAGE);
         }
         if (!cannotSubmit.get()) {
             UserRegistrationRequestBean request = new UserRegistrationRequestBean();
@@ -193,7 +192,7 @@ public class RegisterUserJFX implements EndPoint {
             request.setLastName(lastName);
             request.setPassword(password);
             try {
-                // TODO: add visual cue that notify the user that the registration process was successful
+                // add visual cue that notify the user that the registration process was successful
                 if (register.register(request)) {
                     dispatcher.tryForward(LoginJFX.class, null);
                 }

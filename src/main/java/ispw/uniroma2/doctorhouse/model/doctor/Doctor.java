@@ -18,7 +18,7 @@ public class Doctor extends User implements OfficeMgr, ScheduleMgr {
         offices.forEach(office -> office.setDoctor(this));
         this.offices = new ArrayList<>(offices);
         this.specialties = new ArrayList<>(specialties);
-        this.schedule = new HashMap<>(schedule);
+        this.schedule = new EnumMap<>(schedule);
     }
 
     public String getField() {

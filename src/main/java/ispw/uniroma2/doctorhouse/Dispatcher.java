@@ -1,5 +1,6 @@
 package ispw.uniroma2.doctorhouse;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -50,6 +51,8 @@ public class Dispatcher {
             controller.onEnter(args);
         } catch (IOException e) {
             throw new UnsupportedOperationException();
+        } catch (IrrecoverableError e) {
+            Platform.exit();
         }
     }
 }

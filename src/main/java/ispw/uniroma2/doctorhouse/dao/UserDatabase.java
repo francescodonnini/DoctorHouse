@@ -1,5 +1,6 @@
 package ispw.uniroma2.doctorhouse.dao;
 
+import ispw.uniroma2.doctorhouse.IrrecoverableError;
 import ispw.uniroma2.doctorhouse.auth.beans.LoginRequestBean;
 import ispw.uniroma2.doctorhouse.auth.beans.UserRegistrationRequestBean;
 import ispw.uniroma2.doctorhouse.auth.exceptions.DuplicateEmail;
@@ -26,7 +27,7 @@ public class UserDatabase implements UserDao {
                 Connection connection = DriverManager.getConnection(credentials.getProperty("url"), credentials.getProperty("user"), credentials.getProperty("password"));
                 instance = new UserDatabase(connection);
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new IrrecoverableError(e);
             }
         }
         return instance;

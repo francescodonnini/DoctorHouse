@@ -2,6 +2,7 @@ package ispw.uniroma2.doctorhouse.view;
 
 import ispw.uniroma2.doctorhouse.IrrecoverableError;
 import ispw.uniroma2.doctorhouse.auth.RegisterUser;
+import ispw.uniroma2.doctorhouse.auth.beans.DoctorBean;
 import ispw.uniroma2.doctorhouse.auth.beans.GenderBean;
 import ispw.uniroma2.doctorhouse.auth.beans.UserRegistrationRequestBean;
 import ispw.uniroma2.doctorhouse.auth.exceptions.DuplicateEmail;
@@ -55,6 +56,8 @@ public class RegisterUserPage implements ViewController {
     @FXML
     private TextField passwordTxtFld;
     @FXML
+    private ComboBox<DoctorBean> familyDoctorBox;
+    @FXML
     private Button signUpBtn;
     @FXML
     private Label signUpErrorLbl;
@@ -102,6 +105,28 @@ public class RegisterUserPage implements ViewController {
                 }
             }
         });
+        genderPicker.getItems();
+        familyDoctorBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(DoctorBean doctorBean) {
+                if (doctorBean == null) {
+                    return "";
+                } else {
+                    return doctorBean.getEmail();
+                }
+            }
+
+            @Override
+            public DoctorBean fromString(String s) {
+                if (s.isEmpty()) {
+                    return null;
+                } else {
+                    DoctorBean bean = new DoctorBean();
+                    bean.setEmail(s);
+                    return bean;
+                }
+            }
+        });
         nameRequiredLbl.managedProperty().bind(nameRequiredLbl.textProperty().isNotEmpty());
         nameRequiredLbl.visibleProperty().bind(nameRequiredLbl.managedProperty());
         emailErrorLbl.managedProperty().bind(emailErrorLbl.textProperty().isNotEmpty());
@@ -143,6 +168,7 @@ public class RegisterUserPage implements ViewController {
         String fiscalCode = fiscalCodeTxtFld.getText();
         String confirmPassword = confirmPasswordTxtFld.getText();
         LocalDate birthDate = birthDatePicker.getValue();
+        DoctorBean familyDoctor = familyDoctorBox.getValue();
         //Check name text field content
         if (name.trim().isEmpty()) {
             nameRequiredLbl.textProperty().set(FIELD_REQUIRED_MESSAGE);
@@ -199,6 +225,7 @@ public class RegisterUserPage implements ViewController {
             request.setFiscalCode(fiscalCode);
             request.setLastName(lastName);
             request.setPassword(password);
+            request.setFamilyDoctor(familyDoctor);
             try {
                 // add visual cue that notify the user that the registration process was successful
                 register.register(request);

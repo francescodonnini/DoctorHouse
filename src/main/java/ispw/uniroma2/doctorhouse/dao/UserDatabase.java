@@ -1,6 +1,7 @@
 package ispw.uniroma2.doctorhouse.dao;
 
 import ispw.uniroma2.doctorhouse.IrrecoverableError;
+import ispw.uniroma2.doctorhouse.auth.beans.DoctorBean;
 import ispw.uniroma2.doctorhouse.auth.beans.LoginRequestBean;
 import ispw.uniroma2.doctorhouse.auth.beans.UserRegistrationRequestBean;
 import ispw.uniroma2.doctorhouse.auth.exceptions.DuplicateEmail;
@@ -66,7 +67,7 @@ public class UserDatabase implements UserDao {
     @Override
     public void create(UserRegistrationRequestBean request) throws DuplicateEmail {
         try {
-            PreparedStatement statement = connection.prepareStatement("CALL register_as_patient(?, ?, ?, ?, ?, ?, ?);");
+            PreparedStatement statement = connection.prepareStatement("CALL register_as_patient(?, ?, ?, ?, ?, ?, ?, ?);");
             statement.setDate(1, Date.valueOf(request.getBirthDate()));
             statement.setString(2, request.getFirstName());
             statement.setString(3, request.getLastName());
@@ -74,6 +75,12 @@ public class UserDatabase implements UserDao {
             statement.setString(5, request.getEmail());
             statement.setString(6, request.getPassword());
             statement.setString(7, request.getFiscalCode());
+            Optional<DoctorBean> familyDoctor = request.getFamilyDoctor();
+            if (familyDoctor.isEmpty()) {
+                statement.setNull(8, Types.VARCHAR);
+            } else {
+                statement.setString(8, familyDoctor.get().getEmail());
+            }
             statement.execute();
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new DuplicateEmail();

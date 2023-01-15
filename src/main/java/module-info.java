@@ -12,6 +12,7 @@ module ispw.uniroma2.doctorhouse {
     exports ispw.uniroma2.doctorhouse.auth.beans;
     exports ispw.uniroma2.doctorhouse.auth.exceptions;
     exports ispw.uniroma2.doctorhouse.model;
+    exports ispw.uniroma2.doctorhouse.model.doctor;
     exports ispw.uniroma2.doctorhouse.view;
     opens ispw.uniroma2.doctorhouse.view to javafx.fxml;
 }

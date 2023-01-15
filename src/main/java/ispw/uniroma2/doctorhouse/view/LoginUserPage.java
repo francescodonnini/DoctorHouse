@@ -55,7 +55,6 @@ public class LoginUserPage implements ViewController {
 
     @FXML
     private void login() {
-
         try {
             String email = emailTxtFld.getText().trim();
             String password = passwordTxtFld.getText();

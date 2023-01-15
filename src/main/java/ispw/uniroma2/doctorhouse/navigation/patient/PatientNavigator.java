@@ -23,6 +23,8 @@ public class PatientNavigator extends Navigator<PatientDestination> {
                 return factory.createRearrangeAppointmentPage();
             case RequestPrescription:
                 return factory.createRequestPrescriptionPage();
+            case HomePage:
+                return factory.createHomePage();
             default:
                 throw new UnsupportedOperationException();
         }

@@ -1,16 +1,12 @@
 package ispw.uniroma2.doctorhouse;
 
-import ispw.uniroma2.doctorhouse.dao.UserDao;
 import ispw.uniroma2.doctorhouse.dao.UserDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.UserDaoFactoryImpl;
-import ispw.uniroma2.doctorhouse.dao.UserDatabase;
 import ispw.uniroma2.doctorhouse.navigation.NavigatorController;
-import ispw.uniroma2.doctorhouse.navigation.login.LoginControllerFactory;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginDestination;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginNavigator;
 import ispw.uniroma2.doctorhouse.navigation.patient.PatientNavigator;
 import ispw.uniroma2.doctorhouse.view.LoginControllerFactoryImpl;
-import ispw.uniroma2.doctorhouse.view.NavigatorControllerImpl;
 import ispw.uniroma2.doctorhouse.view.PatientControllerFactoryImpl;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -34,6 +30,7 @@ public class Main extends Application {
         factory.setUserDaoFactory(userDaoFactory);
         factory.setLoginNavigator(loginNavigator);
         factory.setPatientNavigator(patientNavigator);
+        patientFactory.setNavigator(patientNavigator);
         loginNavigator.navigate(LoginDestination.Login);
         stage.setScene(scene);
         stage.show();

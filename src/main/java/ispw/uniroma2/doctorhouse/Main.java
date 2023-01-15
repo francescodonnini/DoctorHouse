@@ -1,44 +1,40 @@
 package ispw.uniroma2.doctorhouse;
 
-import ispw.uniroma2.doctorhouse.auth.login.Login;
-import ispw.uniroma2.doctorhouse.auth.login.LoginJFX;
-import ispw.uniroma2.doctorhouse.auth.registration.RegisterUser;
-import ispw.uniroma2.doctorhouse.auth.registration.RegisterUserJFX;
+import ispw.uniroma2.doctorhouse.dao.UserDao;
+import ispw.uniroma2.doctorhouse.dao.UserDaoFactory;
+import ispw.uniroma2.doctorhouse.dao.UserDaoFactoryImpl;
 import ispw.uniroma2.doctorhouse.dao.UserDatabase;
-import ispw.uniroma2.doctorhouse.notification.NotificationJFX;
-import ispw.uniroma2.doctorhouse.patienthomepage.HomePageJFX;
-import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescription;
-import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescriptionJFX;
+import ispw.uniroma2.doctorhouse.navigation.NavigatorController;
+import ispw.uniroma2.doctorhouse.navigation.login.LoginControllerFactory;
+import ispw.uniroma2.doctorhouse.navigation.login.LoginDestination;
+import ispw.uniroma2.doctorhouse.navigation.login.LoginNavigator;
+import ispw.uniroma2.doctorhouse.navigation.patient.PatientNavigator;
+import ispw.uniroma2.doctorhouse.view.LoginControllerFactoryImpl;
+import ispw.uniroma2.doctorhouse.view.NavigatorControllerImpl;
+import ispw.uniroma2.doctorhouse.view.PatientControllerFactoryImpl;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Properties;
 
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("dispatcher.fxml"));
-        BorderPane root = loader.load();
-        Dispatcher dispatcher = loader.getController();
-        try {
-            Properties p = new Properties();
-            p.load(getClass().getResourceAsStream("credentials/u_login"));
-            dispatcher.add(RegisterUserJFX.class, c -> new RegisterUserJFX(dispatcher, new RegisterUser(UserDatabase.getInstance(p))));
-            dispatcher.add(LoginJFX.class, c -> new LoginJFX(dispatcher, new Login(UserDatabase.getInstance(p))));
-            dispatcher.add(HomePageJFX.class, c -> new HomePageJFX(dispatcher));
-            dispatcher.add(RequestPrescriptionJFX.class, c -> new RequestPrescriptionJFX(dispatcher, new RequestPrescription()));
-            dispatcher.add(NotificationJFX.class, c -> new NotificationJFX(dispatcher));
-        } catch (IOException e) {
-            Platform.exit();
-        }
-        dispatcher.tryForward(LoginJFX.class, null);
-        Scene scene = new Scene(root);
+        loader.setLocation(getClass().getResource("view/navigator.fxml"));
+        Scene scene = new Scene(loader.load());
+        NavigatorController navigatorController = loader.getController();
+        UserDaoFactory userDaoFactory = new UserDaoFactoryImpl();
+        LoginControllerFactoryImpl factory = new LoginControllerFactoryImpl();
+        PatientControllerFactoryImpl patientFactory = new PatientControllerFactoryImpl();
+        LoginNavigator loginNavigator = new LoginNavigator(navigatorController, factory);
+        PatientNavigator patientNavigator = new PatientNavigator(navigatorController, patientFactory);
+        factory.setUserDaoFactory(userDaoFactory);
+        factory.setLoginNavigator(loginNavigator);
+        factory.setPatientNavigator(patientNavigator);
+        loginNavigator.navigate(LoginDestination.Login);
         stage.setScene(scene);
         stage.show();
     }

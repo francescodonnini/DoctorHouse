@@ -64,7 +64,7 @@ public class UserDatabase implements UserDao {
     }
 
     @Override
-    public boolean create(UserRegistrationRequestBean request) throws DuplicateEmail {
+    public void create(UserRegistrationRequestBean request) throws DuplicateEmail {
         try {
             PreparedStatement statement = connection.prepareStatement("CALL register_as_patient(?, ?, ?, ?, ?, ?, ?);");
             statement.setDate(1, Date.valueOf(request.getBirthDate()));
@@ -74,11 +74,11 @@ public class UserDatabase implements UserDao {
             statement.setString(5, request.getEmail());
             statement.setString(6, request.getPassword());
             statement.setString(7, request.getFiscalCode());
-            return statement.execute();
+            statement.execute();
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new DuplicateEmail();
         } catch (SQLException e) {
-            return false;
+            throw new IrrecoverableError(e);
         }
     }
 }

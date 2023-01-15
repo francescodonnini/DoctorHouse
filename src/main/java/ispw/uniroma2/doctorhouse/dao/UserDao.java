@@ -10,5 +10,5 @@ import java.util.Optional;
 
 public interface UserDao {
     Optional<User> get(LoginRequestBean loginRequest) throws UserNotFound;
-    boolean create(UserRegistrationRequestBean registrationRequest) throws DuplicateEmail;
+    void create(UserRegistrationRequestBean registrationRequest) throws DuplicateEmail;
 }

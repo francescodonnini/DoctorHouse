@@ -1,24 +1,29 @@
-package ispw.uniroma2.doctorhouse.auth.registration;
+package ispw.uniroma2.doctorhouse.view;
 
-import ispw.uniroma2.doctorhouse.Dispatcher;
-import ispw.uniroma2.doctorhouse.EndPoint;
+import ispw.uniroma2.doctorhouse.IrrecoverableError;
+import ispw.uniroma2.doctorhouse.auth.RegisterUser;
 import ispw.uniroma2.doctorhouse.auth.beans.GenderBean;
 import ispw.uniroma2.doctorhouse.auth.beans.UserRegistrationRequestBean;
 import ispw.uniroma2.doctorhouse.auth.exceptions.DuplicateEmail;
-import ispw.uniroma2.doctorhouse.auth.login.LoginJFX;
+import ispw.uniroma2.doctorhouse.navigation.ViewController;
+import ispw.uniroma2.doctorhouse.navigation.login.LoginDestination;
+import ispw.uniroma2.doctorhouse.navigation.login.LoginNavigator;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.util.StringConverter;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Properties;
 
-public class RegisterUserJFX implements EndPoint {
+public class RegisterUserPage implements ViewController {
     private static final String FIELD_REQUIRED_MESSAGE = "This field is required!";
     private final RegisterUser register;
+    private final LoginNavigator navigator;
+    @FXML
+    private Parent view;
     @FXML
     private Label birthDateErrorLbl;
     @FXML
@@ -54,11 +59,14 @@ public class RegisterUserJFX implements EndPoint {
     @FXML
     private Label signUpErrorLbl;
 
-    private final Dispatcher dispatcher;
-
-    public RegisterUserJFX(Dispatcher dispatcher, RegisterUser register) {
-        this.dispatcher = dispatcher;
+    public RegisterUserPage(LoginNavigator navigator, RegisterUser register) {
+        this.navigator = navigator;
         this.register = register;
+    }
+
+    @Override
+    public Parent getView() {
+        return view;
     }
 
     @FXML
@@ -114,7 +122,7 @@ public class RegisterUserJFX implements EndPoint {
 
     @FXML
     private void login() {
-        dispatcher.tryForward(LoginJFX.class, null);
+        navigator.navigate(LoginDestination.Login);
     }
 
     @FXML
@@ -193,17 +201,13 @@ public class RegisterUserJFX implements EndPoint {
             request.setPassword(password);
             try {
                 // add visual cue that notify the user that the registration process was successful
-                if (register.register(request)) {
-                    dispatcher.tryForward(LoginJFX.class, null);
-                }
+                register.register(request);
+                navigator.navigate(LoginDestination.Login);
             } catch (DuplicateEmail e) {
                 signUpErrorLbl.setText("The email entered already exists! Try another one!");
+            } catch (IrrecoverableError e) {
+                navigator.navigate(LoginDestination.IrrecoverableError);
             }
         }
-    }
-
-    @Override
-    public void onEnter(Properties properties) {
-        //This class do not implement this method
     }
 }

@@ -1,4 +1,4 @@
-package ispw.uniroma2.doctorhouse.auth.login;
+package ispw.uniroma2.doctorhouse.auth;
 
 import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
 import ispw.uniroma2.doctorhouse.auth.beans.LoginRequestBean;
@@ -15,7 +15,7 @@ public class Login {
         this.dao = dao;
     }
 
-    void login(LoginRequestBean loginRequest) throws UserNotFound {
+    public void login(LoginRequestBean loginRequest) throws UserNotFound {
         Optional<User> user = dao.get(loginRequest);
         if (user.isEmpty()) {
             throw new UserNotFound();

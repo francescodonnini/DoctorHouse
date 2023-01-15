@@ -18,6 +18,7 @@ import javafx.util.StringConverter;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.function.Predicate;
 
 public class RegisterUserPage implements ViewController {
     private static final String FIELD_REQUIRED_MESSAGE = "This field is required!";
@@ -154,58 +155,31 @@ public class RegisterUserPage implements ViewController {
     void register() {
         BooleanProperty cannotSubmit = new SimpleBooleanProperty();
         cannotSubmit.bind(nameRequiredLbl.textProperty().isNotEmpty()
-                .and(passwordErrorLbl.textProperty().isNotEmpty())
-                .and(lastNameRequiredLbl.textProperty().isNotEmpty())
-                .and(emailErrorLbl.textProperty().isNotEmpty())
-                .and(fiscalCodeErrorLbl.textProperty().isNotEmpty())
-                .and(confirmPasswordErrorLbl.textProperty().isNotEmpty())
-                .and(birthDateErrorLbl.textProperty().isNotEmpty()));
-        //get text fields content
-        String name = nameTxtFld.getText();
+                .or(passwordErrorLbl.textProperty().isNotEmpty())
+                .or(lastNameRequiredLbl.textProperty().isNotEmpty())
+                .or(emailErrorLbl.textProperty().isNotEmpty())
+                .or(fiscalCodeErrorLbl.textProperty().isNotEmpty())
+                .or(confirmPasswordErrorLbl.textProperty().isNotEmpty())
+                .or(birthDateErrorLbl.textProperty().isNotEmpty()));
+        String name = nameTxtFld.getText().trim();
         String password = passwordTxtFld.getText();
-        String lastName = lastNameTxtFld.getText();
-        String email = emailTxtFld.getText();
-        String fiscalCode = fiscalCodeTxtFld.getText();
+        String lastName = lastNameTxtFld.getText().trim();
+        String email = emailTxtFld.getText().trim();
+        String fiscalCode = fiscalCodeTxtFld.getText().trim();
         String confirmPassword = confirmPasswordTxtFld.getText();
         LocalDate birthDate = birthDatePicker.getValue();
         DoctorBean familyDoctor = familyDoctorBox.getValue();
-        //Check name text field content
-        if (name.trim().isEmpty()) {
-            nameRequiredLbl.textProperty().set(FIELD_REQUIRED_MESSAGE);
-        } else {
-            nameRequiredLbl.textProperty().set("");
-        }
-        //Check email text field content
-        if (email.trim().isEmpty()) {
-            emailErrorLbl.textProperty().set(FIELD_REQUIRED_MESSAGE);
-        } else {
-            emailErrorLbl.textProperty().set("");
-        }
-        //check password text field content
-        if (password.isEmpty()) {
-            passwordErrorLbl.textProperty().set(FIELD_REQUIRED_MESSAGE);
-        } else {
-            passwordErrorLbl.textProperty().set("");
-        }
-        //check lastName text field content
-        if (lastName.trim().isEmpty()) {
-            lastNameRequiredLbl.textProperty().set(FIELD_REQUIRED_MESSAGE);
-        } else {
-            lastNameRequiredLbl.textProperty().set("");
-        }
-        //check fiscalCode text field content
-        if (fiscalCode.trim().isEmpty()) {
-            fiscalCodeErrorLbl.textProperty().set(FIELD_REQUIRED_MESSAGE);
-        } else {
-            fiscalCodeErrorLbl.textProperty().set("");
-        }
-        //check confirmPassword text field content
+        check(name, String::isEmpty, nameRequiredLbl, FIELD_REQUIRED_MESSAGE);
+        check(lastName, String::isEmpty, lastNameRequiredLbl, FIELD_REQUIRED_MESSAGE);
+        check(email, String::isEmpty, emailErrorLbl, FIELD_REQUIRED_MESSAGE);
+        check(fiscalCode, String::isEmpty, fiscalCodeErrorLbl, FIELD_REQUIRED_MESSAGE);
+        check(password, String::isEmpty, passwordErrorLbl, FIELD_REQUIRED_MESSAGE);
+        check(confirmPassword, String::isEmpty, confirmPasswordErrorLbl, FIELD_REQUIRED_MESSAGE);
         if (confirmPassword.isEmpty() || !password.equals(confirmPassword)) {
             confirmPasswordErrorLbl.textProperty().set("Passwords do not match");
         } else {
             confirmPasswordErrorLbl.textProperty().set("");
         }
-        //check dataPicker content
         if (birthDate != null) {
             Period period = Period.between(birthDate, LocalDate.now().plusDays(1));
             if (period.getYears() < 18) {
@@ -235,6 +209,14 @@ public class RegisterUserPage implements ViewController {
             } catch (IrrecoverableError e) {
                 navigator.navigate(LoginDestination.IrrecoverableError);
             }
+        }
+    }
+
+    private void check(String s, Predicate<String> predicate, Label errorLbl, String errorMessage) {
+        if (predicate.test(s)) {
+            errorLbl.setText(errorMessage);
+        } else {
+            errorLbl.setText("");
         }
     }
 }

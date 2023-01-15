@@ -23,13 +23,13 @@ public class Main extends Application {
         Scene scene = new Scene(loader.load());
         NavigatorController navigatorController = loader.getController();
         UserDaoFactory userDaoFactory = new UserDaoFactoryImpl();
-        LoginControllerFactoryImpl factory = new LoginControllerFactoryImpl();
+        LoginControllerFactoryImpl loginFactory = new LoginControllerFactoryImpl();
         PatientControllerFactoryImpl patientFactory = new PatientControllerFactoryImpl();
-        LoginNavigator loginNavigator = new LoginNavigator(navigatorController, factory);
+        LoginNavigator loginNavigator = new LoginNavigator(navigatorController, loginFactory);
         PatientNavigator patientNavigator = new PatientNavigator(navigatorController, patientFactory);
-        factory.setUserDaoFactory(userDaoFactory);
-        factory.setLoginNavigator(loginNavigator);
-        factory.setPatientNavigator(patientNavigator);
+        loginFactory.setUserDaoFactory(userDaoFactory);
+        loginFactory.setLoginNavigator(loginNavigator);
+        loginFactory.setPatientNavigator(patientNavigator);
         patientFactory.setNavigator(patientNavigator);
         loginNavigator.navigate(LoginDestination.Login);
         stage.setScene(scene);

@@ -9,7 +9,14 @@ import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
 import ispw.uniroma2.doctorhouse.model.Gender;
 import ispw.uniroma2.doctorhouse.model.User;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Properties;

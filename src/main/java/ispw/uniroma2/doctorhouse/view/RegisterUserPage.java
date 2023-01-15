@@ -148,7 +148,7 @@ public class RegisterUserPage implements ViewController {
 
     @FXML
     private void login() {
-        navigator.navigate(LoginDestination.Login);
+        navigator.navigate(LoginDestination.LOGIN);
     }
 
     @FXML
@@ -203,11 +203,11 @@ public class RegisterUserPage implements ViewController {
             try {
                 // add visual cue that notify the user that the registration process was successful
                 register.register(request);
-                navigator.navigate(LoginDestination.Login);
+                navigator.navigate(LoginDestination.LOGIN);
             } catch (DuplicateEmail e) {
                 signUpErrorLbl.setText("The email entered already exists! Try another one!");
             } catch (IrrecoverableError e) {
-                navigator.navigate(LoginDestination.IrrecoverableError);
+                navigator.navigate(LoginDestination.IRRECOVERABLE_ERROR);
             }
         }
     }

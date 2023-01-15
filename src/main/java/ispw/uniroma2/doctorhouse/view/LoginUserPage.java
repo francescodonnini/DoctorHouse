@@ -66,7 +66,7 @@ public class LoginUserPage implements ViewController {
             if (user instanceof Doctor) {
                 throw new UnsupportedOperationException();
             } else if (user != null) {
-                patientNavigator.navigate(PatientDestination.HomePage);
+                patientNavigator.navigate(PatientDestination.HOME_PAGE);
             }
         } catch (UserNotFound ex) {
             errorLbl.textProperty().set("Wrong email or password!");
@@ -75,6 +75,6 @@ public class LoginUserPage implements ViewController {
 
     @FXML
     private void signup() {
-        loginNavigator.navigate(LoginDestination.Signup);
+        loginNavigator.navigate(LoginDestination.SIGNUP);
     }
 }

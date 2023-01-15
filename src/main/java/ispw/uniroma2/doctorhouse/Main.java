@@ -31,7 +31,7 @@ public class Main extends Application {
         loginFactory.setLoginNavigator(loginNavigator);
         loginFactory.setPatientNavigator(patientNavigator);
         patientFactory.setNavigator(patientNavigator);
-        loginNavigator.navigate(LoginDestination.Login);
+        loginNavigator.navigate(LoginDestination.LOGIN);
         stage.setScene(scene);
         stage.show();
     }

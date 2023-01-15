@@ -28,11 +28,11 @@ public class HomePage implements ViewController {
 
     @FXML
     private void rearrange(ActionEvent ignored) {
-        navigator.navigate(PatientDestination.Rearrange);
+        navigator.navigate(PatientDestination.REARRANGE);
     }
 
     @FXML
     private void request(ActionEvent ignored) {
-        navigator.navigate(PatientDestination.RequestPrescription);
+        navigator.navigate(PatientDestination.REQUEST_PRESCRIPTION);
     }
 }

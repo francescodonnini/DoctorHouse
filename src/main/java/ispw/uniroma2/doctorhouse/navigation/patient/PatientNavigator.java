@@ -19,11 +19,11 @@ public class PatientNavigator extends Navigator<PatientDestination> {
 
     private ViewController makeViewController(PatientDestination destination) {
         switch (destination) {
-            case Rearrange:
+            case REARRANGE:
                 return factory.createRearrangeAppointmentPage();
-            case RequestPrescription:
+            case REQUEST_PRESCRIPTION:
                 return factory.createRequestPrescriptionPage();
-            case HomePage:
+            case HOME_PAGE:
                 return factory.createHomePage();
             default:
                 throw new UnsupportedOperationException();

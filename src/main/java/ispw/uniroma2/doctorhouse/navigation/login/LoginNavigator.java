@@ -19,9 +19,9 @@ public class LoginNavigator extends Navigator<LoginDestination> {
 
     private ViewController makeViewController(LoginDestination destination) {
         switch (destination) {
-            case Login:
+            case LOGIN:
                 return factory.createLoginController();
-            case Signup:
+            case SIGNUP:
                 return factory.createRegisterViewController();
             default:
                 return factory.createIrrecoverableErrorController();

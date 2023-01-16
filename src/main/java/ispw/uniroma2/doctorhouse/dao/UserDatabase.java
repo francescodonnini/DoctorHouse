@@ -43,8 +43,7 @@ public class UserDatabase implements UserDao {
 
     @Override
     public Optional<User> get(LoginRequestBean loginRequest) throws UserNotFound {
-        try {
-            PreparedStatement statement = connection.prepareStatement("CALL login_as_patient(?, ?);");
+        try (PreparedStatement statement = connection.prepareStatement("CALL login_as_patient(?, ?);")){
             statement.setString(1, loginRequest.getEmail());
             statement.setString(2, loginRequest.getPassword());
             statement.execute();
@@ -73,8 +72,7 @@ public class UserDatabase implements UserDao {
 
     @Override
     public void create(UserRegistrationRequestBean request) throws DuplicateEmail {
-        try {
-            PreparedStatement statement = connection.prepareStatement("CALL register_as_patient(?, ?, ?, ?, ?, ?, ?, ?);");
+        try (PreparedStatement statement = connection.prepareStatement("CALL register_as_patient(?, ?, ?, ?, ?, ?, ?, ?);")) {
             statement.setDate(1, Date.valueOf(request.getBirthDate()));
             statement.setString(2, request.getFirstName());
             statement.setString(3, request.getLastName());

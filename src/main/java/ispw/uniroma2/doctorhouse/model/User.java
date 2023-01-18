@@ -16,6 +16,14 @@ public class User {
         this.familyDoctor = familyDoctor;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
     public Optional<Doctor> getFamilyDoctor() {
         return Optional.ofNullable(familyDoctor);
     }

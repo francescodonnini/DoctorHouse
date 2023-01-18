@@ -2,7 +2,6 @@ package ispw.uniroma2.doctorhouse.model;
 
 import ispw.uniroma2.doctorhouse.model.doctor.Doctor;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 public class User {

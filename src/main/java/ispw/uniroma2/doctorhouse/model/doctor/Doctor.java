@@ -1,10 +1,11 @@
 package ispw.uniroma2.doctorhouse.model.doctor;
 
-import ispw.uniroma2.doctorhouse.model.*;
+import ispw.uniroma2.doctorhouse.model.Office;
+import ispw.uniroma2.doctorhouse.model.Person;
+import ispw.uniroma2.doctorhouse.model.User;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 public class Doctor extends User {
     private final String field;

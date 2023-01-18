@@ -2,7 +2,6 @@ package ispw.uniroma2.doctorhouse.model;
 
 import ispw.uniroma2.doctorhouse.model.doctor.Doctor;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 public class User {
@@ -15,6 +14,14 @@ public class User {
         this.email = email;
         this.person = person;
         this.familyDoctor = familyDoctor;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Person getPerson() {
+        return person;
     }
 
     public Optional<Doctor> getFamilyDoctor() {

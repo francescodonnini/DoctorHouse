@@ -6,7 +6,6 @@ import ispw.uniroma2.doctorhouse.model.doctor.Doctor;
 import java.util.List;
 
 public interface Office {
-    Doctor getDoctor();
     Location getLocation();
     List<Specialty> getSpecialties();
 }

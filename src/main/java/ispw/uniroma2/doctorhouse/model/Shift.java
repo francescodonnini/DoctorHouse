@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface Shift {
     DayOfWeek getDay();
-    List<ClockInterval> getIntervals(Office office);
+    List<ClockInterval> getIntervals();
 }

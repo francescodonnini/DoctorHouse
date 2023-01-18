@@ -7,6 +7,7 @@ import ispw.uniroma2.doctorhouse.auth.beans.UserRegistrationRequestBean;
 import ispw.uniroma2.doctorhouse.auth.exceptions.DuplicateEmail;
 import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
 import ispw.uniroma2.doctorhouse.model.Gender;
+import ispw.uniroma2.doctorhouse.model.Person;
 import ispw.uniroma2.doctorhouse.model.User;
 
 import java.sql.Connection;
@@ -55,14 +56,7 @@ public class UserDatabase implements UserDao {
                 String email = rs.getString(4);
                 Optional<Gender> gender = Gender.from(rs.getInt(5));
                 String lastName = rs.getString(6);
-                return Optional.of(new User(
-                        birthDate,
-                        fiscalCode,
-                        firstName,
-                        email,
-                        gender.orElse(Gender.NOT_KNOWN),
-                        lastName
-                ));
+                return Optional.of(new User(email, new Person(birthDate, fiscalCode, firstName, lastName, gender.orElse(Gender.NOT_KNOWN)), null));
             }
             throw new UserNotFound();
         } catch (SQLException e) {

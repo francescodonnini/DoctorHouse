@@ -15,4 +15,5 @@ module ispw.uniroma2.doctorhouse {
     exports ispw.uniroma2.doctorhouse.model.doctor;
     exports ispw.uniroma2.doctorhouse.view;
     opens ispw.uniroma2.doctorhouse.view to javafx.fxml;
+    exports ispw.uniroma2.doctorhouse.model.doctor.exception;
 }

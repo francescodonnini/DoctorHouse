@@ -2,27 +2,24 @@ package ispw.uniroma2.doctorhouse.model.doctor;
 
 import ispw.uniroma2.doctorhouse.model.Location;
 import ispw.uniroma2.doctorhouse.model.Office;
+import ispw.uniroma2.doctorhouse.model.ShiftImpl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.*;
 
 public class OfficeImpl implements Office {
     private final Location location;
     private final List<Specialty> specialties;
-    private Doctor owner;
+    private final EnumMap<DayOfWeek, ShiftImpl> shifts;
 
-    public OfficeImpl(Location location, List<Specialty> specialties) {
+    public OfficeImpl(Location location, List<Specialty> specialties, List<ShiftImpl> shifts) {
         this.location = location;
         this.specialties = specialties;
-    }
-
-    @Override
-    public Doctor getDoctor() {
-        return owner;
-    }
-
-    protected void setDoctor(Doctor doctor) {
-        owner = doctor;
+        this.shifts = new EnumMap<>(DayOfWeek.class);
+        for (ShiftImpl s : shifts) {
+            this.shifts.put(s.getDay(), s);
+        }
     }
 
     @Override
@@ -32,14 +29,11 @@ public class OfficeImpl implements Office {
 
     @Override
     public List<Specialty> getSpecialties() {
-        return new ArrayList<>(specialties);
+        return Collections.unmodifiableList(specialties);
     }
 
-    protected void addSpecialty(Specialty specialty) {
-        throw new UnsupportedOperationException();
+    public Optional<ShiftImpl> getShift(LocalDate date) {
+        return  Optional.ofNullable(shifts.get(date.getDayOfWeek()));
     }
 
-    protected void removeSpecialty(Specialty specialty) {
-        throw new UnsupportedOperationException();
-    }
 }

@@ -2,8 +2,7 @@ package ispw.uniroma2.doctorhouse.model.doctor;
 
 import ispw.uniroma2.doctorhouse.model.*;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
+
 import java.util.*;
 
 public class Doctor extends User {

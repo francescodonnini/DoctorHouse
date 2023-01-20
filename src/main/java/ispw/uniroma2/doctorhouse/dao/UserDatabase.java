@@ -45,6 +45,40 @@ public class UserDatabase implements UserDao {
         return instance;
     }
 
+    private Optional<Doctor> getFamilyDoctor(String email) {
+        Map<Location, OfficeBuilder> officeBuilderMap = new HashMap<>();
+        Person p = null;
+        String field = null;
+        try(PreparedStatement statement = connection.prepareStatement("CALL search_doctor(?)")) {
+            statement.setString(1, email);
+            statement.execute();
+            ResultSet rs = statement.getResultSet();
+            while(rs.next()) {
+                LocalDate birthDate = rs.getDate(1).toLocalDate();
+                String fiscalCode = rs.getString(2);
+                String firstName = rs.getString(3);
+                Optional<Gender> gender = Gender.from(rs.getInt(5));
+                String lastName = rs.getString(6);
+                field = rs.getString(8);
+                p = new Person(birthDate, fiscalCode, firstName, lastName, gender.orElse(Gender.NOT_KNOWN));
+                Location location = new Location(rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12));
+                OfficeBuilder builder = officeBuilderMap.get(location);
+                if(builder == null) {
+                    builder = new Builder();
+                    builder.setLocation(location);
+                    officeBuilderMap.put(location, builder);
+                }
+                builder.addInterval(DayOfWeek.valueOf(rs.getString(13)), new ClockInterval(LocalTime.parse(rs.getString(14)), LocalTime.parse(rs.getString(15))));
+                builder.addSpecialties(new Specialty(rs.getString(16), Duration.ofMinutes(Long.parseLong(rs.getString(17)))));
+            }
+            List<OfficeImpl> offices = new ArrayList<>();
+            officeBuilderMap.values().forEach(b -> offices.add(b.build()));
+            return Optional.of(new Doctor(email, p, null, field, offices));
+        } catch (SQLException e) {
+            return Optional.empty();
+        }
+    }
+
     @Override
     public Optional<User> get(LoginRequestBean loginRequest) throws UserNotFound {
         Map<Location, OfficeBuilder> builderMap = new HashMap<>();
@@ -63,7 +97,7 @@ public class UserDatabase implements UserDao {
                 String field = rs.getString(8);
                 Person p = new Person(birthDate, fiscalCode, firstName, lastName, gender.orElse(Gender.NOT_KNOWN));
                 if(field == null){
-                    return Optional.of(new User(email, p, null));
+                    return Optional.of(new User(email, p, getFamilyDoctor(rs.getString(7)).orElse(null)));
                 } else {
                     while(rs.next()) {
                         Location location = new Location(rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12));

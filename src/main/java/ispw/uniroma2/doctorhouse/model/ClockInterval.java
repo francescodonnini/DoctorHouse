@@ -1,22 +1,20 @@
 package ispw.uniroma2.doctorhouse.model;
 
-import java.time.Duration;
 import java.time.LocalTime;
 
 public class ClockInterval {
     private final LocalTime start;
-    private final Duration duration;
+    private final LocalTime end;
 
-    public ClockInterval(LocalTime start, Duration duration) {
+    public ClockInterval(LocalTime start, LocalTime duration) {
         this.start = start;
-        this.duration = duration;
+        this.end = duration;
     }
-
     public LocalTime getStart() {
         return start;
     }
 
-    public Duration getDuration() {
-        return duration;
+    public LocalTime getEnd() {
+        return end;
     }
 }

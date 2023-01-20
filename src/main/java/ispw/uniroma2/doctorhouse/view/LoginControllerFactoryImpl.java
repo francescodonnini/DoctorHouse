@@ -5,6 +5,7 @@ import ispw.uniroma2.doctorhouse.auth.Login;
 import ispw.uniroma2.doctorhouse.auth.RegisterUser;
 import ispw.uniroma2.doctorhouse.dao.UserDaoFactory;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
+import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorNavigator;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginControllerFactory;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginNavigator;
 import ispw.uniroma2.doctorhouse.navigation.patient.PatientNavigator;
@@ -15,6 +16,7 @@ import java.io.IOException;
 public class LoginControllerFactoryImpl implements LoginControllerFactory {
     private LoginNavigator loginNavigator;
     private PatientNavigator patientNavigator;
+    private DoctorNavigator doctorNavigator;
     private UserDaoFactory userDaoFactory;
 
     public void setLoginNavigator(LoginNavigator loginNavigator) {
@@ -27,6 +29,10 @@ public class LoginControllerFactoryImpl implements LoginControllerFactory {
 
     public void setUserDaoFactory(UserDaoFactory userDaoFactory) {
         this.userDaoFactory = userDaoFactory;
+    }
+
+    public void setDoctorNavigator(DoctorNavigator doctorNavigator) {
+        this.doctorNavigator = doctorNavigator;
     }
 
     @Override
@@ -58,7 +64,7 @@ public class LoginControllerFactoryImpl implements LoginControllerFactory {
     public ViewController createLoginController() {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("login-user-page.fxml"));
-        loader.setControllerFactory(f -> new LoginUserPage(loginNavigator, patientNavigator, new Login(userDaoFactory.create())));
+        loader.setControllerFactory(f -> new LoginUserPage(loginNavigator, patientNavigator, doctorNavigator, new Login(userDaoFactory.create())));
         try {
             loader.load();
             return loader.getController();

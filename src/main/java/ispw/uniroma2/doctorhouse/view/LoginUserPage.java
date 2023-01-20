@@ -7,6 +7,8 @@ import ispw.uniroma2.doctorhouse.model.Session;
 import ispw.uniroma2.doctorhouse.model.User;
 import ispw.uniroma2.doctorhouse.model.doctor.Doctor;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
+import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorDestination;
+import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorNavigator;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginDestination;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginNavigator;
 import ispw.uniroma2.doctorhouse.navigation.patient.PatientDestination;
@@ -20,6 +22,7 @@ import javafx.scene.control.TextField;
 public class LoginUserPage implements ViewController {
     private final LoginNavigator loginNavigator;
     private final PatientNavigator patientNavigator;
+    private final DoctorNavigator doctorNavigator;
     private final Login login;
     @FXML
     private Parent view;
@@ -36,9 +39,10 @@ public class LoginUserPage implements ViewController {
     @FXML
     private Button signUpBtn;
 
-    public LoginUserPage(LoginNavigator loginNavigator, PatientNavigator patientNavigator, Login login) {
+    public LoginUserPage(LoginNavigator loginNavigator, PatientNavigator patientNavigator, DoctorNavigator doctorNavigator, Login login) {
         this.loginNavigator = loginNavigator;
         this.patientNavigator = patientNavigator;
+        this.doctorNavigator = doctorNavigator;
         this.login = login;
     }
 
@@ -64,7 +68,7 @@ public class LoginUserPage implements ViewController {
             login.login(loginRequest);
             User user = Session.getSession().getUser();
             if (user instanceof Doctor) {
-                throw new UnsupportedOperationException();
+                doctorNavigator.navigate(DoctorDestination.DOCTOR_HOME_PAGE);
             } else if (user != null) {
                 patientNavigator.navigate(PatientDestination.HOME_PAGE);
             }

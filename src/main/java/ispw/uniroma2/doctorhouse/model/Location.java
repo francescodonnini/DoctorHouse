@@ -4,17 +4,13 @@ public class Location {
     private final String country;
     private final String province;
     private final String city;
-    private final String firstLine;
-    private final String secondLine;
-    private final String thirdLine;
+    private final String address;
 
-    public Location(String country, String province, String city, String firstLine, String secondLine, String thirdLine) {
+    public Location(String country, String province, String city, String address) {
         this.country = country;
         this.province = province;
         this.city = city;
-        this.firstLine = firstLine;
-        this.secondLine = secondLine;
-        this.thirdLine = thirdLine;
+        this.address = address;
     }
 
     public String getCountry() {
@@ -30,14 +26,7 @@ public class Location {
     }
 
     public String getFirstLine() {
-        return firstLine;
+        return address;
     }
 
-    public String getSecondLine() {
-        return secondLine;
-    }
-
-    public String getThirdLine() {
-        return thirdLine;
-    }
 }

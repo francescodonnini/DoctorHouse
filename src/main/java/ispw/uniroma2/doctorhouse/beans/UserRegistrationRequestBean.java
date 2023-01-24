@@ -1,4 +1,4 @@
-package ispw.uniroma2.doctorhouse.auth.beans;
+package ispw.uniroma2.doctorhouse.beans;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -11,7 +11,7 @@ public class UserRegistrationRequestBean {
     private GenderBean gender;
     private String lastName;
     private String password;
-    private DoctorBean familyDoctor;
+    private DoctorBeanImpl familyDoctor;
 
     public LocalDate getBirthDate() {
         return birthDate;
@@ -69,11 +69,11 @@ public class UserRegistrationRequestBean {
         this.password = password;
     }
 
-    public Optional<DoctorBean> getFamilyDoctor() {
+    public Optional<DoctorBeanImpl> getFamilyDoctor() {
         return Optional.ofNullable(familyDoctor);
     }
 
-    public void setFamilyDoctor(DoctorBean familyDoctor) {
+    public void setFamilyDoctor(DoctorBeanImpl familyDoctor) {
         this.familyDoctor = familyDoctor;
     }
 }

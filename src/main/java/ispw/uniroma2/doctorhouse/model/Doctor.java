@@ -1,15 +1,13 @@
-package ispw.uniroma2.doctorhouse.model.doctor;
-
-import ispw.uniroma2.doctorhouse.model.*;
+package ispw.uniroma2.doctorhouse.model;
 
 
 import java.util.*;
 
 public class Doctor extends User {
     private final String field;
-    private final List<OfficeImpl> offices;
+    private final List<Office> offices;
 
-    public Doctor(String email, Person person, Doctor familyDoctor, String field, List<OfficeImpl> offices) {
+    public Doctor(String email, Person person, Doctor familyDoctor, String field, List<Office> offices) {
         super(email, person, familyDoctor);
         this.field = field;
         this.offices = offices;

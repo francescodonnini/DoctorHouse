@@ -1,11 +1,11 @@
 package ispw.uniroma2.doctorhouse.view;
 
-import ispw.uniroma2.doctorhouse.auth.beans.LoginRequestBean;
+import ispw.uniroma2.doctorhouse.beans.LoginRequestBean;
 import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
 import ispw.uniroma2.doctorhouse.auth.Login;
 import ispw.uniroma2.doctorhouse.model.Session;
 import ispw.uniroma2.doctorhouse.model.User;
-import ispw.uniroma2.doctorhouse.model.doctor.Doctor;
+import ispw.uniroma2.doctorhouse.model.Doctor;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorDestination;
 import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorNavigator;

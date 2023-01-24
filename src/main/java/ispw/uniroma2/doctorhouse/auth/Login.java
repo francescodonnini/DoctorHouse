@@ -1,7 +1,7 @@
 package ispw.uniroma2.doctorhouse.auth;
 
 import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
-import ispw.uniroma2.doctorhouse.auth.beans.LoginRequestBean;
+import ispw.uniroma2.doctorhouse.beans.LoginRequestBean;
 import ispw.uniroma2.doctorhouse.dao.UserDao;
 import ispw.uniroma2.doctorhouse.model.Session;
 import ispw.uniroma2.doctorhouse.model.User;

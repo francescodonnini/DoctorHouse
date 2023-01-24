@@ -1,7 +1,5 @@
 package ispw.uniroma2.doctorhouse.model;
 
-import ispw.uniroma2.doctorhouse.model.doctor.Doctor;
-
 import java.util.Optional;
 
 public class User {

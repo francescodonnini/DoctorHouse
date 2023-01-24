@@ -1,33 +1,35 @@
 package ispw.uniroma2.doctorhouse.model.appointment;
 
-import ispw.uniroma2.doctorhouse.model.doctor.Doctor;
-import ispw.uniroma2.doctorhouse.model.Office;
 import ispw.uniroma2.doctorhouse.model.User;
-import ispw.uniroma2.doctorhouse.model.doctor.Specialty;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class AppointmentImpl implements Appointment {
     private AppointmentState state;
 
-    public AppointmentImpl(Doctor doctor, User patient, Specialty specialty, Office office, LocalDate date) {
-        ScheduledInfo info = new ScheduledInfo(doctor, patient, specialty, office, date);
-        state = new Scheduled(info);
+    public AppointmentImpl(AppointmentInfo info) {
+        if (info instanceof CanceledInfo) {
+            state = new Canceled((CanceledInfo) info);
+        } else if (info instanceof PendingInfo) {
+            state = new Pending((PendingInfo) info);
+        } else {
+            state = new Scheduled((ScheduledInfo) info);
+        }
     }
 
     @Override
-    public void confirm(User confirmee) {
-        state.confirm(this, confirmee);
+    public void confirm(User initiator) {
+        state.confirm(this, initiator);
     }
 
     @Override
-    public void cancel(User cancelee) {
-        state.cancel(this, cancelee);
+    public void cancel(User initiator) {
+        state.cancel(this, initiator);
     }
 
     @Override
-    public void reschedule(User reschedulee, LocalDate newDate) {
-        state.reschedule(this, reschedulee, newDate);
+    public void reschedule(User initiator, LocalDateTime newDate) {
+        state.reschedule(this, initiator, newDate);
     }
 
     @Override

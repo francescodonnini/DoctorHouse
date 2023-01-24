@@ -2,9 +2,9 @@ package ispw.uniroma2.doctorhouse.view;
 
 import ispw.uniroma2.doctorhouse.IrrecoverableError;
 import ispw.uniroma2.doctorhouse.auth.RegisterUser;
-import ispw.uniroma2.doctorhouse.auth.beans.DoctorBean;
-import ispw.uniroma2.doctorhouse.auth.beans.GenderBean;
-import ispw.uniroma2.doctorhouse.auth.beans.UserRegistrationRequestBean;
+import ispw.uniroma2.doctorhouse.beans.DoctorBeanImpl;
+import ispw.uniroma2.doctorhouse.beans.GenderBean;
+import ispw.uniroma2.doctorhouse.beans.UserRegistrationRequestBean;
 import ispw.uniroma2.doctorhouse.auth.exceptions.DuplicateEmail;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginDestination;
@@ -57,7 +57,7 @@ public class RegisterUserPage implements ViewController {
     @FXML
     private TextField passwordTxtFld;
     @FXML
-    private ComboBox<DoctorBean> familyDoctorBox;
+    private ComboBox<DoctorBeanImpl> familyDoctorBox;
     @FXML
     private Button signUpBtn;
     @FXML
@@ -109,7 +109,7 @@ public class RegisterUserPage implements ViewController {
         genderPicker.getItems();
         familyDoctorBox.setConverter(new StringConverter<>() {
             @Override
-            public String toString(DoctorBean doctorBean) {
+            public String toString(DoctorBeanImpl doctorBean) {
                 if (doctorBean == null) {
                     return "";
                 } else {
@@ -118,11 +118,11 @@ public class RegisterUserPage implements ViewController {
             }
 
             @Override
-            public DoctorBean fromString(String s) {
+            public DoctorBeanImpl fromString(String s) {
                 if (s.isEmpty()) {
                     return null;
                 } else {
-                    DoctorBean bean = new DoctorBean();
+                    DoctorBeanImpl bean = new DoctorBeanImpl();
                     bean.setEmail(s);
                     return bean;
                 }
@@ -168,7 +168,7 @@ public class RegisterUserPage implements ViewController {
         String fiscalCode = fiscalCodeTxtFld.getText().trim();
         String confirmPassword = confirmPasswordTxtFld.getText();
         LocalDate birthDate = birthDatePicker.getValue();
-        DoctorBean familyDoctor = familyDoctorBox.getValue();
+        DoctorBeanImpl familyDoctor = familyDoctorBox.getValue();
         check(name, String::isEmpty, nameRequiredLbl, FIELD_REQUIRED_MESSAGE);
         check(lastName, String::isEmpty, lastNameRequiredLbl, FIELD_REQUIRED_MESSAGE);
         check(email, String::isEmpty, emailErrorLbl, FIELD_REQUIRED_MESSAGE);

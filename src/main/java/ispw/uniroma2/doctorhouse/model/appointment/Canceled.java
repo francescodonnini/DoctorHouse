@@ -2,7 +2,7 @@ package ispw.uniroma2.doctorhouse.model.appointment;
 
 import ispw.uniroma2.doctorhouse.model.User;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Canceled implements AppointmentState {
     private final CanceledInfo info;
@@ -27,7 +27,7 @@ public class Canceled implements AppointmentState {
     }
 
     @Override
-    public void reschedule(AppointmentImpl appointment, User reschedulee, LocalDate newDate) {
+    public void reschedule(AppointmentImpl appointment, User reschedulee, LocalDateTime newDate) {
         throw new UnsupportedOperationException();
     }
 }

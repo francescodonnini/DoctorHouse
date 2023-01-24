@@ -1,7 +1,6 @@
 package ispw.uniroma2.doctorhouse;
 
-import ispw.uniroma2.doctorhouse.dao.UserDaoFactory;
-import ispw.uniroma2.doctorhouse.dao.UserDaoFactoryImpl;
+import ispw.uniroma2.doctorhouse.dao.*;
 import ispw.uniroma2.doctorhouse.navigation.NavigatorController;
 import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorNavigator;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginDestination;
@@ -24,7 +23,15 @@ public class Main extends Application {
         loader.setLocation(getClass().getResource("view/navigator.fxml"));
         Scene scene = new Scene(loader.load());
         NavigatorController navigatorController = loader.getController();
-        UserDaoFactory userDaoFactory = new UserDaoFactoryImpl();
+        SpecialtyDaoFactory specialtyDaoFactory = new SpecialtyDatabaseFactory();
+        SpecialtyDao specialtyDao = specialtyDaoFactory.create();
+        ShiftDaoFactory shiftDaoFactory = new ShiftDatabaseFactory();
+        ShiftDao shiftDao = shiftDaoFactory.create();
+        OfficeDaoFactory officeDaoFactory = new OfficeDatabaseFactory();
+        officeDaoFactory.setShiftDao(shiftDao);
+        officeDaoFactory.setSpecialtyDao(specialtyDao);
+        UserDaoFactory userDaoFactory = new UserDatabaseFactoryImpl();
+        userDaoFactory.setOfficeDao(officeDaoFactory.create());
         LoginControllerFactoryImpl loginFactory = new LoginControllerFactoryImpl();
         PatientControllerFactoryImpl patientFactory = new PatientControllerFactoryImpl();
         LoginNavigator loginNavigator = new LoginNavigator(navigatorController, loginFactory);

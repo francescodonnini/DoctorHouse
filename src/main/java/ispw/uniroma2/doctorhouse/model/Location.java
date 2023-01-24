@@ -25,7 +25,7 @@ public class Location {
         return city;
     }
 
-    public String getFirstLine() {
+    public String getAddress() {
         return address;
     }
 

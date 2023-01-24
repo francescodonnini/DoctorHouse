@@ -2,7 +2,7 @@ package ispw.uniroma2.doctorhouse.model.appointment;
 
 import ispw.uniroma2.doctorhouse.model.User;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 interface AppointmentState {
     AppointmentInfo getInfo();
@@ -11,5 +11,5 @@ interface AppointmentState {
 
     void confirm(AppointmentImpl appointment, User confirmee);
 
-    void reschedule(AppointmentImpl appointment, User reschedulee, LocalDate newDate);
+    void reschedule(AppointmentImpl appointment, User reschedulee, LocalDateTime newDate);
 }

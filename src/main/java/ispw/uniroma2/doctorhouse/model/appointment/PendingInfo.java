@@ -1,33 +1,31 @@
 package ispw.uniroma2.doctorhouse.model.appointment;
 
 import ispw.uniroma2.doctorhouse.model.User;
-import ispw.uniroma2.doctorhouse.model.doctor.Doctor;
+import ispw.uniroma2.doctorhouse.model.Doctor;
 import ispw.uniroma2.doctorhouse.model.Office;
-import ispw.uniroma2.doctorhouse.model.doctor.Specialty;
+import ispw.uniroma2.doctorhouse.model.Specialty;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class PendingInfo extends AppointmentInfo {
-    private final User requestee;
-    private final LocalDate oldDate;
-    private final LocalDate newDate;
+    private final User initiator;
+    private final LocalDateTime newDate;
 
-    public PendingInfo(Doctor doctor, User patient, Specialty specialty, Office office, User requestee, LocalDate oldDate, LocalDate newDate) {
-        super(doctor, patient, specialty, office);
-        this.requestee = requestee;
-        this.oldDate = oldDate;
+    public PendingInfo(Doctor doctor, User patient, Specialty specialty, Office office, User initiator, LocalDateTime oldDate, LocalDateTime newDate) {
+        super(doctor, patient, specialty, office, oldDate);
+        this.initiator = initiator;
         this.newDate = newDate;
     }
 
-    public User getRequestee() {
-        return requestee;
+    public User getInitiator() {
+        return initiator;
     }
 
-    public LocalDate getOldDate() {
-        return oldDate;
+    public LocalDateTime getOldDate() {
+        return getDate();
     }
 
-    public LocalDate getNewDate() {
+    public LocalDateTime getNewDate() {
         return newDate;
     }
 }

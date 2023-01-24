@@ -2,7 +2,7 @@ package ispw.uniroma2.doctorhouse.model.appointment;
 
 import ispw.uniroma2.doctorhouse.model.User;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Pending implements AppointmentState {
     private final PendingInfo info;
@@ -18,7 +18,7 @@ public class Pending implements AppointmentState {
 
     @Override
     public void cancel(AppointmentImpl appointment, User cancelee) {
-        CanceledInfo newInfo = new CanceledInfo(info.getDoctor(), info.getPatient(), info.getSpecialty(), info.getOffice(), cancelee);
+        CanceledInfo newInfo = new CanceledInfo(info.getDoctor(), info.getPatient(), info.getSpecialty(), info.getOffice(), info.getOldDate(), cancelee);
         AppointmentState newState = new Canceled(newInfo);
         appointment.setState(newState);
     }
@@ -31,7 +31,7 @@ public class Pending implements AppointmentState {
     }
 
     @Override
-    public void reschedule(AppointmentImpl appointment, User reschedulee, LocalDate newDate) {
+    public void reschedule(AppointmentImpl appointment, User reschedulee, LocalDateTime newDate) {
         throw new UnsupportedOperationException();
     }
 }

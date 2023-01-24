@@ -1,4 +1,4 @@
-package ispw.uniroma2.doctorhouse.model.doctor;
+package ispw.uniroma2.doctorhouse.model;
 
 import java.time.Duration;
 

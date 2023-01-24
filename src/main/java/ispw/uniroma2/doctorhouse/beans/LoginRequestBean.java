@@ -1,4 +1,4 @@
-package ispw.uniroma2.doctorhouse.auth.beans;
+package ispw.uniroma2.doctorhouse.beans;
 
 public class LoginRequestBean {
     private String email;

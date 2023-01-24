@@ -2,12 +2,12 @@ package ispw.uniroma2.doctorhouse.model.appointment;
 
 import ispw.uniroma2.doctorhouse.model.User;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface Appointment {
-    void confirm(User confirmee);
-    void cancel(User cancelee);
-    void reschedule(User reschedulee, LocalDate newDate);
+    void confirm(User initiator);
+    void cancel(User initiator);
+    void reschedule(User initiator, LocalDateTime newDate);
     AppointmentInfo getInfo();
     AppointmentImpl.Memento createMemento();
     void setMemento(AppointmentImpl.Memento memento);

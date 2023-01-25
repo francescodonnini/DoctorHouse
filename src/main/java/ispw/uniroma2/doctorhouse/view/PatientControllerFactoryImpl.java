@@ -1,15 +1,25 @@
 package ispw.uniroma2.doctorhouse.view;
 
 import ispw.uniroma2.doctorhouse.IrrecoverableError;
+import ispw.uniroma2.doctorhouse.dao.RequestDaoFactory;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.navigation.patient.PatientControllerFactory;
 import ispw.uniroma2.doctorhouse.navigation.patient.PatientNavigator;
+import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescription;
 import javafx.fxml.FXMLLoader;
 
 import java.io.IOException;
 
 public class PatientControllerFactoryImpl implements PatientControllerFactory {
     private PatientNavigator navigator;
+
+    private RequestDaoFactory requestDaoFactory;
+
+
+    public void setRequestDaoFactory(RequestDaoFactory requestDaoFactory) {
+        this.requestDaoFactory = requestDaoFactory;
+    }
+
 
     public void setNavigator(PatientNavigator navigator) {
         this.navigator = navigator;
@@ -35,6 +45,14 @@ public class PatientControllerFactoryImpl implements PatientControllerFactory {
 
     @Override
     public ViewController createRequestPrescriptionPage() {
-        return null;
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("patient-request-page.fxml"));
+        loader.setControllerFactory(f -> new RequestPrescriptionGraphicController(navigator, new RequestPrescription(requestDaoFactory.create())));
+        try {
+            loader.load();
+            return loader.getController();
+        } catch (IOException e) {
+            throw new IrrecoverableError(e);
+        }
     }
 }

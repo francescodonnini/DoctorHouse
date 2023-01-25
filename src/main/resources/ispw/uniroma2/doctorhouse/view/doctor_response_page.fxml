@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<BorderPane fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ispw.uniroma2.doctorhouse.view.ResponseRequestGraphicController">
+   <top>
+      <GridPane BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button fx:id="rearrangeAppointmentBtn" mnemonicParsing="false" onAction="#rearrange" text="Rearrange Appointments" />
+            <Button fx:id="requestPrescriptionBtn" mnemonicParsing="false" onAction="#request" text="Response prescription request" textFill="RED" GridPane.columnIndex="1" />
+            <Button mnemonicParsing="false" text="Logout" GridPane.columnIndex="2" />
+         </children>
+      </GridPane>
+   </top>
+   <center>
+      <GridPane BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="116.20001831054688" minHeight="0.0" prefHeight="28.0000057220459" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="348.79997596740725" minHeight="10.0" prefHeight="341.5999942779541" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <padding>
+            <Insets left="50.0" right="50.0" />
+         </padding>
+         <children>
+            <Button fx:id="showBtn" mnemonicParsing="false" onAction="#showRequest" text="Show prescription request" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <TableView fx:id='table' editable="true" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+              <columns>
+                <TableColumn fx:id='col1' prefWidth="75.0" text="Id" />
+                <TableColumn fx:id='col2' prefWidth="139.19995880126953" text="patient " />
+                  <TableColumn fx:id="col3" prefWidth="284.00001831054686" text="message" />
+              </columns>
+            </TableView>
+         </children>
+      </GridPane>
+   </center>
+</BorderPane>

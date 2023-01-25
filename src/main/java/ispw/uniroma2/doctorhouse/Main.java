@@ -40,6 +40,8 @@ public class Main extends Application {
         DoctorNavigator doctorNavigator = new DoctorNavigator(navigatorController, doctorControllerFactory);
         loginFactory.setUserDaoFactory(userDaoFactory);
         loginFactory.setLoginNavigator(loginNavigator);
+        patientFactory.setRequestDaoFactory(new RequestDaoFactoryImpl());
+        doctorControllerFactory.setResponseDaoFactory(new ResponseDaoFactoryImpl());
         loginFactory.setPatientNavigator(patientNavigator);
         patientFactory.setNavigator(patientNavigator);
         doctorControllerFactory.setNavigator(doctorNavigator);

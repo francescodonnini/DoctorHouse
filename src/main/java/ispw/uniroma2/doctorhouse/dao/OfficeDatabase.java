@@ -9,35 +9,21 @@ import ispw.uniroma2.doctorhouse.model.OfficeBuilder;
 import ispw.uniroma2.doctorhouse.model.OfficeBuilderImpl;
 import ispw.uniroma2.doctorhouse.model.Shift;
 import ispw.uniroma2.doctorhouse.model.Specialty;
-
-import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+
 
 public class OfficeDatabase implements OfficeDao {
-    private static OfficeDatabase instance;
+
     private final Connection connection;
     private final SpecialtyDao specialtyDao;
     private final ShiftDao shiftDao;
 
-    private OfficeDatabase(Connection connection, SpecialtyDao specialtyDao, ShiftDao shiftDao) {
+    public OfficeDatabase(Connection connection, SpecialtyDao specialtyDao, ShiftDao shiftDao) {
         this.connection = connection;
         this.specialtyDao = specialtyDao;
         this.shiftDao = shiftDao;
-    }
-
-    public static OfficeDatabase getInstance(Properties credentials, SpecialtyDao specialtyDao, ShiftDao shiftDao) {
-        if (instance == null) {
-            try {
-                Connection connection = DriverManager.getConnection(credentials.getProperty("url"), credentials.getProperty("user"), credentials.getProperty("password"));
-                instance = new OfficeDatabase(connection, specialtyDao, shiftDao);
-            } catch (SQLException e) {
-                throw new IrrecoverableError(e);
-            }
-        }
-        return instance;
     }
 
     @Override

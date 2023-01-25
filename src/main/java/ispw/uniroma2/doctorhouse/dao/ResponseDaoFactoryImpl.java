@@ -1,19 +1,18 @@
 package ispw.uniroma2.doctorhouse.dao;
 
-import ispw.uniroma2.doctorhouse.IrrecoverableError;
 
-import java.io.IOException;
-import java.util.Properties;
+import java.sql.Connection;
+
 
 public class ResponseDaoFactoryImpl implements ResponseDaoFactory{
+    private Connection connection;
     @Override
     public ResponseDao create() {
-        try {
-            Properties properties = new Properties();
-            properties.load(getClass().getResourceAsStream("user"));
-            return ResponseDatabase.getInstance(properties);
-        } catch (IOException e) {
-            throw new IrrecoverableError(e);
-        }
+        return new ResponseDatabase(connection);
+    }
+
+    @Override
+    public void setConnection(Connection connection) {
+        this.connection = connection;
     }
 }

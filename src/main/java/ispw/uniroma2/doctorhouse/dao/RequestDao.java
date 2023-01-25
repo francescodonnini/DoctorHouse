@@ -4,4 +4,5 @@ import ispw.uniroma2.doctorhouse.beans.PrescriptionRequestBean;
 
 public interface RequestDao {
     void addRequestOfPrescription(PrescriptionRequestBean requestBean);
+
 }

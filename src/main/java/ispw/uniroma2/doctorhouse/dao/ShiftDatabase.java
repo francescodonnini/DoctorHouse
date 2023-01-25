@@ -10,22 +10,9 @@ import java.time.LocalTime;
 import java.util.*;
 
 public class ShiftDatabase implements ShiftDao {
-    private static ShiftDatabase instance;
     private final Connection connection;
 
-    public static ShiftDatabase getInstance(Properties credentials) {
-        if (instance == null) {
-            try {
-                Connection connection = DriverManager.getConnection(credentials.getProperty("url"), credentials.getProperty("user"), credentials.getProperty("password"));
-                instance = new ShiftDatabase(connection);
-            } catch (SQLException e) {
-                throw new IrrecoverableError(e);
-            }
-        }
-        return instance;
-    }
-
-    private ShiftDatabase(Connection connection) {
+    public ShiftDatabase(Connection connection) {
         this.connection = connection;
     }
 

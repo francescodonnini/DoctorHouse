@@ -1,11 +1,10 @@
 package ispw.uniroma2.doctorhouse.dao;
+import java.sql.Connection;
 
-import ispw.uniroma2.doctorhouse.IrrecoverableError;
-
-import java.io.IOException;
-import java.util.Properties;
 
 public class OfficeDatabaseFactory implements OfficeDaoFactory {
+
+    private Connection connection;
     private SpecialtyDao specialtyDao;
     private ShiftDao shiftDao;
 
@@ -20,13 +19,13 @@ public class OfficeDatabaseFactory implements OfficeDaoFactory {
     }
 
     @Override
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+
+
+    @Override
     public OfficeDao create() {
-        try {
-            Properties properties = new Properties();
-            properties.load(getClass().getResourceAsStream("user"));
-            return OfficeDatabase.getInstance(properties, specialtyDao, shiftDao);
-        } catch (IOException e) {
-            throw new IrrecoverableError(e);
-        }
+        return new OfficeDatabase(connection, specialtyDao, shiftDao);
     }
 }

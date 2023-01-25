@@ -13,26 +13,14 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class UserDatabase implements UserDao {
-    private static UserDatabase instance;
     private final Connection connection;
     private final OfficeDao officeDao;
 
-    private UserDatabase(Connection connection, OfficeDao officeDao) {
+    public UserDatabase(Connection connection, OfficeDao officeDao) {
         this.connection = connection;
         this.officeDao = officeDao;
     }
 
-    public static UserDatabase getInstance(Properties credentials, OfficeDao officeDao) {
-        if (instance == null) {
-            try {
-                Connection connection = DriverManager.getConnection(credentials.getProperty("url"), credentials.getProperty("user"), credentials.getProperty("password"));
-                instance = new UserDatabase(connection, officeDao);
-            } catch (SQLException e) {
-                throw new IrrecoverableError(e);
-            }
-        }
-        return instance;
-    }
 
     private Optional<Doctor> getFamilyDoctor(DoctorBean doctor) {
         try (PreparedStatement statement = connection.prepareStatement("CALL searchDoctor(?);")) {

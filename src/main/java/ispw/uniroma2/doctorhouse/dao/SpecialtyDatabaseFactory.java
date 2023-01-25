@@ -1,19 +1,17 @@
 package ispw.uniroma2.doctorhouse.dao;
 
-import ispw.uniroma2.doctorhouse.IrrecoverableError;
+import java.sql.Connection;
 
-import java.io.IOException;
-import java.util.Properties;
 
 public class SpecialtyDatabaseFactory implements SpecialtyDaoFactory {
+    private Connection connection;
     @Override
     public SpecialtyDao create() {
-        try {
-            Properties credentials = new Properties();
-            credentials.load(getClass().getResourceAsStream("user"));
-            return SpecialtyDatabase.getInstance(credentials);
-        } catch (IOException e) {
-            throw new IrrecoverableError(e);
-        }
+        return new SpecialtyDatabase(connection);
+    }
+
+    @Override
+    public void setConnection(Connection connection) {
+        this.connection = connection;
     }
 }

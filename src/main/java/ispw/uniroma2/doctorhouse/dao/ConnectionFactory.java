@@ -21,7 +21,7 @@ public class ConnectionFactory {
                 properties.load(input);
                 connection = DriverManager.getConnection(properties.getProperty("url"), properties.getProperty("user"), properties.getProperty("password"));
             } catch (IOException | SQLException e) {
-                e.printStackTrace();
+                throw new UnsupportedOperationException();
             }
         }
         return connection;

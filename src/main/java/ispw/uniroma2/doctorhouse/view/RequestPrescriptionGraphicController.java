@@ -5,12 +5,13 @@ import ispw.uniroma2.doctorhouse.model.Session;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.navigation.patient.PatientNavigator;
 import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescription;
-import ispw.uniroma2.doctorhouse.view.exception.NullMessage;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+
 
 public class RequestPrescriptionGraphicController implements ViewController {
     @FXML
@@ -27,6 +28,9 @@ public class RequestPrescriptionGraphicController implements ViewController {
 
     @FXML
     private BorderPane view;
+
+    @FXML
+    private Label errLbl;
     private final PatientNavigator navigator;
 
     private final RequestPrescription requestPrescription;
@@ -49,15 +53,20 @@ public class RequestPrescriptionGraphicController implements ViewController {
         //
     }
 
-    public void sendRequest() throws NullMessage{
+    public void sendRequest() {
         String message = textRequest.getText();
         if(message.trim().isEmpty()) {
-            throw new NullMessage();
+            errLbl.setText("This field is required");
         } else {
             PrescriptionRequestBean requestBean = new PrescriptionRequestBean();
             requestBean.setMessage(message);
             requestBean.setPatient(Session.getSession().getUser());
             requestPrescription.sendPrescriptionRequest(requestBean);
         }
+    }
+    @FXML
+    public void initialize() {
+        errLbl.managedProperty().bind(errLbl.textProperty().isNotEmpty());
+        errLbl.visibleProperty().bind(errLbl.managedProperty());
     }
 }

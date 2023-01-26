@@ -2,8 +2,10 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -28,26 +30,45 @@
       </GridPane>
    </top>
    <center>
-      <GridPane BorderPane.alignment="CENTER">
+      <GridPane prefHeight="330.0" prefWidth="600.0" BorderPane.alignment="CENTER">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="559.6" minWidth="10.0" prefWidth="500.5999877929687" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints maxHeight="116.20001831054688" minHeight="0.0" prefHeight="28.0000057220459" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="348.79997596740725" minHeight="10.0" prefHeight="341.5999942779541" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="116.20001831054688" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="116.20001831054688" minHeight="0.0" prefHeight="38.8" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="348.79997596740725" minHeight="10.0" prefHeight="246.59998779296876" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="348.79997596740725" minHeight="10.0" prefHeight="37.00001220703126" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="348.79997596740725" minHeight="10.0" prefHeight="37.00001220703126" vgrow="SOMETIMES" />
         </rowConstraints>
          <padding>
-            <Insets left="50.0" right="50.0" />
+            <Insets bottom="50.0" left="20.0" right="20.0" />
          </padding>
          <children>
-            <Button fx:id="showBtn" mnemonicParsing="false" onAction="#showRequest" text="Show prescription request" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <TableView fx:id='table' editable="true" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+            <Button fx:id="showBtn" mnemonicParsing="false" onAction="#showRequest" text="Show prescription request" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+            <TableView fx:id="table" editable="true" prefHeight="277.0" prefWidth="499.0" GridPane.rowIndex="2">
               <columns>
-                <TableColumn fx:id='col1' prefWidth="75.0" text="Id" />
-                <TableColumn fx:id='col2' prefWidth="139.19995880126953" text="patient " />
-                  <TableColumn fx:id="col3" prefWidth="284.00001831054686" text="message" />
+                <TableColumn fx:id="col1" prefWidth="75.0" text="Id" />
+                <TableColumn fx:id="col2" prefWidth="108.79998779296875" text="patient " />
+                  <TableColumn fx:id="col3" prefWidth="315.20001220703125" text="message" />
               </columns>
             </TableView>
+            <Label fx:id="label" text="" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
+            <TextField fx:id="idTxtFld" GridPane.halignment="LEFT" GridPane.rowIndex="3">
+               <GridPane.margin>
+                  <Insets left="320.0" right="200.0" />
+               </GridPane.margin>
+            </TextField>
+            <Button fx:id="acceptBtn" mnemonicParsing="false" onAction="#accept" text="Accept" GridPane.rowIndex="4">
+               <GridPane.margin>
+                  <Insets left="210.0" />
+               </GridPane.margin>
+            </Button>
+            <Button fx:id="rejectBtn" mnemonicParsing="false" onAction="#reject" text="Reject" GridPane.rowIndex="4">
+               <GridPane.margin>
+                  <Insets left="270.0" />
+               </GridPane.margin>
+            </Button>
          </children>
       </GridPane>
    </center>

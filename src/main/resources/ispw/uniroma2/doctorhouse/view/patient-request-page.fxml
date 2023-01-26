@@ -44,6 +44,11 @@
             <TextField fx:id="textRequest" prefHeight="131.0" prefWidth="499.0" GridPane.rowIndex="1" />
             <Label prefHeight="18.0" prefWidth="505.0" text="Specify the motivation of prescription request" GridPane.valignment="BOTTOM" />
             <Button fx:id="sendRequest" mnemonicParsing="false" onAction="#sendRequest" text="Send request" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <Label fx:id="errLbl" text="" textFill="RED" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </Label>
          </children>
       </GridPane>
    </center>

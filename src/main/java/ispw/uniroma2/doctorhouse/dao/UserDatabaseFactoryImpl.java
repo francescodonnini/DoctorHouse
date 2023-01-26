@@ -5,7 +5,11 @@ import java.sql.Connection;
 
 public class UserDatabaseFactoryImpl implements UserDaoFactory {
     private OfficeDao officeDao;
-    private Connection connection;
+    private final Connection connection;
+
+    public UserDatabaseFactoryImpl(Connection connection) {
+        this.connection = connection;
+    }
 
     @Override
     public void setOfficeDao(OfficeDao officeDao) {
@@ -17,8 +21,4 @@ public class UserDatabaseFactoryImpl implements UserDaoFactory {
         return new UserDatabase(connection, officeDao);
     }
 
-    @Override
-    public void setConnection(Connection connection) {
-        this.connection = connection;
-    }
 }

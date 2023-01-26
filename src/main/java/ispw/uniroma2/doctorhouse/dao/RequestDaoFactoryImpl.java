@@ -4,11 +4,12 @@ package ispw.uniroma2.doctorhouse.dao;
 import java.sql.Connection;
 
 public class RequestDaoFactoryImpl implements RequestDaoFactory{
-    private Connection connection;
+    private final Connection connection;
 
-    public void setConnection(Connection connection) {
+    public RequestDaoFactoryImpl(Connection connection) {
         this.connection = connection;
     }
+
 
     @Override
     public RequestDao create() {

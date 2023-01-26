@@ -5,14 +5,16 @@ import java.sql.Connection;
 
 
 public class ResponseDaoFactoryImpl implements ResponseDaoFactory{
-    private Connection connection;
+    private final Connection connection;
+
+    public ResponseDaoFactoryImpl(Connection connection) {
+        this.connection = connection;
+    }
+
     @Override
     public ResponseDao create() {
         return new ResponseDatabase(connection);
     }
 
-    @Override
-    public void setConnection(Connection connection) {
-        this.connection = connection;
-    }
+
 }

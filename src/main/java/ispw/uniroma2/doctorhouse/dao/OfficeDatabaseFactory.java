@@ -4,9 +4,13 @@ import java.sql.Connection;
 
 public class OfficeDatabaseFactory implements OfficeDaoFactory {
 
-    private Connection connection;
+    private final Connection connection;
     private SpecialtyDao specialtyDao;
     private ShiftDao shiftDao;
+
+    public OfficeDatabaseFactory(Connection connection) {
+        this.connection = connection;
+    }
 
     @Override
     public void setSpecialtyDao(SpecialtyDao specialtyDao) {
@@ -16,11 +20,6 @@ public class OfficeDatabaseFactory implements OfficeDaoFactory {
     @Override
     public void setShiftDao(ShiftDao shiftDao) {
         this.shiftDao = shiftDao;
-    }
-
-    @Override
-    public void setConnection(Connection connection) {
-        this.connection = connection;
     }
 
 

@@ -5,14 +5,15 @@ import java.sql.Connection;
 
 public class ShiftDatabaseFactory implements ShiftDaoFactory {
 
-    private Connection connection;
+    private final Connection connection;
+
+    public ShiftDatabaseFactory(Connection connection) {
+        this.connection = connection;
+    }
+
     @Override
     public ShiftDao create() {
         return new ShiftDatabase(connection);
     }
 
-    @Override
-    public void setConnection(Connection connection) {
-        this.connection = connection;
-    }
 }

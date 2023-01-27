@@ -3,6 +3,7 @@ package ispw.uniroma2.doctorhouse.view;
 import ispw.uniroma2.doctorhouse.beans.LoginRequestBean;
 import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
 import ispw.uniroma2.doctorhouse.auth.Login;
+import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.Session;
 import ispw.uniroma2.doctorhouse.model.User;
 import ispw.uniroma2.doctorhouse.model.Doctor;
@@ -72,8 +73,10 @@ public class LoginUserPage implements ViewController {
             } else if (user != null) {
                 patientNavigator.navigate(PatientDestination.HOME_PAGE);
             }
-        } catch (UserNotFound ex) {
-            errorLbl.textProperty().set("Wrong email or password!");
+        } catch (UserNotFound e) {
+            errorLbl.setText("Wrong email or password!");
+        } catch (PersistentLayerException e) {
+            errorLbl.setText("Something went wrong. If the problem persists call the assistance.");
         }
     }
 

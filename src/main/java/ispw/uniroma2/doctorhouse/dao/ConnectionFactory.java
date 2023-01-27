@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 
 public class ConnectionFactory {
@@ -16,7 +17,7 @@ public class ConnectionFactory {
 
     public static Connection getConnection() {
         if(connection == null) {
-            try(InputStream input = new FileInputStream(ConnectionFactory.class.getResource("user").getPath())) {
+            try(InputStream input = new FileInputStream(Objects.requireNonNull(ConnectionFactory.class.getResource("user")).getPath())) {
                 Properties properties = new Properties();
                 properties.load(input);
                 connection = DriverManager.getConnection(properties.getProperty("url"), properties.getProperty("user"), properties.getProperty("password"));

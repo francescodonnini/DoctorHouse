@@ -1,13 +1,22 @@
 package ispw.uniroma2.doctorhouse.dao;
 
-import ispw.uniroma2.doctorhouse.IrrecoverableError;
 import ispw.uniroma2.doctorhouse.beans.OfficeBean;
-import ispw.uniroma2.doctorhouse.model.*;
+import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
+import ispw.uniroma2.doctorhouse.model.ClockInterval;
+import ispw.uniroma2.doctorhouse.model.Shift;
+import ispw.uniroma2.doctorhouse.model.ShiftBuilder;
+import ispw.uniroma2.doctorhouse.model.ShiftBuilderImpl;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 public class ShiftDatabase implements ShiftDao {
     private final Connection connection;
@@ -17,7 +26,7 @@ public class ShiftDatabase implements ShiftDao {
     }
 
     @Override
-    public List<Shift> getShifts(OfficeBean office) {
+    public List<Shift> getShifts(OfficeBean office) throws PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL getShifts(?, ?);")) {
             statement.setString(1, office.getDoctor().getEmail());
             statement.setInt(2, office.getId());
@@ -41,7 +50,7 @@ public class ShiftDatabase implements ShiftDao {
             }
             return List.of();
         } catch (SQLException e) {
-            throw new IrrecoverableError(e);
+            throw new PersistentLayerException(e);
         }
     }
 }

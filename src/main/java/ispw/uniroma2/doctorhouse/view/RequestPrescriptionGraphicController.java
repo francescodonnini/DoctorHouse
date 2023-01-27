@@ -1,6 +1,7 @@
 package ispw.uniroma2.doctorhouse.view;
 
 import ispw.uniroma2.doctorhouse.beans.PrescriptionRequestBean;
+import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.Session;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.navigation.patient.PatientNavigator;
@@ -61,7 +62,12 @@ public class RequestPrescriptionGraphicController implements ViewController {
             PrescriptionRequestBean requestBean = new PrescriptionRequestBean();
             requestBean.setMessage(message);
             requestBean.setPatient(Session.getSession().getUser());
-            requestPrescription.sendPrescriptionRequest(requestBean);
+            try {
+                requestPrescription.sendPrescriptionRequest(requestBean);
+            } catch (PersistentLayerException e) {
+                // add visual clue to notify user that an error occurred
+                throw new RuntimeException(e);
+            }
         }
     }
     @FXML

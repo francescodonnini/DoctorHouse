@@ -1,6 +1,7 @@
 package ispw.uniroma2.doctorhouse.view;
 
 import ispw.uniroma2.doctorhouse.beans.DoctorRequestBean;
+import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorNavigator;
 import ispw.uniroma2.doctorhouse.requestprescription.ResponseRequest;
@@ -84,10 +85,15 @@ public class ResponseRequestGraphicController implements ViewController {
         col1.setCellValueFactory(new PropertyValueFactory<>("Id"));
         col2.setCellValueFactory(new PropertyValueFactory<>("patient"));
         col3.setCellValueFactory(new PropertyValueFactory<>("message"));
-        Optional<List<DoctorRequestBean>> requestBean = responseRequest.getRequest();
-        if(requestBean.isPresent() && !requestBean.get().isEmpty()) {
-            request.addAll(requestBean.orElseThrow());
-            label.setText("Please insert the id of prescription you want reply to");
+        try {
+            Optional<List<DoctorRequestBean>> requestBean = responseRequest.getRequest();
+            if (requestBean.isPresent() && !requestBean.get().isEmpty()) {
+                request.addAll(requestBean.orElseThrow());
+                label.setText("Please insert the id of prescription you want reply to");
+            }
+        } catch (PersistentLayerException e) {
+            // TODO: add visual clue that alerts the user an error occurred
+            throw new RuntimeException(e);
         }
     }
 

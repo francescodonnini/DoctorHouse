@@ -9,6 +9,4 @@ public interface Appointment {
     void cancel(User initiator);
     void reschedule(User initiator, LocalDateTime newDate);
     AppointmentInfo getInfo();
-    AppointmentImpl.Memento createMemento();
-    void setMemento(AppointmentImpl.Memento memento);
 }

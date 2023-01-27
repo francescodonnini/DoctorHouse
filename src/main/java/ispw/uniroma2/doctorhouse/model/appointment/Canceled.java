@@ -17,17 +17,17 @@ public class Canceled implements AppointmentState {
     }
 
     @Override
-    public void cancel(AppointmentImpl appointment, User cancelee) {
+    public void cancel(AppointmentImpl appointment, User initiator) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void confirm(AppointmentImpl appointment, User confirmee) {
+    public void confirm(AppointmentImpl appointment, User initiator) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void reschedule(AppointmentImpl appointment, User reschedulee, LocalDateTime newDate) {
+    public void reschedule(AppointmentImpl appointment, LocalDateTime newDate, User initiator) {
         throw new UnsupportedOperationException();
     }
 }

@@ -2,6 +2,7 @@ package ispw.uniroma2.doctorhouse.requestprescription;
 
 import ispw.uniroma2.doctorhouse.beans.DoctorRequestBean;
 import ispw.uniroma2.doctorhouse.dao.ResponseDao;
+import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +14,7 @@ public class ResponseRequest {
         this.dao = dao;
     }
 
-    public Optional<List<DoctorRequestBean>> getRequest() {
+    public Optional<List<DoctorRequestBean>> getRequest() throws PersistentLayerException {
         return dao.requestFinder();
     }
 }

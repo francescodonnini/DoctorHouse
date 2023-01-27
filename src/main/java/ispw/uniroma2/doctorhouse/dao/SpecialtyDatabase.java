@@ -1,7 +1,8 @@
 package ispw.uniroma2.doctorhouse.dao;
 
-import ispw.uniroma2.doctorhouse.IrrecoverableError;
+import ispw.uniroma2.doctorhouse.beans.DoctorBean;
 import ispw.uniroma2.doctorhouse.beans.OfficeBean;
+import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.Specialty;
 
 import java.sql.Connection;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 public class SpecialtyDatabase implements SpecialtyDao {
@@ -20,7 +22,7 @@ public class SpecialtyDatabase implements SpecialtyDao {
         this.connection = connection;
     }
     @Override
-    public List<Specialty> getSpecialties(OfficeBean office) {
+    public List<Specialty> getSpecialties(OfficeBean office) throws PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL getSpecialties(?, ?);")) {
             statement.setString(1, office.getDoctor().getEmail());
             statement.setInt(2, office.getId());
@@ -36,7 +38,25 @@ public class SpecialtyDatabase implements SpecialtyDao {
             }
             return List.of();
         } catch (SQLException e) {
-            throw new IrrecoverableError(e);
+            throw new PersistentLayerException(e);
+        }
+    }
+
+    @Override
+    public Optional<Specialty> getSpecialty(String specialtyName, DoctorBean doctorBean) throws PersistentLayerException {
+        try (PreparedStatement statement = connection.prepareStatement("CALL getSpecialty(?, ?);")) {
+            statement.setString(1, specialtyName);
+            statement.setString(2, doctorBean.getEmail());
+            if (statement.execute()) {
+                ResultSet resultSet = statement.getResultSet();
+                if (resultSet.next()) {
+                    Duration duration = Duration.ofMinutes(resultSet.getLong(1));
+                    return Optional.of(new Specialty(specialtyName, duration));
+                }
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new PersistentLayerException(e);
         }
     }
 }

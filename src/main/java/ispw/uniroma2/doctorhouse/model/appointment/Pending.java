@@ -17,21 +17,25 @@ public class Pending implements AppointmentState {
     }
 
     @Override
-    public void cancel(AppointmentImpl appointment, User cancelee) {
-        CanceledInfo newInfo = new CanceledInfo(info.getDoctor(), info.getPatient(), info.getSpecialty(), info.getOffice(), info.getOldDate(), cancelee);
-        AppointmentState newState = new Canceled(newInfo);
-        appointment.setState(newState);
+    public void cancel(AppointmentImpl appointment, User initiator) {
+        if (!initiator.equals(info.getInitiator())) {
+            CanceledInfo newInfo = new CanceledInfo(info.getDoctor(), info.getPatient(), info.getSpecialty(), info.getOffice(), info.getOldDate(), initiator);
+            AppointmentState newState = new Canceled(newInfo);
+            appointment.setState(newState);
+        }
     }
 
     @Override
-    public void confirm(AppointmentImpl appointment, User confirmee) {
-        ScheduledInfo newInfo = new ScheduledInfo(info.getDoctor(), info.getPatient(), info.getSpecialty(), info.getOffice(), info.getNewDate());
-        AppointmentState newState = new Scheduled(newInfo);
-        appointment.setState(newState);
+    public void confirm(AppointmentImpl appointment, User initiator) {
+        if (!initiator.equals(info.getInitiator())) {
+            ScheduledInfo newInfo = new ScheduledInfo(info.getDoctor(), info.getPatient(), info.getSpecialty(), info.getOffice(), info.getNewDate());
+            AppointmentState newState = new Scheduled(newInfo);
+            appointment.setState(newState);
+        }
     }
 
     @Override
-    public void reschedule(AppointmentImpl appointment, User reschedulee, LocalDateTime newDate) {
+    public void reschedule(AppointmentImpl appointment, LocalDateTime newDate, User initiator) {
         throw new UnsupportedOperationException();
     }
 }

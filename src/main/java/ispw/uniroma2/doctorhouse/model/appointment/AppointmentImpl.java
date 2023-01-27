@@ -29,7 +29,7 @@ public class AppointmentImpl implements Appointment {
 
     @Override
     public void reschedule(User initiator, LocalDateTime newDate) {
-        state.reschedule(this, initiator, newDate);
+        state.reschedule(this, newDate, initiator);
     }
 
     @Override
@@ -37,34 +37,7 @@ public class AppointmentImpl implements Appointment {
         return state.getInfo();
     }
 
-    @Override
-    public Memento createMemento() {
-        Memento memento = new Memento();
-        memento.setState(state);
-        return memento;
-    }
-
-    @Override
-    public void setMemento(Memento memento) {
-        this.state = memento.getState();
-    }
-
     public void setState(AppointmentState state) {
         this.state = state;
-    }
-
-    public static class Memento {
-        private AppointmentState state;
-
-        private Memento() {
-        }
-
-        private AppointmentState getState() {
-            return state;
-        }
-
-        private void setState(AppointmentState state) {
-            this.state = state;
-        }
     }
 }

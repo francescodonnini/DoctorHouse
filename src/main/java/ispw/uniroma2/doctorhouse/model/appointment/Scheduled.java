@@ -17,20 +17,20 @@ public class Scheduled implements AppointmentState {
     }
 
     @Override
-    public void cancel(AppointmentImpl appointment, User cancelee) {
-        CanceledInfo newStateInfo = new CanceledInfo(info.getDoctor(), info.getPatient(), info.getSpecialty(), info.getOffice(), info.getDate(), cancelee);
+    public void cancel(AppointmentImpl appointment, User initiator) {
+        CanceledInfo newStateInfo = new CanceledInfo(info.getDoctor(), info.getPatient(), info.getSpecialty(), info.getOffice(), info.getDate(), initiator);
         Canceled newState = new Canceled(newStateInfo);
         appointment.setState(newState);
     }
 
     @Override
-    public void confirm(AppointmentImpl appointment, User confirmee) {
+    public void confirm(AppointmentImpl appointment, User initiator) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void reschedule(AppointmentImpl appointment, User reschedulee, LocalDateTime newDate) {
-        PendingInfo newStateInfo = new PendingInfo(info.getDoctor(), info.getPatient(), info.getSpecialty(), info.getOffice(), reschedulee, info.getDate(), newDate);
+    public void reschedule(AppointmentImpl appointment, LocalDateTime newDate, User initiator) {
+        PendingInfo newStateInfo = new PendingInfo(info.getDoctor(), info.getPatient(), info.getSpecialty(), info.getOffice(), initiator, info.getDate(), newDate);
         Pending newState = new Pending(newStateInfo);
         appointment.setState(newState);
     }

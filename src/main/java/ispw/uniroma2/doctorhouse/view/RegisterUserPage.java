@@ -1,11 +1,11 @@
 package ispw.uniroma2.doctorhouse.view;
 
-import ispw.uniroma2.doctorhouse.IrrecoverableError;
 import ispw.uniroma2.doctorhouse.auth.RegisterUser;
+import ispw.uniroma2.doctorhouse.auth.exceptions.DuplicateEmail;
 import ispw.uniroma2.doctorhouse.beans.DoctorBeanImpl;
 import ispw.uniroma2.doctorhouse.beans.GenderBean;
 import ispw.uniroma2.doctorhouse.beans.UserRegistrationRequestBean;
-import ispw.uniroma2.doctorhouse.auth.exceptions.DuplicateEmail;
+import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginDestination;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginNavigator;
@@ -206,8 +206,8 @@ public class RegisterUserPage implements ViewController {
                 navigator.navigate(LoginDestination.LOGIN);
             } catch (DuplicateEmail e) {
                 signUpErrorLbl.setText("The email entered already exists! Try another one!");
-            } catch (IrrecoverableError e) {
-                navigator.navigate(LoginDestination.IRRECOVERABLE_ERROR);
+            } catch (PersistentLayerException e) {
+                signUpErrorLbl.setText("Something went wrong. If the problem persists call support.");
             }
         }
     }

@@ -19,6 +19,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 public class LoginUserPage implements ViewController {
     private final LoginNavigator loginNavigator;
@@ -54,6 +56,7 @@ public class LoginUserPage implements ViewController {
 
     @FXML
     private void initialize() {
+        passwordTxtFld.setOnKeyReleased(this::onEnter);
         errorLbl.managedProperty().bind(errorLbl.textProperty().isNotEmpty());
         errorLbl.visibleProperty().bind(errorLbl.managedProperty());
     }
@@ -83,5 +86,11 @@ public class LoginUserPage implements ViewController {
     @FXML
     private void signup() {
         loginNavigator.navigate(LoginDestination.SIGNUP);
+    }
+
+    private void onEnter(KeyEvent e) {
+        if (e.getCode().equals(KeyCode.ENTER)) {
+            login();
+        }
     }
 }

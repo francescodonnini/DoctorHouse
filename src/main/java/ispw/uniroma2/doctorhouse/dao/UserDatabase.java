@@ -62,13 +62,13 @@ public class UserDatabase implements UserDao {
                     LocalDate birthDate = resultSet.getDate(1).toLocalDate();
                     String fiscalCode = resultSet.getString(2);
                     String firstName = resultSet.getString(3);
-                    String lastName = resultSet.getString(4);
+                    String lastName = resultSet.getString(6);
                     Gender gender = Gender.from(resultSet.getInt(5)).orElse(Gender.NOT_KNOWN);
                     DoctorBeanImpl familyDoctorBean = new DoctorBeanImpl();
-                    familyDoctorBean.setEmail(resultSet.getString(6));
+                    familyDoctorBean.setEmail(resultSet.getString(7));
                     Optional<Doctor> familyDoctor = getFamilyDoctor(familyDoctorBean);
                     Person person = new Person(birthDate, fiscalCode, firstName, lastName, gender);
-                    String field = resultSet.getString(7);
+                    String field = resultSet.getString(8);
                     if (field == null) {
                         return Optional.of(new User(loginRequest.getEmail(), person, familyDoctor.orElse(null)));
                     } else {

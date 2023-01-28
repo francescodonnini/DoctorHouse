@@ -11,7 +11,7 @@ public class UserRegistrationRequestBean {
     private GenderBean gender;
     private String lastName;
     private String password;
-    private DoctorBeanImpl familyDoctor;
+    private DoctorBean familyDoctor;
 
     public LocalDate getBirthDate() {
         return birthDate;
@@ -69,11 +69,11 @@ public class UserRegistrationRequestBean {
         this.password = password;
     }
 
-    public Optional<DoctorBeanImpl> getFamilyDoctor() {
+    public Optional<DoctorBean> getFamilyDoctor() {
         return Optional.ofNullable(familyDoctor);
     }
 
-    public void setFamilyDoctor(DoctorBeanImpl familyDoctor) {
+    public void setFamilyDoctor(DoctorBean familyDoctor) {
         this.familyDoctor = familyDoctor;
     }
 }

@@ -2,7 +2,6 @@ package ispw.uniroma2.doctorhouse.dao;
 
 import ispw.uniroma2.doctorhouse.beans.DoctorBean;
 import ispw.uniroma2.doctorhouse.beans.OfficeBean;
-import ispw.uniroma2.doctorhouse.beans.OfficeBeanImpl;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.*;
 
@@ -71,7 +70,7 @@ public class OfficeDatabase implements OfficeDao {
         String address = resultSet.getString(5);
         Location location = new Location(country, province, city, address);
         builder.setLocation(location);
-        OfficeBeanImpl officeBean = new OfficeBeanImpl();
+        OfficeBean officeBean = new OfficeBean();
         officeBean.setId(id);
         officeBean.setDoctor(doctor);
         List<Specialty> specialties = specialtyDao.getSpecialties(officeBean);

@@ -28,7 +28,7 @@ public class UserDatabase implements UserDao {
 
     @Override
     public Optional<Doctor> getFamilyDoctor(DoctorBean doctor) throws PersistentLayerException {
-        try (PreparedStatement statement = connection.prepareStatement("CALL searchDoctor(?);")) {
+        try (PreparedStatement statement = connection.prepareStatement("CALL getDoctor(?);")) {
             statement.setString(1, doctor.getEmail());
             if (statement.execute()) {
                 ResultSet resultSet = statement.getResultSet();
@@ -36,8 +36,8 @@ public class UserDatabase implements UserDao {
                     LocalDate birthDate = resultSet.getDate(1).toLocalDate();
                     String fiscalCode = resultSet.getString(2);
                     String firstName = resultSet.getString(3);
-                    Gender gender = Gender.from(resultSet.getInt(4)).orElse(Gender.NOT_KNOWN);
-                    String lastName = resultSet.getString(5);
+                    String lastName = resultSet.getString(4);
+                    Gender gender = Gender.from(resultSet.getInt(5)).orElse(Gender.NOT_KNOWN);
                     String field = resultSet.getString(6);
                     Person person = new Person(birthDate, fiscalCode, firstName, lastName, gender);
                     List<Office> offices = officeDao.getOffices(doctor);
@@ -55,24 +55,23 @@ public class UserDatabase implements UserDao {
         try (PreparedStatement statement = connection.prepareStatement("CALL login(?, ?);")) {
             statement.setString(1, loginRequest.getEmail());
             statement.setString(2, loginRequest.getPassword());
-            statement.execute();
             if (statement.execute()) {
                 ResultSet resultSet = statement.getResultSet();
                 if (resultSet.next()) {
                     LocalDate birthDate = resultSet.getDate(1).toLocalDate();
                     String fiscalCode = resultSet.getString(2);
                     String firstName = resultSet.getString(3);
-                    String lastName = resultSet.getString(6);
+                    String lastName = resultSet.getString(4);
                     Gender gender = Gender.from(resultSet.getInt(5)).orElse(Gender.NOT_KNOWN);
-                    DoctorBeanImpl familyDoctorBean = new DoctorBeanImpl();
-                    familyDoctorBean.setEmail(resultSet.getString(7));
+                    DoctorBean familyDoctorBean = new DoctorBean();
+                    familyDoctorBean.setEmail(resultSet.getString(6));
                     Optional<Doctor> familyDoctor = getFamilyDoctor(familyDoctorBean);
                     Person person = new Person(birthDate, fiscalCode, firstName, lastName, gender);
-                    String field = resultSet.getString(8);
+                    String field = resultSet.getString(7);
                     if (field == null) {
                         return Optional.of(new User(loginRequest.getEmail(), person, familyDoctor.orElse(null)));
                     } else {
-                        DoctorBeanImpl doctorBean = new DoctorBeanImpl();
+                        DoctorBean doctorBean = new DoctorBean();
                         doctorBean.setEmail(loginRequest.getEmail());
                         List<Office> offices = officeDao.getOffices(doctorBean);
                         return Optional.of(new Doctor(loginRequest.getEmail(), person, familyDoctor.orElse(null), field, offices));
@@ -87,7 +86,7 @@ public class UserDatabase implements UserDao {
 
     @Override
     public void create(UserRegistrationRequestBean request) throws DuplicateEmail, PersistentLayerException {
-        try (PreparedStatement statement = connection.prepareStatement("CALL register_as_patient(?, ?, ?, ?, ?, ?, ?, ?);")) {
+        try (PreparedStatement statement = connection.prepareStatement("CALL registerAsPatient(?, ?, ?, ?, ?, ?, ?, ?);")) {
             statement.setDate(1, Date.valueOf(request.getBirthDate()));
             statement.setString(2, request.getFirstName());
             statement.setString(3, request.getLastName());
@@ -95,7 +94,7 @@ public class UserDatabase implements UserDao {
             statement.setString(5, request.getEmail());
             statement.setString(6, request.getPassword());
             statement.setString(7, request.getFiscalCode());
-            Optional<DoctorBeanImpl> familyDoctor = request.getFamilyDoctor();
+            Optional<DoctorBean> familyDoctor = request.getFamilyDoctor();
             if (familyDoctor.isEmpty()) {
                 statement.setNull(8, Types.VARCHAR);
             } else {
@@ -121,7 +120,7 @@ public class UserDatabase implements UserDao {
                     String firstName = resultSet.getString(3);
                     String lastName = resultSet.getString(4);
                     Gender gender = Gender.from(resultSet.getInt(5)).orElse(Gender.NOT_KNOWN);
-                    DoctorBeanImpl familyDoctorBean = new DoctorBeanImpl();
+                    DoctorBean familyDoctorBean = new DoctorBean();
                     familyDoctorBean.setEmail(resultSet.getString(6));
                     Optional<Doctor> familyDoctor = getFamilyDoctor(familyDoctorBean);
                     String field = resultSet.getString(7);
@@ -148,7 +147,7 @@ public class UserDatabase implements UserDao {
                     String firstName = resultSet.getString(3);
                     String lastName = resultSet.getString(4);
                     Gender gender = Gender.from(resultSet.getInt(5)).orElse(Gender.NOT_KNOWN);
-                    DoctorBeanImpl familyDoctorBean = new DoctorBeanImpl();
+                    DoctorBean familyDoctorBean = new DoctorBean();
                     familyDoctorBean.setEmail(resultSet.getString(6));
                     Optional<Doctor> familyDoctor = getFamilyDoctor(familyDoctorBean);
                     Person person = new Person(birthDate, fiscalCode, firstName, lastName, gender);

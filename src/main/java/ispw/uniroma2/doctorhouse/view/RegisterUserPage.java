@@ -2,7 +2,7 @@ package ispw.uniroma2.doctorhouse.view;
 
 import ispw.uniroma2.doctorhouse.auth.RegisterUser;
 import ispw.uniroma2.doctorhouse.auth.exceptions.DuplicateEmail;
-import ispw.uniroma2.doctorhouse.beans.DoctorBeanImpl;
+import ispw.uniroma2.doctorhouse.beans.DoctorBean;
 import ispw.uniroma2.doctorhouse.beans.GenderBean;
 import ispw.uniroma2.doctorhouse.beans.UserRegistrationRequestBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
@@ -57,7 +57,7 @@ public class RegisterUserPage implements ViewController {
     @FXML
     private TextField passwordTxtFld;
     @FXML
-    private ComboBox<DoctorBeanImpl> familyDoctorBox;
+    private ComboBox<DoctorBean> familyDoctorBox;
     @FXML
     private Button signUpBtn;
     @FXML
@@ -109,7 +109,7 @@ public class RegisterUserPage implements ViewController {
         genderPicker.getItems();
         familyDoctorBox.setConverter(new StringConverter<>() {
             @Override
-            public String toString(DoctorBeanImpl doctorBean) {
+            public String toString(DoctorBean doctorBean) {
                 if (doctorBean == null) {
                     return "";
                 } else {
@@ -118,11 +118,11 @@ public class RegisterUserPage implements ViewController {
             }
 
             @Override
-            public DoctorBeanImpl fromString(String s) {
+            public DoctorBean fromString(String s) {
                 if (s.isEmpty()) {
                     return null;
                 } else {
-                    DoctorBeanImpl bean = new DoctorBeanImpl();
+                    DoctorBean bean = new DoctorBean();
                     bean.setEmail(s);
                     return bean;
                 }
@@ -168,7 +168,7 @@ public class RegisterUserPage implements ViewController {
         String fiscalCode = fiscalCodeTxtFld.getText().trim();
         String confirmPassword = confirmPasswordTxtFld.getText();
         LocalDate birthDate = birthDatePicker.getValue();
-        DoctorBeanImpl familyDoctor = familyDoctorBox.getValue();
+        DoctorBean familyDoctor = familyDoctorBox.getValue();
         check(name, String::isEmpty, nameRequiredLbl, FIELD_REQUIRED_MESSAGE);
         check(lastName, String::isEmpty, lastNameRequiredLbl, FIELD_REQUIRED_MESSAGE);
         check(email, String::isEmpty, emailErrorLbl, FIELD_REQUIRED_MESSAGE);

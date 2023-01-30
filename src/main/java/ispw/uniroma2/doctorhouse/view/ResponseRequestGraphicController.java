@@ -1,9 +1,6 @@
 package ispw.uniroma2.doctorhouse.view;
 
-import ispw.uniroma2.doctorhouse.beans.DoctorRequestBean;
-import ispw.uniroma2.doctorhouse.beans.DrugPrescriptionBean;
-import ispw.uniroma2.doctorhouse.beans.ResponseBean;
-import ispw.uniroma2.doctorhouse.beans.VisitPrescriptionBean;
+import ispw.uniroma2.doctorhouse.beans.*;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorNavigator;
@@ -66,12 +63,17 @@ public class ResponseRequestGraphicController implements ViewController {
     private Button prescriptionButton;
     @FXML
     private Label errLbl;
+    @FXML
+    private Label msgPatient;
+    @FXML
+    private TextField msgFld;
+    @FXML
+    private Label secErrLbl;
 
     private final DoctorNavigator navigator;
     private final ResponseRequest responseRequest;
-
-    //Prescription field
     private int requestId;
+
 
     public ResponseRequestGraphicController(DoctorNavigator navigator, ResponseRequest responseRequest) {
         this.navigator = navigator;
@@ -131,6 +133,8 @@ public class ResponseRequestGraphicController implements ViewController {
             showBtn.setText("Choose another prescription");
             label.setText("Drug's or visit name");
             quantityLbl.setText("Quantity");
+            msgFld.setVisible(true);
+            msgPatient.setVisible(true);
         } else {
             errLbl.setVisible(true);
         }
@@ -142,26 +146,29 @@ public class ResponseRequestGraphicController implements ViewController {
     }
 
     @FXML
-    public void prescription() {
+    public void send() throws PersistentLayerException {
         String name = nameFld.getText();
-        if(idTxtFld.getText().isEmpty()) { //idTextFld now get the value of quantity
+        String message = msgFld.getText();
+        if(name.isEmpty()) {
+            secErrLbl.setVisible(true);
+            secErrLbl.setText("This field is required");
+        } else if(idTxtFld.getText().isEmpty()) { //idTextFld now get the value of quantity
             ResponseBean responseBean = new ResponseBean();
             responseBean.setRequestId(requestId);
+            responseBean.setMessage(message);
             VisitPrescriptionBean visitPrescriptionBean = new VisitPrescriptionBean();
             visitPrescriptionBean.setName(name);
-            responseBean.setBean(visitPrescriptionBean);
-            responseRequest.insertResponse(responseBean);
+            responseRequest.insertVisitPrescriptionResponse(responseBean, visitPrescriptionBean);
         } else {
             int quantity = Integer.parseInt(idTxtFld.getText());
             ResponseBean responseBean = new ResponseBean();
             responseBean.setRequestId(requestId);
+            responseBean.setMessage(message);
             DrugPrescriptionBean drugPrescriptionBean = new DrugPrescriptionBean();
             drugPrescriptionBean.setName(name);
             drugPrescriptionBean.setQuantity(quantity);
-            responseBean.setBean(drugPrescriptionBean);
-            responseRequest.insertResponse(responseBean);
+            responseRequest.insertDrugPrescriptionResponse(responseBean, drugPrescriptionBean);
         }
-        initialize();
     }
 
 
@@ -176,6 +183,9 @@ public class ResponseRequestGraphicController implements ViewController {
         prescriptionButton.setVisible(false);
         nameFld.setVisible(false);
         errLbl.setVisible(false);
+        msgFld.setVisible(false);
+        msgPatient.setVisible(false);
+        secErrLbl.setVisible(false);
     }
 }
 

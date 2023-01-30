@@ -10,4 +10,5 @@ public class VisitPrescriptionBean {
     public void setName(String name) {
         this.name = name;
     }
+
 }

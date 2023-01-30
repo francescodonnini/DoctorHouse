@@ -30,64 +30,75 @@
       </GridPane>
    </top>
    <center>
-      <GridPane prefHeight="330.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+      <GridPane prefHeight="418.0" prefWidth="647.0" BorderPane.alignment="CENTER">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="559.6" minWidth="10.0" prefWidth="500.5999877929687" />
         </columnConstraints>
         <rowConstraints>
             <RowConstraints maxHeight="116.20001831054688" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
           <RowConstraints maxHeight="116.20001831054688" minHeight="0.0" prefHeight="38.8" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="348.79997596740725" minHeight="10.0" prefHeight="263.60003967285155" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="348.79997596740725" minHeight="1.9999725341796761" prefHeight="18.19999999999999" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="348.79997596740725" minHeight="10.0" prefHeight="28.600000000000023" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="348.79997596740725" minHeight="10.0" prefHeight="37.00001220703126" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="348.79997596740725" minHeight="10.0" prefHeight="184.59999084472656" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="348.79997596740725" minHeight="1.9999725341796761" prefHeight="11.199993896484386" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="348.79997596740725" minHeight="10.0" prefHeight="98.40000610351564" vgrow="SOMETIMES" />
         </rowConstraints>
-         <padding>
-            <Insets bottom="10.0" left="20.0" right="20.0" />
-         </padding>
          <children>
             <Button fx:id="showBtn" mnemonicParsing="false" onAction="#showRequest" text="Show prescription request" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-            <Label fx:id="label" GridPane.halignment="LEFT" GridPane.rowIndex="4" />
-            <TextField fx:id="idTxtFld" GridPane.halignment="LEFT" GridPane.rowIndex="4">
+            <Label fx:id="label" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="TOP" />
+            <TextField fx:id="idTxtFld" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="TOP">
                <GridPane.margin>
                   <Insets left="320.0" right="200.0" />
                </GridPane.margin>
             </TextField>
-            <Button fx:id="acceptBtn" mnemonicParsing="false" onAction="#accept" text="Accept" GridPane.rowIndex="5">
+            <Button fx:id="acceptBtn" mnemonicParsing="false" onAction="#accept" text="Accept" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="TOP">
                <GridPane.margin>
-                  <Insets left="210.0" />
+                  <Insets left="365.0" />
                </GridPane.margin>
             </Button>
-            <Button fx:id="rejectBtn" mnemonicParsing="false" onAction="#reject" text="Reject" GridPane.rowIndex="5">
+            <Button fx:id="rejectBtn" mnemonicParsing="false" onAction="#reject" text="Reject" GridPane.rowIndex="4" GridPane.valignment="TOP">
                <GridPane.margin>
-                  <Insets left="270.0" />
+                  <Insets left="425.0" />
                </GridPane.margin>
             </Button>
-            <TableView fx:id="table" editable="true" prefHeight="182.0" prefWidth="560.0" GridPane.rowIndex="2">
+            <TableView fx:id="table" editable="true" prefHeight="231.0" prefWidth="560.0" GridPane.rowIndex="2" GridPane.valignment="CENTER">
               <columns>
                 <TableColumn fx:id="col1" prefWidth="75.0" text="Id" />
                 <TableColumn fx:id="col2" prefWidth="108.79998779296875" text="patient " />
                   <TableColumn fx:id="col3" prefWidth="315.20001220703125" text="message" />
               </columns>
             </TableView>
-            <Label fx:id="quantityLbl" GridPane.rowIndex="4">
+            <Label fx:id="quantityLbl" GridPane.rowIndex="4" GridPane.valignment="TOP">
                <GridPane.margin>
                   <Insets left="270.0" />
                </GridPane.margin>
             </Label>
-            <TextField fx:id="nameFld" GridPane.rowIndex="4">
+            <TextField fx:id="nameFld" GridPane.rowIndex="4" GridPane.valignment="TOP">
                <GridPane.margin>
                   <Insets left="110.0" right="300.0" />
                </GridPane.margin>
             </TextField>
-            <Button fx:id="prescriptionButton" mnemonicParsing="false" onAction="#prescription" text="Create and send prescription" GridPane.rowIndex="4">
+            <Button fx:id="prescriptionButton" mnemonicParsing="false" onAction="#send" text="Send response" GridPane.rowIndex="4" GridPane.valignment="BOTTOM">
                <GridPane.margin>
-                  <Insets left="365.0" />
+                  <Insets bottom="10.0" left="365.0" />
                </GridPane.margin>
             </Button>
             <Label fx:id="errLbl" prefHeight="18.0" prefWidth="112.0" text="This field is required" textFill="RED" GridPane.rowIndex="3">
                <GridPane.margin>
                   <Insets left="320.0" />
+               </GridPane.margin>
+            </Label>
+            <TextField fx:id="msgFld" prefHeight="62.0" prefWidth="250.0" GridPane.rowIndex="4">
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="110.0" right="200.0" top="40.0" />
+               </GridPane.margin>
+            </TextField>
+            <Label fx:id="msgPatient" text="Specify a message for the patient" GridPane.rowIndex="4">
+               <GridPane.margin>
+                  <Insets bottom="40.0" left="110.0" />
+               </GridPane.margin>
+            </Label>
+            <Label fx:id="secErrLbl" text="This field is required" textFill="RED" GridPane.rowIndex="3">
+               <GridPane.margin>
+                  <Insets left="110.0" right="300.0" />
                </GridPane.margin>
             </Label>
          </children>

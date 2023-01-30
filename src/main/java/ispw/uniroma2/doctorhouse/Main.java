@@ -42,7 +42,9 @@ public class Main extends Application {
         loginFactory.setLoginNavigator(loginNavigator);
         RequestDaoFactory requestDaoFactory = new RequestDaoFactoryImpl(ConnectionFactory.getConnection());
         patientFactory.setRequestDaoFactory(requestDaoFactory);
-        ResponseDaoFactory responseDaoFactory = new ResponseDaoFactoryImpl(ConnectionFactory.getConnection());
+        PrescriptionDaoFactory prescriptionDaoFactory = new PrescriptionDatabaseFactory(ConnectionFactory.getConnection());
+        prescriptionDaoFactory.create();
+        ResponseDaoFactory responseDaoFactory = new ResponseDaoFactoryImpl(ConnectionFactory.getConnection(), new PrescriptionDatabase(ConnectionFactory.getConnection()));
         doctorControllerFactory.setResponseDaoFactory(responseDaoFactory);
         loginFactory.setPatientNavigator(patientNavigator);
         patientFactory.setNavigator(patientNavigator);

@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
@@ -34,6 +35,7 @@ public class Main extends Application {
         userDaoFactory.setOfficeDao(officeDaoFactory.create());
         LoginControllerFactoryImpl loginFactory = new LoginControllerFactoryImpl();
         PatientControllerFactoryImpl patientFactory = new PatientControllerFactoryImpl();
+        patientFactory.setRequestDaoFactory(new RequestDaoFactoryImpl(ConnectionFactory.getConnection()));
         LoginNavigator loginNavigator = new LoginNavigator(navigatorController, loginFactory);
         PatientNavigator patientNavigator = new PatientNavigator(navigatorController, patientFactory);
         DoctorControllerFactoryImpl doctorControllerFactory = new DoctorControllerFactoryImpl();
@@ -45,7 +47,9 @@ public class Main extends Application {
         PrescriptionDaoFactory prescriptionDaoFactory = new PrescriptionDatabaseFactory(ConnectionFactory.getConnection());
         prescriptionDaoFactory.create();
         ResponseDaoFactory responseDaoFactory = new ResponseDaoFactoryImpl(ConnectionFactory.getConnection(), new PrescriptionDatabase(ConnectionFactory.getConnection()));
+        patientFactory.setResponseDaoFactory(responseDaoFactory);
         doctorControllerFactory.setResponseDaoFactory(responseDaoFactory);
+        doctorControllerFactory.setRequestDaoFactory(new RequestDaoFactoryImpl(ConnectionFactory.getConnection()));
         loginFactory.setPatientNavigator(patientNavigator);
         patientFactory.setNavigator(patientNavigator);
         doctorControllerFactory.setNavigator(doctorNavigator);

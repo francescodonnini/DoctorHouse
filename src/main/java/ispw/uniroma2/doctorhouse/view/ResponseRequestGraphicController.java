@@ -3,6 +3,7 @@ package ispw.uniroma2.doctorhouse.view;
 import ispw.uniroma2.doctorhouse.beans.*;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
+import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorDestination;
 import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorNavigator;
 import ispw.uniroma2.doctorhouse.requestprescription.ResponseRequest;
 import javafx.collections.FXCollections;
@@ -12,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Paint;
 
 import java.util.List;
 import java.util.Optional;
@@ -69,6 +71,10 @@ public class ResponseRequestGraphicController implements ViewController {
     private TextField msgFld;
     @FXML
     private Label secErrLbl;
+    @FXML
+    private Label thirdErrLbl;
+    @FXML
+    private Button sendReject;
 
     private final DoctorNavigator navigator;
     private final ResponseRequest responseRequest;
@@ -87,12 +93,7 @@ public class ResponseRequestGraphicController implements ViewController {
 
     @FXML
     void rearrange() {
-        //
-    }
-
-    @FXML
-    void request() {
-        //
+        navigator.navigate(DoctorDestination.REARRANGE_APPOINTMENT);
     }
 
     @FXML
@@ -107,14 +108,14 @@ public class ResponseRequestGraphicController implements ViewController {
             Optional<List<DoctorRequestBean>> requestBean = responseRequest.getRequest();
             if (requestBean.isPresent() && !requestBean.get().isEmpty()) {
                 request.addAll(requestBean.orElseThrow());
-                label.setText("Please insert the id of prescription you want reply to");
+                label.setText("Please insert the id of request you want reply to");
                 label.setVisible(true);
                 acceptBtn.setVisible(true);
                 rejectBtn.setVisible(true);
                 idTxtFld.setVisible(true);
             }
         } catch (PersistentLayerException e) {
-            // TODO: add visual clue that alerts the user an error occurred
+            thirdErrLbl.setVisible(true);
             throw new RuntimeException(e);
         }
     }
@@ -138,11 +139,45 @@ public class ResponseRequestGraphicController implements ViewController {
         } else {
             errLbl.setVisible(true);
         }
+        idTxtFld.setText("");
     }
 
     @FXML
     public void reject() {
-        //
+        if(!idTxtFld.getText().trim().isEmpty()) {
+            errLbl.setVisible(false);
+            requestId = Integer.parseInt(idTxtFld.getText());
+            idTxtFld.setText("");
+            acceptBtn.setVisible(false);
+            rejectBtn.setVisible(false);
+            showBtn.setText("Choose another request");
+            label.setVisible(false);
+            idTxtFld.setVisible(false);
+            msgFld.setVisible(true);
+            msgPatient.setVisible(true);
+            sendReject.setVisible(true);
+        } else {
+            errLbl.setVisible(true);
+        }
+        idTxtFld.setText("");
+    }
+
+    @FXML
+    public void sendReject() throws PersistentLayerException {
+        ResponseBean bean = new ResponseBean();
+        bean.setRequestId(requestId);
+        if(msgFld.getText().trim().isEmpty()) {
+            msgPatient.setText("This field is required");
+            msgPatient.setTextFill(Paint.valueOf("Red"));
+        } else {
+            msgPatient.setText("Specify a message for the patient");
+            msgPatient.setTextFill(Paint.valueOf("Black"));
+            bean.setMessage(msgFld.getText());
+            responseRequest.insertRejection(bean);
+        }
+        msgFld.setText("");
+        initialize();
+        showRequest();
     }
 
     @FXML
@@ -169,6 +204,9 @@ public class ResponseRequestGraphicController implements ViewController {
             drugPrescriptionBean.setQuantity(quantity);
             responseRequest.insertDrugPrescriptionResponse(responseBean, drugPrescriptionBean);
         }
+        initialize();
+        msgFld.setText("");
+        showRequest();
     }
 
 
@@ -186,6 +224,8 @@ public class ResponseRequestGraphicController implements ViewController {
         msgFld.setVisible(false);
         msgPatient.setVisible(false);
         secErrLbl.setVisible(false);
+        thirdErrLbl.setVisible(false);
+        sendReject.setVisible(false);
     }
 }
 

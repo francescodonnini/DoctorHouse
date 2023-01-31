@@ -15,35 +15,17 @@ public class ResponseDatabase implements ResponseDao{
 
     private final PrescriptionDao prescriptionDao;
 
+    private static final String QUERY = "CALL insert_response(?, ?, ?);";
+
     public ResponseDatabase(Connection connection, PrescriptionDao prescriptionDao) {
         this.connection = connection;
         this.prescriptionDao = prescriptionDao;
     }
 
     @Override
-    public Optional<List<DoctorRequestBean>> requestFinder() throws PersistentLayerException {
-        List<DoctorRequestBean> bean = new ArrayList<>();
-        try (PreparedStatement ps = connection.prepareStatement("CALL  search_request(?);")) {
-            ps.setString(1, Session.getSession().getUser().getEmail());
-            ps.execute();
-            ResultSet rs = ps.getResultSet();
-            while(rs.next()) {
-                DoctorRequestBean requestBean = new DoctorRequestBean();
-                requestBean.setId(rs.getInt(1));
-                requestBean.setPatient(rs.getString(3));
-                requestBean.setMessage(rs.getString(4));
-                bean.add(requestBean);
-            }
-            return Optional.of(bean);
-        } catch (SQLException e) {
-            throw new PersistentLayerException(e);
-        }
-    }
-
-    @Override
     public void insertVisitResponse(ResponseBean responseBean, VisitPrescriptionBean visitPrescriptionBean) throws PersistentLayerException {
         int prescriptionId = prescriptionDao.addVisitPrescription(visitPrescriptionBean);
-        try (PreparedStatement ps = connection.prepareStatement("CALL insert_response(?, ?, ?);")){
+        try (PreparedStatement ps = connection.prepareStatement(QUERY)){
             ps.setInt(1, responseBean.getRequestId());
             ps.setString(2, responseBean.getMessage());
             ps.setInt(3, prescriptionId);
@@ -56,7 +38,7 @@ public class ResponseDatabase implements ResponseDao{
     @Override
     public void insertDrugResponse(ResponseBean responseBean, DrugPrescriptionBean drugPrescriptionBean) throws PersistentLayerException {
         int prescriptionId = prescriptionDao.addDrugPrescription(drugPrescriptionBean);
-        try (PreparedStatement ps = connection.prepareStatement("CALL insert_response(?, ?, ?);")){
+        try (PreparedStatement ps = connection.prepareStatement(QUERY)){
             ps.setInt(1, responseBean.getRequestId());
             ps.setString(2, responseBean.getMessage());
             ps.setInt(3, prescriptionId);
@@ -66,4 +48,36 @@ public class ResponseDatabase implements ResponseDao{
         }
     }
 
+    public Optional<List<ResponsePatientBean>> responseFinder() throws PersistentLayerException {
+        List<ResponsePatientBean> bean = new ArrayList<>();
+        try(PreparedStatement ps = connection.prepareStatement("CALL view_response(?)")){
+            ps.setString(1, Session.getSession().getUser().getEmail());
+            ps.execute();
+            ResultSet rs = ps.getResultSet();
+            while(rs.next()) {
+                ResponsePatientBean responsePatientBean = new ResponsePatientBean();
+                responsePatientBean.setMessage(rs.getString(1));
+                responsePatientBean.setKind(rs.getString(2));
+                responsePatientBean.setName(rs.getString(3));
+                responsePatientBean.setQuantity(rs.getInt(4));
+                bean.add(responsePatientBean);
+            }
+            return Optional.of(bean);
+        } catch (SQLException e) {
+            throw new PersistentLayerException(e);
+        }
+    }
+    @Override
+    public void insertRejection(ResponseBean bean) throws PersistentLayerException {
+        try(PreparedStatement ps = connection.prepareStatement(QUERY)) {
+            ps.setInt(1, bean.getRequestId());
+            ps.setString(2, bean.getMessage());
+            ps.setNull(3, Types.INTEGER);
+            ps.execute();
+        } catch (SQLException e) {
+            throw new PersistentLayerException(e);
+        }
+    }
+
 }
+

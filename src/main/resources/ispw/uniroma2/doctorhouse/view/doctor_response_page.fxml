@@ -24,7 +24,7 @@
         </rowConstraints>
          <children>
             <Button fx:id="rearrangeAppointmentBtn" mnemonicParsing="false" onAction="#rearrange" text="Rearrange Appointments" />
-            <Button fx:id="requestPrescriptionBtn" mnemonicParsing="false" onAction="#request" text="Response prescription request" textFill="RED" GridPane.columnIndex="1" />
+            <Button fx:id="requestPrescriptionBtn" mnemonicParsing="false" text="Response prescription request" textFill="RED" GridPane.columnIndex="1" />
             <Button mnemonicParsing="false" text="Logout" GridPane.columnIndex="2" />
          </children>
       </GridPane>
@@ -35,14 +35,14 @@
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="559.6" minWidth="10.0" prefWidth="500.5999877929687" />
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints maxHeight="116.20001831054688" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="116.20001831054688" minHeight="0.0" prefHeight="38.8" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="116.20001831054688" minHeight="0.0" prefHeight="42.400000381469724" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="116.20001831054688" minHeight="0.0" prefHeight="19.19999961853027" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="348.79997596740725" minHeight="10.0" prefHeight="184.59999084472656" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="348.79997596740725" minHeight="1.9999725341796761" prefHeight="11.199993896484386" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="348.79997596740725" minHeight="10.0" prefHeight="98.40000610351564" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="showBtn" mnemonicParsing="false" onAction="#showRequest" text="Show prescription request" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+            <Button fx:id="showBtn" mnemonicParsing="false" onAction="#showRequest" text="Show prescription request" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
             <Label fx:id="label" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="TOP" />
             <TextField fx:id="idTxtFld" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="TOP">
                <GridPane.margin>
@@ -101,6 +101,12 @@
                   <Insets left="110.0" right="300.0" />
                </GridPane.margin>
             </Label>
+            <Label fx:id="thirdErrLbl" text="Enter a valide request ID" textFill="RED" GridPane.rowIndex="1" />
+            <Button fx:id="sendReject" mnemonicParsing="false" onAction="#sendReject" text="Send response" GridPane.rowIndex="4" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="365.0" />
+               </GridPane.margin>
+            </Button>
          </children>
       </GridPane>
    </center>

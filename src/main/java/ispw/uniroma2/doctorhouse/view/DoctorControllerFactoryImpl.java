@@ -1,6 +1,7 @@
 package ispw.uniroma2.doctorhouse.view;
 
 import ispw.uniroma2.doctorhouse.IrrecoverableError;
+import ispw.uniroma2.doctorhouse.dao.RequestDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.ResponseDaoFactory;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorControllerFactory;
@@ -16,8 +17,14 @@ public class DoctorControllerFactoryImpl implements DoctorControllerFactory {
 
     private ResponseDaoFactory responseDaoFactory;
 
+    private RequestDaoFactory requestDaoFactory;
+
     public void setResponseDaoFactory(ResponseDaoFactory responseDaoFactory) {
         this.responseDaoFactory = responseDaoFactory;
+    }
+
+    public void setRequestDaoFactory(RequestDaoFactory requestDaoFactory) {
+        this.requestDaoFactory = requestDaoFactory;
     }
 
     public void setNavigator(DoctorNavigator navigator) {
@@ -28,7 +35,7 @@ public class DoctorControllerFactoryImpl implements DoctorControllerFactory {
     public ViewController createResponsePrescription() {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("doctor_response_page.fxml"));
-        loader.setControllerFactory(f -> new ResponseRequestGraphicController(navigator, new ResponseRequest(responseDaoFactory.create())));
+        loader.setControllerFactory(f -> new ResponseRequestGraphicController(navigator, new ResponseRequest(responseDaoFactory.create(), requestDaoFactory.create())));
         try {
             loader.load();
             return loader.getController();

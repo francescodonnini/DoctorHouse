@@ -1,17 +1,23 @@
 package ispw.uniroma2.doctorhouse.view;
 
 import ispw.uniroma2.doctorhouse.beans.PrescriptionRequestBean;
+import ispw.uniroma2.doctorhouse.beans.ResponsePatientBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.Session;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
+import ispw.uniroma2.doctorhouse.navigation.patient.PatientDestination;
 import ispw.uniroma2.doctorhouse.navigation.patient.PatientNavigator;
 import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescription;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+
+import java.util.List;
+import java.util.Optional;
 
 
 public class RequestPrescriptionGraphicController implements ViewController {
@@ -32,6 +38,20 @@ public class RequestPrescriptionGraphicController implements ViewController {
 
     @FXML
     private Label errLbl;
+
+    @FXML
+    private Button showResponse;
+
+    @FXML
+    private TableView<ResponsePatientBean> responseTable;
+    @FXML
+    private TableColumn<ResponsePatientBean, String> col1;
+    @FXML
+    private TableColumn<ResponsePatientBean, String> col2;
+    @FXML
+    private TableColumn<ResponsePatientBean, String> col3;
+    @FXML
+    private TableColumn<ResponsePatientBean, Integer> col4;
     private final PatientNavigator navigator;
 
     private final RequestPrescription requestPrescription;
@@ -47,11 +67,7 @@ public class RequestPrescriptionGraphicController implements ViewController {
     }
 
     public void rearrange() {
-        //
-    }
-
-    public void request() {
-        //
+        navigator.navigate(PatientDestination.REARRANGE);
     }
 
     public void sendRequest() {
@@ -64,15 +80,38 @@ public class RequestPrescriptionGraphicController implements ViewController {
             requestBean.setPatient(Session.getSession().getUser());
             try {
                 requestPrescription.sendPrescriptionRequest(requestBean);
+                textRequest.setText("");
             } catch (PersistentLayerException e) {
                 // add visual clue to notify user that an error occurred
                 throw new RuntimeException(e);
             }
         }
     }
+
+    @FXML
+    public void showResponse() {
+        ObservableList<ResponsePatientBean> response = FXCollections.observableArrayList();
+        responseTable.setItems(response);
+        col1.setCellValueFactory(new PropertyValueFactory<>("message"));
+        col2.setCellValueFactory(new PropertyValueFactory<>("kind"));
+        col3.setCellValueFactory(new PropertyValueFactory<>("name"));
+        col4.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        try {
+            Optional<List<ResponsePatientBean>> bean = requestPrescription.getResponse();
+            if(bean.isPresent() && !bean.get().isEmpty()) {
+                responseTable.setVisible(true);
+                response.addAll(bean.get());
+            }
+        } catch (PersistentLayerException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @FXML
     public void initialize() {
         errLbl.managedProperty().bind(errLbl.textProperty().isNotEmpty());
         errLbl.visibleProperty().bind(errLbl.managedProperty());
+        responseTable.setVisible(false);
     }
+
 }

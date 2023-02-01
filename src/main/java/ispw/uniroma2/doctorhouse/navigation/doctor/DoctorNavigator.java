@@ -6,7 +6,6 @@ import ispw.uniroma2.doctorhouse.navigation.ViewController;
 
 
 public class DoctorNavigator extends Navigator<DoctorDestination> {
-
     private final DoctorControllerFactory factory;
 
     public DoctorNavigator(NavigatorController controller, DoctorControllerFactory factory) {
@@ -27,6 +26,8 @@ public class DoctorNavigator extends Navigator<DoctorDestination> {
                 return factory.createResponsePrescription();
             case REARRANGE_APPOINTMENT:
                 return factory.createRearrangeAppointment();
+            case DO_REARRANGE_APPOINTMENT:
+                return factory.createDoRearrangeAppointment();
             default:
                 return factory.createIrrecoverableErrorController();
         }

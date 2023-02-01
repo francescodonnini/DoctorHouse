@@ -13,7 +13,7 @@ public class AppointmentImpl implements Appointment {
         } else if (info instanceof PendingInfo) {
             state = new Pending((PendingInfo) info);
         } else {
-            state = new Scheduled((ScheduledInfo) info);
+            state = new Incoming((IncomingInfo) info);
         }
     }
 
@@ -35,6 +35,25 @@ public class AppointmentImpl implements Appointment {
     @Override
     public AppointmentInfo getInfo() {
         return state.getInfo();
+    }
+
+    @Override
+    public AppointmentMemento createMemento() {
+        return new AppointmentMemento(getInfo());
+    }
+
+    @Override
+    public void restore(AppointmentMemento memento) {
+        AppointmentInfo info = memento.getInfo();
+        if (info instanceof CanceledInfo) {
+            setState(new Canceled((CanceledInfo) info));
+        } else if (info instanceof IncomingInfo) {
+            setState(new Incoming((IncomingInfo) info));
+        } else if (info instanceof PendingInfo) {
+            setState(new Pending((PendingInfo) info));
+        } else if (info instanceof ConsumedInfo){
+            setState(new Consumed((ConsumedInfo) info));
+        }
     }
 
     public void setState(AppointmentState state) {

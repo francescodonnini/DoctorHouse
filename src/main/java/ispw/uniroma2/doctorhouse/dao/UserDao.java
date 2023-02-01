@@ -6,6 +6,7 @@ import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.Doctor;
 import ispw.uniroma2.doctorhouse.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserDao {
@@ -14,4 +15,5 @@ public interface UserDao {
     Optional<User> getUser(UserBean userBean) throws PersistentLayerException;
     Optional<Doctor> getDoctor(DoctorBean doctorBean) throws PersistentLayerException;
     Optional<Doctor> getFamilyDoctor(DoctorBean doctorBean) throws PersistentLayerException;
+    List<Doctor> getByField(String field) throws PersistentLayerException;
 }

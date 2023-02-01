@@ -2,6 +2,7 @@ package ispw.uniroma2.doctorhouse.dao;
 
 import ispw.uniroma2.doctorhouse.beans.DoctorBean;
 import ispw.uniroma2.doctorhouse.beans.OfficeBean;
+import ispw.uniroma2.doctorhouse.beans.SpecialtyBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.Specialty;
 
@@ -52,6 +53,24 @@ public class SpecialtyDatabase implements SpecialtyDao {
                 if (resultSet.next()) {
                     Duration duration = Duration.ofMinutes(resultSet.getLong(1));
                     return Optional.of(new Specialty(specialtyName, duration));
+                }
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new PersistentLayerException(e);
+        }
+    }
+
+    @Override
+    public Optional<Specialty> getSpecialty(SpecialtyBean specialtyBean) throws PersistentLayerException {
+        try (PreparedStatement statement = connection.prepareStatement("CALL getSpecialty(?, ?);")) {
+            statement.setString(1, specialtyBean.getName());
+            statement.setString(2, specialtyBean.getDoctor().getEmail());
+            if (statement.execute()) {
+                ResultSet resultSet = statement.getResultSet();
+                if (resultSet.next()) {
+                    Duration duration = Duration.ofMinutes(resultSet.getLong(1));
+                    return Optional.of(new Specialty(specialtyBean.getName(), duration));
                 }
             }
             return Optional.empty();

@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Types;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -120,13 +121,10 @@ public class UserDatabase implements UserDao {
                     String firstName = resultSet.getString(3);
                     String lastName = resultSet.getString(4);
                     Gender gender = Gender.from(resultSet.getInt(5)).orElse(Gender.NOT_KNOWN);
-                    DoctorBean familyDoctorBean = new DoctorBean();
-                    familyDoctorBean.setEmail(resultSet.getString(6));
-                    Optional<Doctor> familyDoctor = getFamilyDoctor(familyDoctorBean);
-                    String field = resultSet.getString(7);
+                    String field = resultSet.getString(6);
                     List<Office> offices = officeDao.getOffices(doctorBean);
                     Person person = new Person(birthDate, fiscalCode, firstName, lastName, gender);
-                    return Optional.of(new Doctor(doctorBean.getEmail(), person, familyDoctor.orElse(null), field, offices));
+                    return Optional.of(new Doctor(doctorBean.getEmail(), person, null, field, offices));
                 }
             }
             return Optional.empty();
@@ -155,6 +153,34 @@ public class UserDatabase implements UserDao {
                 }
             }
             return Optional.empty();
+        } catch (SQLException e) {
+            throw new PersistentLayerException(e);
+        }
+    }
+
+    @Override
+    public List<Doctor> getByField(String field) throws PersistentLayerException {
+        try (PreparedStatement statement = connection.prepareStatement("CALL getByField(?);")) {
+            statement.setString(1, field);
+            if (statement.execute()) {
+                List<Doctor> doctors = new ArrayList<>();
+                ResultSet resultSet = statement.getResultSet();
+                while (resultSet.next()) {
+                    LocalDate birthDate = resultSet.getDate(1).toLocalDate();
+                    String fiscalCode = resultSet.getString(2);
+                    String firstName = resultSet.getString(3);
+                    String lastName = resultSet.getString(4);
+                    Gender gender = Gender.from(resultSet.getInt(5)).orElse(Gender.NOT_KNOWN);
+                    String email = resultSet.getString(6);
+                    DoctorBean doctorBean = new DoctorBean();
+                    doctorBean.setEmail(email);
+                    List<Office> offices = officeDao.getOffices(doctorBean);
+                    Person person = new Person(birthDate, fiscalCode, firstName, lastName, gender);
+                    doctors.add(new Doctor(email, person, null, field, offices));
+                }
+                return doctors;
+            }
+            return List.of();
         } catch (SQLException e) {
             throw new PersistentLayerException(e);
         }

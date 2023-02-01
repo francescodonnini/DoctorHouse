@@ -28,8 +28,8 @@ public class Pending implements AppointmentState {
     @Override
     public void confirm(AppointmentImpl appointment, User initiator) {
         if (!initiator.equals(info.getInitiator())) {
-            ScheduledInfo newInfo = new ScheduledInfo(info.getDoctor(), info.getPatient(), info.getSpecialty(), info.getOffice(), info.getNewDate());
-            AppointmentState newState = new Scheduled(newInfo);
+            IncomingInfo newInfo = new IncomingInfo(info.getDoctor(), info.getPatient(), info.getSpecialty(), info.getOffice(), info.getOldDate());
+            AppointmentState newState = new Incoming(newInfo);
             appointment.setState(newState);
         }
     }
@@ -37,5 +37,14 @@ public class Pending implements AppointmentState {
     @Override
     public void reschedule(AppointmentImpl appointment, LocalDateTime newDate, User initiator) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void tick(AppointmentImpl appointment, LocalDateTime currentDate) {
+       if (!info.getOldDate().isAfter(currentDate)) {
+           CanceledInfo newInfo = new CanceledInfo(info.getDoctor(), info.getPatient(), info.getSpecialty(), info.getOffice(), info.getOldDate(), null);
+           AppointmentState newState = new Canceled(newInfo);
+           appointment.setState(newState);
+       }
     }
 }

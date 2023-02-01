@@ -12,7 +12,7 @@ public class Canceled implements AppointmentState {
     }
 
     @Override
-    public AppointmentInfo getInfo() {
+    public CanceledInfo getInfo() {
         return info;
     }
 
@@ -28,6 +28,11 @@ public class Canceled implements AppointmentState {
 
     @Override
     public void reschedule(AppointmentImpl appointment, LocalDateTime newDate, User initiator) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void tick(AppointmentImpl appointment, LocalDateTime currentDate) {
         throw new UnsupportedOperationException();
     }
 }

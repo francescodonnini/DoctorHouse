@@ -82,7 +82,7 @@ public class RequestPrescriptionGraphicController implements ViewController {
                 requestPrescription.sendPrescriptionRequest(requestBean);
                 textRequest.setText("");
             } catch (PersistentLayerException e) {
-                // add visual clue to notify user that an error occurred
+                // add visual clue to notify credentials that an error occurred
                 throw new RuntimeException(e);
             }
         }

@@ -9,4 +9,5 @@ interface AppointmentState {
     void cancel(AppointmentImpl appointment, User initiator);
     void confirm(AppointmentImpl appointment, User initiator);
     void reschedule(AppointmentImpl appointment, LocalDateTime newDate, User initiator);
+    void tick(AppointmentImpl appointment, LocalDateTime currentDate);
 }

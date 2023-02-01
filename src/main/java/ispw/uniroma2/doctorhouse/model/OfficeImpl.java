@@ -37,10 +37,6 @@ public class OfficeImpl implements Office {
 
     @Override
     public Optional<Shift> getShift(LocalDate date) {
-        return  Optional.ofNullable(shifts.get(date.getDayOfWeek()));
-    }
-
-    public Map<DayOfWeek, Shift> getActualShift() {
-        return shifts;
+        return Optional.ofNullable(shifts.get(date.getDayOfWeek()));
     }
 }

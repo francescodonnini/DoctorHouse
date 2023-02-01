@@ -1,4 +1,5 @@
 package ispw.uniroma2.doctorhouse.dao;
+
 import java.sql.Connection;
 
 
@@ -21,7 +22,6 @@ public class OfficeDatabaseFactory implements OfficeDaoFactory {
     public void setShiftDao(ShiftDao shiftDao) {
         this.shiftDao = shiftDao;
     }
-
 
     @Override
     public OfficeDao create() {

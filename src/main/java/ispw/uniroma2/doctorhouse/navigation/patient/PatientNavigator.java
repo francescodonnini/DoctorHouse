@@ -21,6 +21,8 @@ public class PatientNavigator extends Navigator<PatientDestination> {
         switch (destination) {
             case REARRANGE:
                 return factory.createRearrangeAppointmentPage();
+            case DO_REARRANGE:
+                return factory.createDoRearrangeAppointmentPage();
             case REQUEST_PRESCRIPTION:
                 return factory.createRequestPrescriptionPage();
             case HOME_PAGE:

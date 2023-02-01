@@ -64,6 +64,7 @@ public class OfficeDatabase implements OfficeDao {
     private Optional<Office> fromResultSet(ResultSet resultSet, DoctorBean doctor) throws SQLException, PersistentLayerException {
         OfficeBuilder builder = new OfficeBuilderImpl();
         int id = resultSet.getInt(1);
+        builder.setId(id);
         String country = resultSet.getString(2);
         String province = resultSet.getString(3);
         String city = resultSet.getString(4);
@@ -73,10 +74,8 @@ public class OfficeDatabase implements OfficeDao {
         OfficeBean officeBean = new OfficeBean();
         officeBean.setId(id);
         officeBean.setDoctor(doctor);
-        List<Specialty> specialties = specialtyDao.getSpecialties(officeBean);
-        specialties.forEach(builder::addSpecialty);
-        List<Shift> shifts = shiftDao.getShifts(officeBean);
-        shifts.forEach(builder::addShift);
+        specialtyDao.getSpecialties(officeBean).forEach(builder::addSpecialty);
+        shiftDao.getShifts(officeBean).forEach(builder::addShift);
         return Optional.ofNullable(builder.build());
     }
 }

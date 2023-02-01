@@ -201,7 +201,7 @@ public class RegisterUserPage implements ViewController {
             request.setPassword(password);
             request.setFamilyDoctor(familyDoctor);
             try {
-                // add visual cue that notify the user that the registration process was successful
+                // add visual cue that notify the credentials that the registration process was successful
                 register.register(request);
                 navigator.navigate(LoginDestination.LOGIN);
             } catch (DuplicateEmail e) {

@@ -3,12 +3,16 @@ package ispw.uniroma2.doctorhouse.view;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorDestination;
 import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorNavigator;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 
 public class DoctorHomePage implements ViewController {
+    @FXML
+    private Button doRearrangeBtn;
+
     @FXML
     private Button rearrangeAppointmentBtn;
 
@@ -24,7 +28,13 @@ public class DoctorHomePage implements ViewController {
         this.navigator = navigator;
     }
 
-    public void rearrange() {
+    @FXML
+    private void doRearrange(ActionEvent ignored) {
+        navigator.navigate(DoctorDestination.DO_REARRANGE_APPOINTMENT);
+    }
+
+    @FXML
+    private void rearrange() {
         navigator.navigate(DoctorDestination.REARRANGE_APPOINTMENT);
     }
 

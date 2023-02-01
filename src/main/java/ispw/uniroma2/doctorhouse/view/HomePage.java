@@ -13,6 +13,8 @@ public class HomePage implements ViewController {
     @FXML
     private Parent view;
     @FXML
+    private Button doRearrangeBtn;
+    @FXML
     private Button rearrangeAppointmentBtn;
     @FXML
     private Button requestPrescriptionBtn;
@@ -24,6 +26,11 @@ public class HomePage implements ViewController {
     @Override
     public Parent getView() {
        return view;
+    }
+
+    @FXML
+    private void doRearrange(ActionEvent ignored) {
+        navigator.navigate(PatientDestination.DO_REARRANGE);
     }
 
     @FXML

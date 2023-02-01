@@ -8,4 +8,5 @@ public interface DoctorControllerFactory {
     ViewController createDoRearrangeAppointment();
     ViewController createRearrangeAppointment();
     ViewController createIrrecoverableErrorController();
+    ViewController createRequestPrescription();
 }

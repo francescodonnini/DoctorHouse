@@ -4,9 +4,8 @@ import ispw.uniroma2.doctorhouse.beans.PrescriptionRequestBean;
 import ispw.uniroma2.doctorhouse.beans.ResponsePatientBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.Session;
+import ispw.uniroma2.doctorhouse.navigation.Navigator;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
-import ispw.uniroma2.doctorhouse.navigation.patient.PatientDestination;
-import ispw.uniroma2.doctorhouse.navigation.patient.PatientNavigator;
 import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescription;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class RequestPrescriptionGraphicController implements ViewController {
+public abstract class RequestPrescriptionGraphicController<D> implements ViewController {
     @FXML
     private Button rearrangeAppointmentBtn;
 
@@ -52,11 +51,11 @@ public class RequestPrescriptionGraphicController implements ViewController {
     private TableColumn<ResponsePatientBean, String> col3;
     @FXML
     private TableColumn<ResponsePatientBean, Integer> col4;
-    private final PatientNavigator navigator;
+    protected final Navigator<D> navigator;
 
     private final RequestPrescription requestPrescription;
 
-    public RequestPrescriptionGraphicController(PatientNavigator navigator, RequestPrescription requestPrescription) {
+    protected RequestPrescriptionGraphicController(Navigator<D> navigator, RequestPrescription requestPrescription) {
         this.navigator = navigator;
         this.requestPrescription = requestPrescription;
     }
@@ -66,9 +65,8 @@ public class RequestPrescriptionGraphicController implements ViewController {
         return view;
     }
 
-    public void rearrange() {
-        navigator.navigate(PatientDestination.REARRANGE);
-    }
+    @FXML
+    public abstract void rearrange();
 
     public void sendRequest() {
         String message = textRequest.getText();

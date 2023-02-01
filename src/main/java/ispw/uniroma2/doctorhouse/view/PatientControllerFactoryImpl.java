@@ -78,7 +78,7 @@ public class PatientControllerFactoryImpl implements PatientControllerFactory {
     public ViewController createRequestPrescriptionPage() {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("patient-request-page.fxml"));
-        loader.setControllerFactory(f -> new RequestPrescriptionGraphicController(navigator, new RequestPrescription(requestDaoFactory.create(), responseDaoFactory.create())));
+        loader.setControllerFactory(f -> new PatientRequestPrescriptionGraphicController(navigator, new RequestPrescription(requestDaoFactory.create(), responseDaoFactory.create())));
         try {
             loader.load();
             return loader.getController();

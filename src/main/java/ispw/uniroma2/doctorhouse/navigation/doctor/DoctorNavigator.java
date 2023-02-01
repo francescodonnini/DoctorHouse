@@ -28,6 +28,8 @@ public class DoctorNavigator extends Navigator<DoctorDestination> {
                 return factory.createRearrangeAppointment();
             case DO_REARRANGE_APPOINTMENT:
                 return factory.createDoRearrangeAppointment();
+            case REQUEST_PRESCRIPTION:
+                return factory.createRequestPrescription();
             default:
                 return factory.createIrrecoverableErrorController();
         }

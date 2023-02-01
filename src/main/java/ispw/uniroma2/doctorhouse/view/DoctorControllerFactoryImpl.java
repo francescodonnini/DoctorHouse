@@ -11,6 +11,7 @@ import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorControllerFactory;
 import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorNavigator;
 import ispw.uniroma2.doctorhouse.rearrange.AskForRearrangeImpl;
 import ispw.uniroma2.doctorhouse.rearrange.DoRearrangeImpl;
+import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescription;
 import ispw.uniroma2.doctorhouse.requestprescription.ResponseRequest;
 import javafx.fxml.FXMLLoader;
 
@@ -104,5 +105,18 @@ public class DoctorControllerFactoryImpl implements DoctorControllerFactory {
     @Override
     public ViewController createIrrecoverableErrorController() {
         return null;
+    }
+
+    @Override
+    public ViewController createRequestPrescription() {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("patient-request-page.fxml"));
+        loader.setControllerFactory(f -> new DoctorRequestPrescriptionGraphicController(navigator, new RequestPrescription(requestDaoFactory.create(), responseDaoFactory.create())));
+        try {
+            loader.load();
+            return loader.getController();
+        } catch (IOException e) {
+            throw new IrrecoverableError(e);
+        }
     }
 }

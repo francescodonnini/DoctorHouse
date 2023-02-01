@@ -115,7 +115,6 @@ public class ResponseRequestGraphicController implements ViewController {
                 idTxtFld.setVisible(true);
             }
         } catch (PersistentLayerException e) {
-            thirdErrLbl.setVisible(true);
             throw new RuntimeException(e);
         }
     }

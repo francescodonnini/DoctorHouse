@@ -46,4 +46,8 @@ public class DoctorHomePage implements ViewController {
     public Parent getView() {
         return view;
     }
+
+    public void requestPrescription() {
+        navigator.navigate(DoctorDestination.REQUEST_PRESCRIPTION);
+    }
 }

@@ -10,7 +10,6 @@ import ispw.uniroma2.doctorhouse.rearrange.What;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -57,6 +56,9 @@ public abstract class DoRearrangePage<D> implements ViewController {
     private final DateTimeFormatter dateFmt;
     private final DateTimeFormatter timeFmt;
 
+    @FXML
+    private Label errorLbl;
+
     protected DoRearrangePage(DoRearrange controller, Navigator<D> navigator) {
         this.controller = controller;
         this.navigator = navigator;
@@ -71,10 +73,19 @@ public abstract class DoRearrangePage<D> implements ViewController {
     }
 
     @FXML
-    protected abstract void goBack(ActionEvent ignored);
-
-    @FXML
     private void initialize() {
+        initTable();
+        errorLbl.managedProperty().bind(errorLbl.textProperty().isNotEmpty());
+        errorLbl.visibleProperty().bind(errorLbl.managedProperty());
+        try {
+            beans.addAll(controller.getPendingAppointments());
+            clearError();
+        } catch (PersistentLayerException e) {
+            error("An error occurred while trying to recover your pending appointments. Please try again later or contact support if the problem persists.");
+        }
+    }
+
+    private void initTable() {
         table.setItems(beans);
         otherTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getDoctor().getEmail()));
         countryTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getCountry()));
@@ -85,11 +96,6 @@ public abstract class DoRearrangePage<D> implements ViewController {
         startTimeTblCol.setCellValueFactory(col -> new SimpleStringProperty(timeFmt.format(col.getValue().getDateTime())));
         endTimeTblCol.setCellValueFactory(col -> new SimpleStringProperty(timeFmt.format(col.getValue().getDateTime().plus(col.getValue().getSpecialty().getDuration()))));
         serviceTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getSpecialty().getName()));
-        try {
-            beans.addAll(controller.getPendingAppointments());
-        } catch (PersistentLayerException e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML
@@ -110,9 +116,20 @@ public abstract class DoRearrangePage<D> implements ViewController {
                     controller.submit(bean, What.CANCEL);
                 }
                 beans.remove(bean);
-            } catch (InvalidTimeSlot | PersistentLayerException e) {
-                throw new RuntimeException(e);
+                clearError();
+            } catch (InvalidTimeSlot e) {
+                error("This time slot is not available anymore.");
+            } catch (PersistentLayerException e) {
+                error("An error occurred while trying to process your decision on the request of rearrangement. Please try again later or contact support if the problem persists.");
             }
         });
+    }
+
+    private void error(String errorMsg) {
+        errorLbl.setText(errorMsg);
+    }
+
+    private void clearError() {
+        errorLbl.setText("");
     }
 }

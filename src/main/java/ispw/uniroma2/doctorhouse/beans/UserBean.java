@@ -1,9 +1,9 @@
 package ispw.uniroma2.doctorhouse.beans;
 
 public class UserBean {
-    private String email;
-    private String firstName;
-    private String lastName;
+    protected String email;
+    protected String firstName;
+    protected String lastName;
 
     public String getEmail() {
         return email;

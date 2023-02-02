@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ispw.uniroma2.doctorhouse.view.ResponseRequestGraphicController">
+<BorderPane fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ispw.uniroma2.doctorhouse.view.ResponseRequestGraphicController">
    <top>
       <GridPane BorderPane.alignment="CENTER">
         <columnConstraints>
@@ -19,14 +19,6 @@
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <Button fx:id="rearrangeAppointmentBtn" mnemonicParsing="false" onAction="#rearrange" text="Rearrange Appointments" />
-            <Button fx:id="requestPrescriptionBtn" mnemonicParsing="false" text="Response prescription request" textFill="RED" GridPane.columnIndex="1" />
-            <Button mnemonicParsing="false" text="Logout" GridPane.columnIndex="2" />
-         </children>
       </GridPane>
    </top>
    <center>

@@ -36,9 +36,6 @@ import java.io.IOException;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("view/navigator.fxml"));
-        Scene scene = new Scene(loader.load());
         // creating all the factories needed to create DAOs
         SpecialtyDaoFactory specialtyDaoFactory = new SpecialtyDatabaseFactory(ConnectionFactory.getConnection());
         SpecialtyDao specialtyDao = specialtyDaoFactory.create();
@@ -69,6 +66,9 @@ public class Main extends Application {
         SlotDaoFactory slotDaoFactory = new SlotDatabaseFactory(ConnectionFactory.getConnection());
         slotDaoFactory.setAppointmentDao(appointmentDao);
 
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("view/navigator.fxml"));
+        Scene scene = new Scene(loader.load());
         NavigatorController navigatorController = loader.getController();
 
         LoginControllerFactoryImpl loginFactory = new LoginControllerFactoryImpl();
@@ -76,33 +76,40 @@ public class Main extends Application {
         PatientControllerFactoryImpl patientFactory = new PatientControllerFactoryImpl();
         patientFactory.setRequestDaoFactory(new RequestDaoFactoryImpl(ConnectionFactory.getConnection()));
 
-        PatientNavigator patientNavigator = new PatientNavigator(navigatorController, patientFactory);
+        FXMLLoader toolbarLoader = new FXMLLoader();
+        toolbarLoader.setLocation(getClass().getResource("view/patient-toolbar.fxml"));
+        toolbarLoader.load();
+        PatientNavigator patientNavigator = new PatientNavigator(navigatorController, toolbarLoader.getController(), patientFactory);
         patientFactory.setAppointmentDaoFactory(appointmentDaoFactory);
         patientFactory.setOfficeDaoFactory(officeDaoFactory);
         patientFactory.setRequestDaoFactory(requestDaoFactory);
         patientFactory.setSlotDaoFactory(slotDaoFactory);
+        patientFactory.setRequestDaoFactory(requestDaoFactory);
+        patientFactory.setResponseDaoFactory(responseDaoFactory);
         patientFactory.setNavigator(patientNavigator);
 
+        FXMLLoader doctorToolbarLoader = new FXMLLoader();
+        doctorToolbarLoader.setLocation(getClass().getResource("view/doctor-toolbar.fxml"));
+        doctorToolbarLoader.load();
         DoctorControllerFactoryImpl doctorControllerFactory = new DoctorControllerFactoryImpl();
-        DoctorNavigator doctorNavigator = new DoctorNavigator(navigatorController, doctorControllerFactory);
+        DoctorNavigator doctorNavigator = new DoctorNavigator(navigatorController, doctorToolbarLoader.getController(), doctorControllerFactory);
         doctorControllerFactory.setAppointmentDaoFactory(appointmentDaoFactory);
         doctorControllerFactory.setOfficeDaoFactory(officeDaoFactory);
         doctorControllerFactory.setResponseDaoFactory(responseDaoFactory);
         doctorControllerFactory.setSlotDaoFactory(slotDaoFactory);
+        doctorControllerFactory.setResponseDaoFactory(responseDaoFactory);
+        doctorControllerFactory.setRequestDaoFactory(new RequestDaoFactoryImpl(ConnectionFactory.getConnection()));
         doctorControllerFactory.setNavigator(doctorNavigator);
 
         LoginNavigator loginNavigator = new LoginNavigator(navigatorController, loginFactory);
         loginFactory.setUserDaoFactory(userDaoFactory);
         loginFactory.setLoginNavigator(loginNavigator);
-        patientFactory.setRequestDaoFactory(requestDaoFactory);
-        patientFactory.setResponseDaoFactory(responseDaoFactory);
-        doctorControllerFactory.setResponseDaoFactory(responseDaoFactory);
-        doctorControllerFactory.setRequestDaoFactory(new RequestDaoFactoryImpl(ConnectionFactory.getConnection()));
         loginFactory.setPatientNavigator(patientNavigator);
         loginFactory.setDoctorNavigator(doctorNavigator);
         loginNavigator.navigate(LoginDestination.LOGIN);
 
         stage.setScene(scene);
+        stage.setMaximized(true);
         stage.show();
     }
 

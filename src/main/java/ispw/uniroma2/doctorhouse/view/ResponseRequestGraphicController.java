@@ -3,8 +3,6 @@ package ispw.uniroma2.doctorhouse.view;
 import ispw.uniroma2.doctorhouse.beans.*;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
-import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorDestination;
-import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorNavigator;
 import ispw.uniroma2.doctorhouse.requestprescription.ResponseRequest;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,13 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class ResponseRequestGraphicController implements ViewController {
-
-    @FXML
-    private Button rearrangeAppointmentBtn;
-
-    @FXML
-    private Button requestPrescriptionBtn;
-
     @FXML
     private Button showBtn;
 
@@ -76,24 +67,17 @@ public class ResponseRequestGraphicController implements ViewController {
     @FXML
     private Button sendReject;
 
-    private final DoctorNavigator navigator;
     private final ResponseRequest responseRequest;
     private int requestId;
 
 
-    public ResponseRequestGraphicController(DoctorNavigator navigator, ResponseRequest responseRequest) {
-        this.navigator = navigator;
+    public ResponseRequestGraphicController(ResponseRequest responseRequest) {
         this.responseRequest = responseRequest;
     }
 
     @Override
     public Parent getView() {
         return view;
-    }
-
-    @FXML
-    void rearrange() {
-        navigator.navigate(DoctorDestination.REARRANGE_APPOINTMENT);
     }
 
     @FXML

@@ -4,7 +4,6 @@ import ispw.uniroma2.doctorhouse.beans.PrescriptionRequestBean;
 import ispw.uniroma2.doctorhouse.beans.ResponsePatientBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.Session;
-import ispw.uniroma2.doctorhouse.navigation.Navigator;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescription;
 import javafx.collections.FXCollections;
@@ -19,13 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public abstract class RequestPrescriptionGraphicController<D> implements ViewController {
-    @FXML
-    private Button rearrangeAppointmentBtn;
-
-    @FXML
-    private Button requestPrescriptionBtn;
-
+public abstract class RequestPrescriptionGraphicController implements ViewController {
     @FXML
     private Button sendRequest;
 
@@ -51,12 +44,9 @@ public abstract class RequestPrescriptionGraphicController<D> implements ViewCon
     private TableColumn<ResponsePatientBean, String> col3;
     @FXML
     private TableColumn<ResponsePatientBean, Integer> col4;
-    protected final Navigator<D> navigator;
-
     private final RequestPrescription requestPrescription;
 
-    protected RequestPrescriptionGraphicController(Navigator<D> navigator, RequestPrescription requestPrescription) {
-        this.navigator = navigator;
+    protected RequestPrescriptionGraphicController(RequestPrescription requestPrescription) {
         this.requestPrescription = requestPrescription;
     }
 
@@ -64,9 +54,6 @@ public abstract class RequestPrescriptionGraphicController<D> implements ViewCon
     public Parent getView() {
         return view;
     }
-
-    @FXML
-    public abstract void rearrange();
 
     public void sendRequest() {
         String message = textRequest.getText();

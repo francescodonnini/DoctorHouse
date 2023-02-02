@@ -54,7 +54,7 @@ public class DoctorControllerFactoryImpl implements DoctorControllerFactory {
     public ViewController createResponsePrescription() {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("doctor_response_page.fxml"));
-        loader.setControllerFactory(f -> new ResponseRequestGraphicController(navigator, new ResponseRequest(responseDaoFactory.create(), requestDaoFactory.create())));
+        loader.setControllerFactory(f -> new ResponseRequestGraphicController(new ResponseRequest(responseDaoFactory.create(), requestDaoFactory.create())));
         try {
             loader.load();
             return loader.getController();
@@ -67,7 +67,6 @@ public class DoctorControllerFactoryImpl implements DoctorControllerFactory {
     public ViewController createHomePage() {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("doctor-home-page.fxml"));
-        loader.setControllerFactory(f -> new DoctorHomePage(navigator));
         try {
             loader.load();
             return loader.getController();
@@ -111,7 +110,7 @@ public class DoctorControllerFactoryImpl implements DoctorControllerFactory {
     public ViewController createRequestPrescription() {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("patient-request-page.fxml"));
-        loader.setControllerFactory(f -> new DoctorRequestPrescriptionGraphicController(navigator, new RequestPrescription(requestDaoFactory.create(), responseDaoFactory.create())));
+        loader.setControllerFactory(f -> new DoctorRequestPrescriptionGraphicController(new RequestPrescription(requestDaoFactory.create(), responseDaoFactory.create())));
         try {
             loader.load();
             return loader.getController();

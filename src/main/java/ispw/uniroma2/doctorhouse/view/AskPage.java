@@ -30,8 +30,6 @@ public abstract class AskPage<D> implements ViewController {
     @FXML
     private BorderPane view;
     @FXML
-    private Button goBack;
-    @FXML
     private TableColumn<AppointmentBean, String> addressTblCol;
 
     @FXML
@@ -83,6 +81,9 @@ public abstract class AskPage<D> implements ViewController {
     @FXML
     private Button searchBtn;
 
+    @FXML
+    private Label persistentErrorLbl;
+
     protected AskPage(AskForRearrange controller, Navigator<D> navigator) {
         this.controller = controller;
         this.navigator = navigator;
@@ -98,21 +99,9 @@ public abstract class AskPage<D> implements ViewController {
     }
 
     @FXML
-    protected abstract void goBack(ActionEvent ignored);
-
-    @FXML
     private void initialize() {
-        table.setItems(beans);
         slotListView.setItems(slots);
-        otherTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getDoctor().getEmail()));
-        countryTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getCountry()));
-        provinceTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getProvince()));
-        cityTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getCity()));
-        addressTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getAddress()));
-        dateTblCol.setCellValueFactory(col -> new SimpleStringProperty(dateFmt.format(col.getValue().getDateTime())));
-        startTimeTblCol.setCellValueFactory(col -> new SimpleStringProperty(timeFmt.format(col.getValue().getDateTime())));
-        endTimeTblCol.setCellValueFactory(col -> new SimpleStringProperty(timeFmt.format(col.getValue().getDateTime().plus(col.getValue().getSpecialty().getDuration()))));
-        serviceTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getSpecialty().getName()));
+        initTable();
         table.setOnMouseClicked(this::onClick);
         fromDateErrorLbl.managedProperty().bind(fromDateErrorLbl.textProperty().isNotEmpty());
         fromDateErrorLbl.visibleProperty().bind(fromDateErrorLbl.managedProperty());
@@ -123,13 +112,30 @@ public abstract class AskPage<D> implements ViewController {
                 toDatePicker.setValue(newVal.plusDays(7));
             }
         }));
+        persistentErrorLbl.managedProperty().bind(persistentErrorLbl.textProperty().isNotEmpty());
+        persistentErrorLbl.visibleProperty().bind(persistentErrorLbl.managedProperty());
         slotListView.setOnMouseClicked(this::onMouseClicked);
         try {
             beans.addAll(controller.getIncomingAppointments());
+            persistentErrorLbl.setText("");
         } catch (PersistentLayerException e) {
-            throw new RuntimeException(e);
+            persistentErrorLbl.setText("A problem occurred while trying to recover your incoming appointments. Try again later or call support if the problem persists.");
         }
     }
+
+    private void initTable() {
+        table.setItems(beans);
+        otherTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getDoctor().getEmail()));
+        countryTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getCountry()));
+        provinceTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getProvince()));
+        cityTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getCity()));
+        addressTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getAddress()));
+        dateTblCol.setCellValueFactory(col -> new SimpleStringProperty(dateFmt.format(col.getValue().getDateTime())));
+        startTimeTblCol.setCellValueFactory(col -> new SimpleStringProperty(timeFmt.format(col.getValue().getDateTime())));
+        endTimeTblCol.setCellValueFactory(col -> new SimpleStringProperty(timeFmt.format(col.getValue().getDateTime().plus(col.getValue().getSpecialty().getDuration()))));
+        serviceTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getSpecialty().getName()));
+    }
+
     private void onMouseClicked(MouseEvent mouseEvent) {
         AppointmentBean selectedAppointment = table.getSelectionModel().getSelectedItem();
         if (selectedAppointment == null) {
@@ -150,14 +156,16 @@ public abstract class AskPage<D> implements ViewController {
                     controller.ask(selectedAppointment, date.atTime(a));
                     beans.remove(selectedAppointment);
                     slots.clear();
+                    persistentErrorLbl.setText("");
                 } catch (InvalidTimeSlot e) {
-                    throw new RuntimeException(e);
+                    persistentErrorLbl.setText("The selected time slot is not available anymore, please try another one.");
+                    searchFreeSlots(null);
                 } catch (PersistentLayerException e) {
-                    throw new RuntimeException(e);
+                    persistentErrorLbl.setText("An error occurred while trying to rearrange the appointment. please try again later or contact support if the problem persists.");
                 }
             });
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            persistentErrorLbl.setText("An unexpected error occurred, please contact support.");
         }
     }
 
@@ -175,7 +183,7 @@ public abstract class AskPage<D> implements ViewController {
     }
 
     @FXML
-    private void searchFreeSlots(ActionEvent event) {
+    private void searchFreeSlots(ActionEvent ignored) {
         BooleanProperty cannotSubmit = new SimpleBooleanProperty(false);
         cannotSubmit.bind(
                 fromDateErrorLbl.textProperty().isNotEmpty().or(toDateErrorLbl.textProperty().isNotEmpty())
@@ -206,8 +214,9 @@ public abstract class AskPage<D> implements ViewController {
             slots.clear();
             try {
                 slots.addAll(controller.getFreeSlots(selected, from, to));
+                persistentErrorLbl.setText("");
             } catch (PersistentLayerException e) {
-                throw new RuntimeException(e);
+                persistentErrorLbl.setText("An error occurred while trying to recover the free time slots on which rearrange the appointment. Try again or contact support if the problem persists.");
             }
         }
     }

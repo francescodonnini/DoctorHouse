@@ -1,12 +1,11 @@
 package ispw.uniroma2.doctorhouse.view;
 
+import ispw.uniroma2.doctorhouse.beans.DoctorBean;
 import ispw.uniroma2.doctorhouse.beans.LoginRequestBean;
 import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
 import ispw.uniroma2.doctorhouse.auth.Login;
+import ispw.uniroma2.doctorhouse.beans.UserBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
-import ispw.uniroma2.doctorhouse.model.Session;
-import ispw.uniroma2.doctorhouse.model.User;
-import ispw.uniroma2.doctorhouse.model.Doctor;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorDestination;
 import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorNavigator;
@@ -69,11 +68,10 @@ public class LoginUserPage implements ViewController {
             LoginRequestBean loginRequest = new LoginRequestBean();
             loginRequest.setEmail(email);
             loginRequest.setPassword(password);
-            login.login(loginRequest);
-            User user = Session.getSession().getUser();
-            if (user instanceof Doctor) {
-                doctorNavigator.navigate(DoctorDestination.DOCTOR_HOME_PAGE);
-            } else if (user != null) {
+            UserBean bean = login.login(loginRequest);
+            if (bean instanceof DoctorBean) {
+                doctorNavigator.navigate(DoctorDestination.HOME_PAGE);
+            } else if (bean != null) {
                 patientNavigator.navigate(PatientDestination.HOME_PAGE);
             }
         } catch (UserNotFound e) {

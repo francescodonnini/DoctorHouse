@@ -23,7 +23,6 @@ public class LoginNavigator extends Navigator<LoginDestination> {
             Platform.exit();
         }
     }
-
     private ViewController makeViewController(LoginDestination destination) throws IOException {
         switch (destination) {
             case LOGIN:

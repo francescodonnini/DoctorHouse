@@ -4,18 +4,6 @@ import ispw.uniroma2.doctorhouse.dao.*;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDao;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDatabaseFactory;
-import ispw.uniroma2.doctorhouse.dao.OfficeDao;
-import ispw.uniroma2.doctorhouse.dao.OfficeDaoFactory;
-import ispw.uniroma2.doctorhouse.dao.OfficeDatabaseFactory;
-import ispw.uniroma2.doctorhouse.dao.ShiftDao;
-import ispw.uniroma2.doctorhouse.dao.ShiftDaoFactory;
-import ispw.uniroma2.doctorhouse.dao.ShiftDatabaseFactory;
-import ispw.uniroma2.doctorhouse.dao.SpecialtyDao;
-import ispw.uniroma2.doctorhouse.dao.SpecialtyDaoFactory;
-import ispw.uniroma2.doctorhouse.dao.SpecialtyDatabaseFactory;
-import ispw.uniroma2.doctorhouse.dao.UserDao;
-import ispw.uniroma2.doctorhouse.dao.UserDaoFactory;
-import ispw.uniroma2.doctorhouse.dao.UserDatabaseFactoryImpl;
 import ispw.uniroma2.doctorhouse.dao.slot.SlotDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.slot.SlotDatabaseFactory;
 import ispw.uniroma2.doctorhouse.navigation.NavigatorController;
@@ -48,7 +36,12 @@ public class Main extends Application {
         officeDaoFactory.setShiftDao(shiftDao);
         OfficeDao officeDao = officeDaoFactory.create();
 
-        UserDaoFactory userDaoFactory = new UserDatabaseFactoryImpl(ConnectionFactory.getConnection());
+        UserDaoFactory userDaoFactory;
+        if (System.currentTimeMillis() % 2 == 0) {
+            userDaoFactory = new UserDatabaseFactoryImpl(ConnectionFactory.getConnection());
+        } else {
+            userDaoFactory = new UserFileFactory();
+        }
         userDaoFactory.setOfficeDao(officeDao);
         UserDao userDao = userDaoFactory.create();
 

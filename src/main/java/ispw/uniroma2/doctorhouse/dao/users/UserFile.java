@@ -1,4 +1,4 @@
-package ispw.uniroma2.doctorhouse.dao;
+package ispw.uniroma2.doctorhouse.dao.users;
 
 import com.opencsv.*;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
@@ -9,6 +9,7 @@ import ispw.uniroma2.doctorhouse.beans.LoginRequestBean;
 import ispw.uniroma2.doctorhouse.beans.UserBean;
 import ispw.uniroma2.doctorhouse.beans.UserRegistrationRequestBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
+import ispw.uniroma2.doctorhouse.dao.office.OfficeDao;
 import ispw.uniroma2.doctorhouse.model.*;
 
 import java.io.*;

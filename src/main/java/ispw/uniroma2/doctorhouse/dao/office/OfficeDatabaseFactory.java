@@ -1,4 +1,7 @@
-package ispw.uniroma2.doctorhouse.dao;
+package ispw.uniroma2.doctorhouse.dao.office;
+
+import ispw.uniroma2.doctorhouse.dao.shift.ShiftDao;
+import ispw.uniroma2.doctorhouse.dao.specialty.SpecialtyDao;
 
 import java.sql.Connection;
 
@@ -6,20 +9,12 @@ import java.sql.Connection;
 public class OfficeDatabaseFactory implements OfficeDaoFactory {
 
     private final Connection connection;
-    private SpecialtyDao specialtyDao;
-    private ShiftDao shiftDao;
+    private final SpecialtyDao specialtyDao;
+    private final ShiftDao shiftDao;
 
-    public OfficeDatabaseFactory(Connection connection) {
+    public OfficeDatabaseFactory(Connection connection, SpecialtyDao specialtyDao, ShiftDao shiftDao) {
         this.connection = connection;
-    }
-
-    @Override
-    public void setSpecialtyDao(SpecialtyDao specialtyDao) {
         this.specialtyDao = specialtyDao;
-    }
-
-    @Override
-    public void setShiftDao(ShiftDao shiftDao) {
         this.shiftDao = shiftDao;
     }
 

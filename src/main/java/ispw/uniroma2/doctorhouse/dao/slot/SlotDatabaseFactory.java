@@ -6,14 +6,10 @@ import java.sql.Connection;
 
 public class SlotDatabaseFactory implements SlotDaoFactory {
     private final Connection connection;
-    private AppointmentDao appointmentDao;
+    private final AppointmentDao appointmentDao;
 
-    public SlotDatabaseFactory(Connection connection) {
+    public SlotDatabaseFactory(Connection connection, AppointmentDao appointmentDao) {
         this.connection = connection;
-    }
-
-    @Override
-    public void setAppointmentDao(AppointmentDao appointmentDao) {
         this.appointmentDao = appointmentDao;
     }
 

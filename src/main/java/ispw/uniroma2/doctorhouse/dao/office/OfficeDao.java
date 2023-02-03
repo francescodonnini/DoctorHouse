@@ -1,4 +1,4 @@
-package ispw.uniroma2.doctorhouse.dao;
+package ispw.uniroma2.doctorhouse.dao.office;
 
 import ispw.uniroma2.doctorhouse.beans.DoctorBean;
 import ispw.uniroma2.doctorhouse.beans.OfficeBean;

@@ -1,8 +1,9 @@
-package ispw.uniroma2.doctorhouse.dao;
+package ispw.uniroma2.doctorhouse.dao.users;
 
 import ispw.uniroma2.doctorhouse.beans.*;
 import ispw.uniroma2.doctorhouse.auth.exceptions.DuplicateEmail;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
+import ispw.uniroma2.doctorhouse.dao.office.OfficeDao;
 import ispw.uniroma2.doctorhouse.model.*;
 import ispw.uniroma2.doctorhouse.model.Doctor;
 

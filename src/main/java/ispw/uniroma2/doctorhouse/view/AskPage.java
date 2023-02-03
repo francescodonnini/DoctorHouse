@@ -4,7 +4,6 @@ import ispw.uniroma2.doctorhouse.beans.AppointmentBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.InvalidTimeSlot;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.DateTimeInterval;
-import ispw.uniroma2.doctorhouse.navigation.Navigator;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.rearrange.AskForRearrange;
 import javafx.beans.property.BooleanProperty;
@@ -24,9 +23,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public abstract class AskPage<D> implements ViewController {
+public class AskPage implements ViewController {
     private final AskForRearrange controller;
-    protected final Navigator<D> navigator;
     @FXML
     private BorderPane view;
     @FXML
@@ -84,9 +82,8 @@ public abstract class AskPage<D> implements ViewController {
     @FXML
     private Label persistentErrorLbl;
 
-    protected AskPage(AskForRearrange controller, Navigator<D> navigator) {
+    public AskPage(AskForRearrange controller) {
         this.controller = controller;
-        this.navigator = navigator;
         beans = FXCollections.observableArrayList();
         slots = FXCollections.observableArrayList();
         dateFmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");

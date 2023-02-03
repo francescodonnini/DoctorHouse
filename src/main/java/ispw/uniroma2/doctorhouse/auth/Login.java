@@ -4,7 +4,7 @@ import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
 import ispw.uniroma2.doctorhouse.beans.DoctorBean;
 import ispw.uniroma2.doctorhouse.beans.LoginRequestBean;
 import ispw.uniroma2.doctorhouse.beans.UserBean;
-import ispw.uniroma2.doctorhouse.dao.UserDao;
+import ispw.uniroma2.doctorhouse.dao.users.UserDao;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.Doctor;
 import ispw.uniroma2.doctorhouse.model.Session;

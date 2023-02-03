@@ -5,7 +5,7 @@ import ispw.uniroma2.doctorhouse.beans.UserBean;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDao;
 import ispw.uniroma2.doctorhouse.dao.exceptions.InvalidTimeSlot;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
-import ispw.uniroma2.doctorhouse.dao.OfficeDao;
+import ispw.uniroma2.doctorhouse.dao.office.OfficeDao;
 import ispw.uniroma2.doctorhouse.dao.slot.SlotDao;
 import ispw.uniroma2.doctorhouse.model.ClockInterval;
 import ispw.uniroma2.doctorhouse.model.DateTimeInterval;

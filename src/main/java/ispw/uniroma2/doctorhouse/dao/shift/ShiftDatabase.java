@@ -1,4 +1,4 @@
-package ispw.uniroma2.doctorhouse.dao;
+package ispw.uniroma2.doctorhouse.dao.shift;
 
 import ispw.uniroma2.doctorhouse.beans.OfficeBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;

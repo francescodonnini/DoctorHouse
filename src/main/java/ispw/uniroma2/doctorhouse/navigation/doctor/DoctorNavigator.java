@@ -4,6 +4,9 @@ import ispw.uniroma2.doctorhouse.navigation.Navigator;
 import ispw.uniroma2.doctorhouse.navigation.NavigatorController;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.view.DoctorToolbarController;
+import javafx.application.Platform;
+
+import java.io.IOException;
 
 
 public class DoctorNavigator extends Navigator<DoctorDestination> {
@@ -20,10 +23,14 @@ public class DoctorNavigator extends Navigator<DoctorDestination> {
     @Override
     public void navigate(DoctorDestination destination) {
         controller.attach(toolbarController);
-        controller.push(makeViewController(destination));
+        try {
+            controller.push(makeViewController(destination));
+        } catch (IOException e) {
+            Platform.exit();
+        }
     }
 
-    private ViewController makeViewController(DoctorDestination destination) {
+    private ViewController makeViewController(DoctorDestination destination) throws IOException {
         switch (destination) {
             case HOME_PAGE:
                 return factory.createHomePage();

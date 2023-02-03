@@ -3,7 +3,6 @@ package ispw.uniroma2.doctorhouse.view;
 import ispw.uniroma2.doctorhouse.beans.PendingAppointmentBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.InvalidTimeSlot;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
-import ispw.uniroma2.doctorhouse.navigation.Navigator;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.rearrange.DoRearrange;
 import ispw.uniroma2.doctorhouse.rearrange.What;
@@ -12,15 +11,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 
 import java.time.format.DateTimeFormatter;
 
-public abstract class DoRearrangePage<D> implements ViewController {
+public class DoRearrangePage implements ViewController {
     private final DoRearrange controller;
-    protected final Navigator<D> navigator;
     @FXML
     private BorderPane view;
     @FXML
@@ -59,9 +62,8 @@ public abstract class DoRearrangePage<D> implements ViewController {
     @FXML
     private Label errorLbl;
 
-    protected DoRearrangePage(DoRearrange controller, Navigator<D> navigator) {
+    protected DoRearrangePage(DoRearrange controller) {
         this.controller = controller;
-        this.navigator = navigator;
         beans = FXCollections.observableArrayList();
         dateFmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         timeFmt = DateTimeFormatter.ofPattern("hh:mm");
@@ -114,6 +116,8 @@ public abstract class DoRearrangePage<D> implements ViewController {
                     controller.submit(bean, What.CONFIRM);
                 } else if (a.getButtonData().equals(ButtonBar.ButtonData.NO)) {
                     controller.submit(bean, What.CANCEL);
+                } else {
+                    return;
                 }
                 beans.remove(bean);
                 clearError();

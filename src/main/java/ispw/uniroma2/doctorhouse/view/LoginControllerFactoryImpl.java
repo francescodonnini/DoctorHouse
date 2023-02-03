@@ -3,7 +3,7 @@ package ispw.uniroma2.doctorhouse.view;
 import ispw.uniroma2.doctorhouse.IrrecoverableError;
 import ispw.uniroma2.doctorhouse.auth.Login;
 import ispw.uniroma2.doctorhouse.auth.RegisterUser;
-import ispw.uniroma2.doctorhouse.dao.UserDaoFactory;
+import ispw.uniroma2.doctorhouse.dao.users.UserDaoFactory;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorNavigator;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginControllerFactory;

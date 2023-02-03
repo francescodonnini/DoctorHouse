@@ -39,7 +39,7 @@ public class SlotDatabase implements SlotDao {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new PersistentLayerException(e);
         }
         return slots;
     }

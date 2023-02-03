@@ -14,6 +14,5 @@ public interface UserDao {
     void create(UserRegistrationRequestBean registrationRequest) throws DuplicateEmail, PersistentLayerException;
     Optional<User> getUser(UserBean userBean) throws PersistentLayerException;
     Optional<Doctor> getDoctor(DoctorBean doctorBean) throws PersistentLayerException;
-    Optional<Doctor> getFamilyDoctor(DoctorBean doctorBean) throws PersistentLayerException;
     List<Doctor> getByField(String field) throws PersistentLayerException;
 }

@@ -35,11 +35,6 @@ public class Pending implements AppointmentState {
     }
 
     @Override
-    public void reschedule(AppointmentImpl appointment, LocalDateTime newDate, User initiator) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void tick(AppointmentImpl appointment, LocalDateTime currentDate) {
        if (!info.getOldDate().isAfter(currentDate)) {
            CanceledInfo newInfo = new CanceledInfo(info.getDoctor(), info.getPatient(), info.getSpecialty(), info.getOffice(), info.getOldDate(), null);

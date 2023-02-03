@@ -6,8 +6,16 @@ import java.time.LocalDateTime;
 
 interface AppointmentState {
     AppointmentInfo getInfo();
-    void cancel(AppointmentImpl appointment, User initiator);
-    void confirm(AppointmentImpl appointment, User initiator);
-    void reschedule(AppointmentImpl appointment, LocalDateTime newDate, User initiator);
-    void tick(AppointmentImpl appointment, LocalDateTime currentDate);
+    default void cancel(AppointmentImpl appointment, User initiator) {
+        throw new UnsupportedOperationException();
+    }
+    default void confirm(AppointmentImpl appointment, User initiator) {
+        throw new UnsupportedOperationException();
+    }
+    default void reschedule(AppointmentImpl appointment, LocalDateTime newDate, User initiator) {
+        throw new UnsupportedOperationException();
+    }
+    default void tick(AppointmentImpl appointment, LocalDateTime currentDate) {
+        throw new UnsupportedOperationException();
+    }
 }

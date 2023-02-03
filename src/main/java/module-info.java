@@ -2,6 +2,7 @@ module ispw.uniroma2.doctorhouse {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
+    requires com.opencsv;
 
     exports ispw.uniroma2.doctorhouse;
     exports ispw.uniroma2.doctorhouse.dao;

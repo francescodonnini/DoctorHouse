@@ -24,11 +24,6 @@ public class Incoming implements AppointmentState {
     }
 
     @Override
-    public void confirm(AppointmentImpl appointment, User initiator) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void reschedule(AppointmentImpl appointment, LocalDateTime newDate, User initiator) {
         PendingInfo newStateInfo = new PendingInfo(info.getDoctor(), info.getPatient(), info.getSpecialty(), info.getOffice(), initiator, info.getDate(), newDate);
         Pending newState = new Pending(newStateInfo);

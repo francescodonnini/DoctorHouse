@@ -67,11 +67,11 @@ public class UserFile implements UserDao {
     }
 
     private boolean authenticate(String email1, String email2, String passwordHash, String password) throws NoSuchAlgorithmException {
-        return email1.equals(email2) && passwordHash.equals(getMD5(password));
+        return email1.equals(email2) && passwordHash.equals(getSHA512(password));
     }
 
-    private String getMD5(String password) throws NoSuchAlgorithmException {
-        MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+    private String getSHA512(String password) throws NoSuchAlgorithmException {
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
         byte[] bytes = messageDigest.digest(password.getBytes());
         BigInteger hash = new BigInteger(1, bytes);
         StringBuilder s = new StringBuilder(hash.toString(16));
@@ -99,7 +99,7 @@ public class UserFile implements UserDao {
                     registrationRequest.getEmail(),
                     String.valueOf(registrationRequest.getGender().isoCode),
                     registrationRequest.getLastName(),
-                    getMD5(registrationRequest.getPassword()),
+                    getSHA512(registrationRequest.getPassword()),
                     familyDoctorEmail
             });
         } catch (IOException | NoSuchAlgorithmException e) {

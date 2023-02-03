@@ -116,8 +116,6 @@ public class AppointmentDatabase implements AppointmentDao {
                 statement.setString(2, "c");
             } else if (ConsumedInfo.class.equals(type)) {
                 statement.setString(2, "co");
-            } else if (PendingInfo.class.equals(type)) {
-                statement.setString(2, "p");
             } else if (IncomingInfo.class.equals(type)) {
                 statement.setString(2, "s");
             }

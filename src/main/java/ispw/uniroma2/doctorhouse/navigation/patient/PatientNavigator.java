@@ -5,6 +5,9 @@ import ispw.uniroma2.doctorhouse.navigation.NavigatorController;
 import ispw.uniroma2.doctorhouse.navigation.ToolBarController;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.view.PatientToolBarController;
+import javafx.application.Platform;
+
+import java.io.IOException;
 
 public class PatientNavigator extends Navigator<PatientDestination> {
     private final PatientControllerFactory factory;
@@ -17,15 +20,17 @@ public class PatientNavigator extends Navigator<PatientDestination> {
         this.factory = factory;
     }
 
-
-
     @Override
     public void navigate(PatientDestination destination) {
         controller.attach(toolBarController);
-        controller.push(makeViewController(destination));
+        try {
+            controller.push(makeViewController(destination));
+        } catch (IOException e) {
+            Platform.exit();
+        }
     }
 
-    private ViewController makeViewController(PatientDestination destination) {
+    private ViewController makeViewController(PatientDestination destination) throws IOException {
         switch (destination) {
             case REARRANGE:
                 return factory.createRearrangeAppointmentPage();
@@ -36,7 +41,7 @@ public class PatientNavigator extends Navigator<PatientDestination> {
             case HOME_PAGE:
                 return factory.createHomePage();
             default:
-                throw new UnsupportedOperationException();
+                return factory.createNoDestinationPage();
         }
     }
 }

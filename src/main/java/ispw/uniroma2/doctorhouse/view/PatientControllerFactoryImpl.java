@@ -1,10 +1,9 @@
 package ispw.uniroma2.doctorhouse.view;
 
-import ispw.uniroma2.doctorhouse.IrrecoverableError;
-import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.OfficeDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.RequestDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.ResponseDaoFactory;
+import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.slot.SlotDaoFactory;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.navigation.patient.PatientControllerFactory;
@@ -22,7 +21,6 @@ public class PatientControllerFactoryImpl implements PatientControllerFactory {
     private OfficeDaoFactory officeDaoFactory;
     private RequestDaoFactory requestDaoFactory;
     private SlotDaoFactory slotDaoFactory;
-
     private ResponseDaoFactory responseDaoFactory;
 
     public void setAppointmentDaoFactory(AppointmentDaoFactory appointmentDaoFactory) {
@@ -49,53 +47,46 @@ public class PatientControllerFactoryImpl implements PatientControllerFactory {
     }
 
     @Override
-    public ViewController createHomePage() {
+    public ViewController createHomePage() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("patient-home-page.fxml"));
-        try {
-            loader.load();
-            return loader.getController();
-        } catch (IOException e) {
-            throw new IrrecoverableError(e);
-        }
+        loader.load();
+        return loader.getController();
     }
 
     @Override
-    public ViewController createRearrangeAppointmentPage() {
+    public ViewController createRearrangeAppointmentPage() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("ask-page.fxml"));
         loader.setControllerFactory(f -> new PatientAskPage(new AskForRearrangeImpl(appointmentDaoFactory.create(), slotDaoFactory.create(), officeDaoFactory.create()), navigator));
-        try {
-            loader.load();
-            return loader.getController();
-        } catch (IOException e) {
-            throw new UnsupportedOperationException();
-        }
+        loader.load();
+        return loader.getController();
     }
 
     @Override
-    public ViewController createRequestPrescriptionPage() {
+    public ViewController createRequestPrescriptionPage() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("patient-request-page.fxml"));
         loader.setControllerFactory(f -> new PatientRequestPrescriptionGraphicController(new RequestPrescription(requestDaoFactory.create(), responseDaoFactory.create())));
-        try {
-            loader.load();
-            return loader.getController();
-        } catch (IOException e) {
-            throw new IrrecoverableError(e);
-        }
+        loader.load();
+        return loader.getController();
+
     }
 
     @Override
-    public ViewController createDoRearrangeAppointmentPage() {
+    public ViewController createNoDestinationPage() throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("no-destination-page.fxml"));
+        loader.load();
+        return loader.getController();
+    }
+
+    @Override
+    public ViewController createDoRearrangeAppointmentPage() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("do-rearrange-page.fxml"));
         loader.setControllerFactory(f -> new PatientDoRearrange(new DoRearrangeImpl(appointmentDaoFactory.create()), navigator));
-        try {
-            loader.load();
-            return loader.getController();
-        } catch (IOException e) {
-            throw new UnsupportedOperationException();
-        }
+        loader.load();
+        return loader.getController();
     }
 }

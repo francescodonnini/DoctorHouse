@@ -1,5 +1,9 @@
 package ispw.uniroma2.doctorhouse;
 
+import ispw.uniroma2.doctorhouse.auth.LoginFactory;
+import ispw.uniroma2.doctorhouse.auth.LoginFactoryImpl;
+import ispw.uniroma2.doctorhouse.auth.RegisterUserFactory;
+import ispw.uniroma2.doctorhouse.auth.RegisterUserFactoryImpl;
 import ispw.uniroma2.doctorhouse.dao.*;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDao;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDaoFactory;
@@ -79,8 +83,6 @@ public class Main extends Application {
         AskForRearrangeFactory askFactory = new AskForRearrangeFactoryImpl(appointmentDao, officeDao, slotDao);
         DoRearrangeFactory doRearrangeFactory = new DoRearrangeFactoryImpl(appointmentDao);
 
-        LoginControllerFactoryImpl loginFactory = new LoginControllerFactoryImpl();
-
         PatientControllerFactoryImpl patientFactory = new PatientControllerFactoryImpl(askFactory, doRearrangeFactory);
         patientFactory.setRequestDaoFactory(new RequestDaoFactoryImpl(ConnectionFactory.getConnection()));
 
@@ -100,11 +102,11 @@ public class Main extends Application {
         doctorControllerFactory.setResponseDaoFactory(responseDaoFactory);
         doctorControllerFactory.setRequestDaoFactory(new RequestDaoFactoryImpl(ConnectionFactory.getConnection()));
 
+        LoginFactory loginAppControllerFactory = new LoginFactoryImpl(userDao);
+        RegisterUserFactory registerUserFactory = new RegisterUserFactoryImpl(userDao);
+        LoginControllerFactoryImpl loginFactory = new LoginControllerFactoryImpl(loginAppControllerFactory, registerUserFactory, patientNavigator, doctorNavigator);
         LoginNavigator loginNavigator = new LoginNavigator(navigatorController, loginFactory);
-        loginFactory.setUserDaoFactory(userDaoFactory);
         loginFactory.setLoginNavigator(loginNavigator);
-        loginFactory.setPatientNavigator(patientNavigator);
-        loginFactory.setDoctorNavigator(doctorNavigator);
         loginNavigator.navigate(LoginDestination.LOGIN);
 
         stage.setScene(scene);

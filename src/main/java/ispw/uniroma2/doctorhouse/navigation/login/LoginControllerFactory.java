@@ -2,8 +2,10 @@ package ispw.uniroma2.doctorhouse.navigation.login;
 
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 
+import java.io.IOException;
+
 public interface LoginControllerFactory {
-    ViewController createRegisterViewController();
-    ViewController createIrrecoverableErrorController();
-    ViewController createLoginController();
+    ViewController createRegisterViewController() throws IOException;
+    ViewController createIrrecoverableErrorController() throws IOException;
+    ViewController createLoginController() throws IOException;
 }

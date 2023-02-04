@@ -25,8 +25,8 @@ public class RequestDatabase implements RequestDao{
     @Override
     public void addRequestOfPrescription(PrescriptionRequestBean requestBean) throws PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL request_prescription(?, ?, ?);")) {
-            statement.setString(1, requestBean.getPatient().getFamilyDoctor().orElseThrow().getEmail());
-            statement.setString(2, requestBean.getPatient().getEmail());
+            statement.setString(1, Session.getSession().getUser().getFamilyDoctor().orElseThrow().getEmail());
+            statement.setString(2, Session.getSession().getUser().getEmail());
             statement.setString(3, requestBean.getMessage());
             statement.execute();
         } catch (SQLException e) {

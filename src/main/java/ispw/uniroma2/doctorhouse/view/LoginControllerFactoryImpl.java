@@ -1,5 +1,6 @@
 package ispw.uniroma2.doctorhouse.view;
 
+import ispw.uniroma2.doctorhouse.DoctorApplicationControllersFactory;
 import ispw.uniroma2.doctorhouse.PatientApplicationControllersFactory;
 import ispw.uniroma2.doctorhouse.auth.LoginFactory;
 import ispw.uniroma2.doctorhouse.auth.RegisterUserFactory;
@@ -16,11 +17,13 @@ public class LoginControllerFactoryImpl implements LoginControllerFactory {
     private final RegisterUserFactory registerUserFactory;
     private final PatientApplicationControllersFactory patientFactory;
 
-    public LoginControllerFactoryImpl(LoginFactory loginFactory, RegisterUserFactory registerUserFactory, PatientApplicationControllersFactory patientFactory) {
+    private final DoctorApplicationControllersFactory doctorApplicationControllersFactory;
+
+    public LoginControllerFactoryImpl(LoginFactory loginFactory, RegisterUserFactory registerUserFactory, PatientApplicationControllersFactory patientFactory, DoctorApplicationControllersFactory doctorApplicationControllersFactory) {
         this.loginFactory = loginFactory;
         this.registerUserFactory = registerUserFactory;
         this.patientFactory = patientFactory;
-
+        this.doctorApplicationControllersFactory = doctorApplicationControllersFactory;
     }
 
     public void setLoginNavigator(LoginNavigator loginNavigator) {
@@ -87,8 +90,22 @@ public class LoginControllerFactoryImpl implements LoginControllerFactory {
         return loader.getController();
     }
 
+    private ViewController createResponsePage() throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("doctor_response_page.fxml"));
+        loader.setControllerFactory(f-> new ResponseRequestGraphicController(doctorApplicationControllersFactory.createResponseRequest()));
+        loader.load();
+        return loader.getController();
+    }
+
+
     @Override
     public ViewController createDoctorHomePage() throws IOException {
-        throw new UnsupportedOperationException();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("doctor-home-page.fxml"));
+        DoctorHomePage homePage = new DoctorHomePage(createRearrangeAppointmentPage(), createDoRearrangeAppointmentPage(), createRequestPrescriptionPage(), createResponsePage());
+        loader.setControllerFactory(f -> homePage);
+        loader.load();
+        return loader.getController();
     }
 }

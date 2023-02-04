@@ -3,7 +3,6 @@ package ispw.uniroma2.doctorhouse.view;
 import ispw.uniroma2.doctorhouse.beans.PrescriptionRequestBean;
 import ispw.uniroma2.doctorhouse.beans.ResponsePatientBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
-import ispw.uniroma2.doctorhouse.model.Session;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescription;
 import javafx.collections.FXCollections;
@@ -44,6 +43,8 @@ public abstract class RequestPrescriptionGraphicController implements ViewContro
     private TableColumn<ResponsePatientBean, String> col3;
     @FXML
     private TableColumn<ResponsePatientBean, Integer> col4;
+    @FXML
+    private Label persError;
     private final RequestPrescription requestPrescription;
 
     protected RequestPrescriptionGraphicController(RequestPrescription requestPrescription) {
@@ -62,13 +63,11 @@ public abstract class RequestPrescriptionGraphicController implements ViewContro
         } else {
             PrescriptionRequestBean requestBean = new PrescriptionRequestBean();
             requestBean.setMessage(message);
-            requestBean.setPatient(Session.getSession().getUser());
             try {
                 requestPrescription.sendPrescriptionRequest(requestBean);
                 textRequest.setText("");
             } catch (PersistentLayerException e) {
-                // add visual clue to notify credentials that an error occurred
-                throw new RuntimeException(e);
+                persError.setVisible(true);
             }
         }
     }
@@ -88,7 +87,7 @@ public abstract class RequestPrescriptionGraphicController implements ViewContro
                 response.addAll(bean.get());
             }
         } catch (PersistentLayerException e) {
-            throw new RuntimeException(e);
+            persError.setVisible(true);
         }
     }
 
@@ -97,6 +96,7 @@ public abstract class RequestPrescriptionGraphicController implements ViewContro
         errLbl.managedProperty().bind(errLbl.textProperty().isNotEmpty());
         errLbl.visibleProperty().bind(errLbl.managedProperty());
         responseTable.setVisible(false);
+        persError.setVisible(false);
     }
 
 }

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ispw.uniroma2.doctorhouse.view.RequestPrescriptionGraphicController">
+<BorderPane fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ispw.uniroma2.doctorhouse.view.RequestPrescriptionGraphicController">
    <center>
       <GridPane prefHeight="294.0" prefWidth="499.0" BorderPane.alignment="CENTER">
         <columnConstraints>
@@ -53,6 +53,11 @@
                   <Insets bottom="10.0" left="50.0" right="50.0" top="10.0" />
                </GridPane.margin>
             </TableView>
+            <Label fx:id="persError" text="Persistent error occured" textFill="RED" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets bottom="50.0" />
+               </GridPane.margin>
+            </Label>
          </children>
       </GridPane>
    </center>

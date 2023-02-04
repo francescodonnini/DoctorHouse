@@ -1,6 +1,7 @@
 package ispw.uniroma2.doctorhouse.view;
 
 import ispw.uniroma2.doctorhouse.DoctorApplicationControllersFactory;
+import ispw.uniroma2.doctorhouse.Logout;
 import ispw.uniroma2.doctorhouse.PatientApplicationControllersFactory;
 import ispw.uniroma2.doctorhouse.auth.LoginFactory;
 import ispw.uniroma2.doctorhouse.auth.RegisterUserFactory;
@@ -60,7 +61,7 @@ public class LoginControllerFactoryImpl implements LoginControllerFactory {
     public ViewController createPatientHomePage() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("patient-home-page.fxml"));
-        HomePage homePage = new HomePage(createRearrangeAppointmentPage(), createDoRearrangeAppointmentPage(), createRequestPrescriptionPage());
+        HomePage homePage = new HomePage(createRearrangeAppointmentPage(), createDoRearrangeAppointmentPage(), createRequestPrescriptionPage(), new Logout(), loginNavigator);
         loader.setControllerFactory(f -> homePage);
         loader.load();
         return loader.getController();
@@ -103,7 +104,7 @@ public class LoginControllerFactoryImpl implements LoginControllerFactory {
     public ViewController createDoctorHomePage() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("doctor-home-page.fxml"));
-        DoctorHomePage homePage = new DoctorHomePage(createRearrangeAppointmentPage(), createDoRearrangeAppointmentPage(), createRequestPrescriptionPage(), createResponsePage());
+        DoctorHomePage homePage = new DoctorHomePage(createRearrangeAppointmentPage(), createDoRearrangeAppointmentPage(), createRequestPrescriptionPage(), createResponsePage(), new Logout(), loginNavigator);
         loader.setControllerFactory(f -> homePage);
         loader.load();
         return loader.getController();

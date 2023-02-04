@@ -23,4 +23,7 @@ public class Session {
         return user;
     }
 
+    public static void invalidate() {
+        session = null;
+    }
 }

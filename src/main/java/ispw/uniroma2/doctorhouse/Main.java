@@ -25,17 +25,9 @@ import ispw.uniroma2.doctorhouse.dao.users.UserDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.users.UserDatabaseFactoryImpl;
 import ispw.uniroma2.doctorhouse.dao.users.UserFileFactory;
 import ispw.uniroma2.doctorhouse.navigation.NavigatorController;
-import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorNavigator;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginDestination;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginNavigator;
-import ispw.uniroma2.doctorhouse.navigation.patient.PatientNavigator;
-import ispw.uniroma2.doctorhouse.rearrange.AskForRearrangeFactory;
-import ispw.uniroma2.doctorhouse.rearrange.AskForRearrangeFactoryImpl;
-import ispw.uniroma2.doctorhouse.rearrange.DoRearrangeFactory;
-import ispw.uniroma2.doctorhouse.rearrange.DoRearrangeFactoryImpl;
-import ispw.uniroma2.doctorhouse.view.DoctorControllerFactoryImpl;
 import ispw.uniroma2.doctorhouse.view.LoginControllerFactoryImpl;
-import ispw.uniroma2.doctorhouse.view.PatientControllerFactoryImpl;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -80,32 +72,13 @@ public class Main extends Application {
         Scene scene = new Scene(loader.load());
         NavigatorController navigatorController = loader.getController();
 
-        AskForRearrangeFactory askFactory = new AskForRearrangeFactoryImpl(appointmentDao, officeDao, slotDao);
-        DoRearrangeFactory doRearrangeFactory = new DoRearrangeFactoryImpl(appointmentDao);
-
-        PatientControllerFactoryImpl patientFactory = new PatientControllerFactoryImpl(askFactory, doRearrangeFactory);
-        patientFactory.setRequestDaoFactory(new RequestDaoFactoryImpl(ConnectionFactory.getConnection()));
-
-        FXMLLoader toolbarLoader = new FXMLLoader();
-        toolbarLoader.setLocation(getClass().getResource("view/patient-toolbar.fxml"));
-        toolbarLoader.load();
-        PatientNavigator patientNavigator = new PatientNavigator(navigatorController, toolbarLoader.getController(), patientFactory);
-        patientFactory.setRequestDaoFactory(requestDaoFactory);
-        patientFactory.setResponseDaoFactory(responseDaoFactory);
-
-        FXMLLoader doctorToolbarLoader = new FXMLLoader();
-        doctorToolbarLoader.setLocation(getClass().getResource("view/doctor-toolbar.fxml"));
-        doctorToolbarLoader.load();
-        DoctorControllerFactoryImpl doctorControllerFactory = new DoctorControllerFactoryImpl(askFactory, doRearrangeFactory);
-        DoctorNavigator doctorNavigator = new DoctorNavigator(navigatorController, doctorToolbarLoader.getController(), doctorControllerFactory);
-        doctorControllerFactory.setResponseDaoFactory(responseDaoFactory);
-        doctorControllerFactory.setResponseDaoFactory(responseDaoFactory);
-        doctorControllerFactory.setRequestDaoFactory(new RequestDaoFactoryImpl(ConnectionFactory.getConnection()));
-
-        LoginFactory loginAppControllerFactory = new LoginFactoryImpl(userDao);
+        PatientApplicationControllersFactory patientApplicationControllersFactory = new PatientApplicationControllersFactoryImpl(appointmentDao, requestDaoFactory.create(), responseDaoFactory.create(), officeDao, slotDao);
+        LoginFactory loginControllerFactory = new LoginFactoryImpl(userDao);
         RegisterUserFactory registerUserFactory = new RegisterUserFactoryImpl(userDao);
-        LoginControllerFactoryImpl loginFactory = new LoginControllerFactoryImpl(loginAppControllerFactory, registerUserFactory, patientNavigator, doctorNavigator);
+
+        LoginControllerFactoryImpl loginFactory = new LoginControllerFactoryImpl(loginControllerFactory, registerUserFactory, patientApplicationControllersFactory);
         LoginNavigator loginNavigator = new LoginNavigator(navigatorController, loginFactory);
+
         loginFactory.setLoginNavigator(loginNavigator);
         loginNavigator.navigate(LoginDestination.LOGIN);
 

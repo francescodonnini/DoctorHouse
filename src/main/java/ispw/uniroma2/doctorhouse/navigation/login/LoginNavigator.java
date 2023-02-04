@@ -27,6 +27,10 @@ public class LoginNavigator extends Navigator<LoginDestination> {
         switch (destination) {
             case LOGIN:
                 return factory.createLoginController();
+            case DOCTOR_HOME_PAGE:
+                return factory.createDoctorHomePage();
+            case PATIENT_HOME_PAGE:
+                return factory.createPatientHomePage();
             case SIGNUP:
                 return factory.createRegisterViewController();
             default:

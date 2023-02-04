@@ -1,5 +1,6 @@
 package ispw.uniroma2.doctorhouse.rearrange;
 
+import ispw.uniroma2.doctorhouse.beans.PendingAppointmentAdapter;
 import ispw.uniroma2.doctorhouse.beans.PendingAppointmentBean;
 import ispw.uniroma2.doctorhouse.beans.UserBean;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDao;

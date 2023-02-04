@@ -29,56 +29,40 @@ public class AskPage implements ViewController {
     private BorderPane view;
     @FXML
     private TableColumn<AppointmentBean, String> addressTblCol;
-
     @FXML
     private TableColumn<AppointmentBean, String> cityTblCol;
-
     @FXML
     private TableColumn<AppointmentBean, String> countryTblCol;
-
     @FXML
     private TableColumn<AppointmentBean, String> dateTblCol;
     private final DateTimeFormatter dateFmt;
-
     @FXML
     private TableColumn<AppointmentBean, String> endTimeTblCol;
     private final DateTimeFormatter timeFmt;
-
     @FXML
     private TableColumn<AppointmentBean, String> otherTblCol;
-
     @FXML
     private TableColumn<AppointmentBean, String> provinceTblCol;
-
     @FXML
     private TableColumn<AppointmentBean, String> serviceTblCol;
-
     @FXML
     private ListView<DateTimeInterval> slotListView;
     private final ObservableList<DateTimeInterval> slots;
-
     @FXML
     private TableColumn<AppointmentBean, String> startTimeTblCol;
-
     @FXML
     private TableView<AppointmentBean> table;
     private final ObservableList<AppointmentBean> beans;
-
     @FXML
     private DatePicker fromDatePicker;
-
     @FXML
     private Label fromDateErrorLbl;
-
     @FXML
     private DatePicker toDatePicker;
-
     @FXML
     private Label toDateErrorLbl;
-
     @FXML
     private Button searchBtn;
-
     @FXML
     private Label persistentErrorLbl;
 

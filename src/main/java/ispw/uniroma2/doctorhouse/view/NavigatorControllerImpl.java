@@ -1,7 +1,6 @@
 package ispw.uniroma2.doctorhouse.view;
 
 import ispw.uniroma2.doctorhouse.navigation.NavigatorController;
-import ispw.uniroma2.doctorhouse.navigation.ToolBarController;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -14,11 +13,6 @@ public class NavigatorControllerImpl implements NavigatorController {
     @Override
     public void push(ViewController controller) {
         view.setCenter(controller.getView());
-    }
-
-    @Override
-    public void attach(ToolBarController toolBarController) {
-        view.setTop(toolBarController.getView());
     }
 
     @Override

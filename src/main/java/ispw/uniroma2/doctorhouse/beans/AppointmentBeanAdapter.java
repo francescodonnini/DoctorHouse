@@ -1,6 +1,5 @@
-package ispw.uniroma2.doctorhouse.rearrange;
+package ispw.uniroma2.doctorhouse.beans;
 
-import ispw.uniroma2.doctorhouse.beans.*;
 import ispw.uniroma2.doctorhouse.model.appointment.AppointmentInfo;
 
 import java.time.LocalDateTime;

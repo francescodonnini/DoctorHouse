@@ -52,7 +52,7 @@ public class UserFile implements UserDao {
                     doctorBean.setEmail(line[USER_FAMILY_DOCTOR_COL]);
                     Doctor doctor = getDoctor(doctorBean).orElse(null);
                     String field = line[DOCT_FIELD_COL];
-                    if (field == null) {
+                    if (field.isEmpty()) {
                         return Optional.of(new User(email, fromCSVLine(line), doctor));
                     } else {
                         doctorBean.setEmail(email);

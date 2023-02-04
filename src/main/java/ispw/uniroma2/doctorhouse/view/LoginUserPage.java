@@ -1,18 +1,14 @@
 package ispw.uniroma2.doctorhouse.view;
 
+import ispw.uniroma2.doctorhouse.auth.Login;
+import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
 import ispw.uniroma2.doctorhouse.beans.DoctorBean;
 import ispw.uniroma2.doctorhouse.beans.LoginRequestBean;
-import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
-import ispw.uniroma2.doctorhouse.auth.Login;
 import ispw.uniroma2.doctorhouse.beans.UserBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
-import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorDestination;
-import ispw.uniroma2.doctorhouse.navigation.doctor.DoctorNavigator;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginDestination;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginNavigator;
-import ispw.uniroma2.doctorhouse.navigation.patient.PatientDestination;
-import ispw.uniroma2.doctorhouse.navigation.patient.PatientNavigator;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -23,8 +19,6 @@ import javafx.scene.input.KeyEvent;
 
 public class LoginUserPage implements ViewController {
     private final LoginNavigator loginNavigator;
-    private final PatientNavigator patientNavigator;
-    private final DoctorNavigator doctorNavigator;
     private final Login login;
     @FXML
     private Parent view;
@@ -41,10 +35,8 @@ public class LoginUserPage implements ViewController {
     @FXML
     private Button signUpBtn;
 
-    public LoginUserPage(LoginNavigator loginNavigator, PatientNavigator patientNavigator, DoctorNavigator doctorNavigator, Login login) {
+    public LoginUserPage(LoginNavigator loginNavigator, Login login) {
         this.loginNavigator = loginNavigator;
-        this.patientNavigator = patientNavigator;
-        this.doctorNavigator = doctorNavigator;
         this.login = login;
     }
 
@@ -70,9 +62,9 @@ public class LoginUserPage implements ViewController {
             loginRequest.setPassword(password);
             UserBean bean = login.login(loginRequest);
             if (bean instanceof DoctorBean) {
-                doctorNavigator.navigate(DoctorDestination.HOME_PAGE);
+                loginNavigator.navigate(LoginDestination.DOCTOR_HOME_PAGE);
             } else if (bean != null) {
-                patientNavigator.navigate(PatientDestination.HOME_PAGE);
+                loginNavigator.navigate(LoginDestination.PATIENT_HOME_PAGE);
             }
         } catch (UserNotFound e) {
             errorLbl.setText("Wrong email or password!");

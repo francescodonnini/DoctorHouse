@@ -89,7 +89,7 @@ public class Main extends Application {
             loader.setLocation(getClass().getResource("view/command_line.fxml"));
             loader.setControllerFactory(f -> new CommandLine(new SecondLoginInterface(loginControllerFactory.create(), new StateFactory(patientApplicationControllersFactory, doctorApplicationControllersFactory))));
             scene = new Scene(loader.load());
-        //}
+        }
 
         stage.setScene(scene);
         stage.setMaximized(true);

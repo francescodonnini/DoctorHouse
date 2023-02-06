@@ -54,44 +54,44 @@ public class AppointmentBuilderImpl implements AppointmentBuilder {
     @Override
     public Appointment build(Class<? extends AppointmentInfo> type) {
         if (type.equals(CanceledInfo.class)) {
-            return new AppointmentImpl(makeCanceledInfo());
+            return makeCanceledInfo();
         } else if (type.equals(PendingInfo.class)) {
-            return new AppointmentImpl(makePendingInfo());
+            return makePendingInfo();
         } else if (type.equals(IncomingInfo.class)) {
-            return new AppointmentImpl(makeScheduledInfo());
-        } else if (type.equals(Consumed.class)) {
-            return new AppointmentImpl(makeConsumedInfo());
+            return makeScheduledInfo();
+        } else if (type.equals(ConsumedInfo.class)) {
+            return makeConsumedInfo();
         } else {
             throw new IllegalArgumentException();
         }
     }
 
-    private CanceledInfo makeCanceledInfo() {
+    private Appointment makeCanceledInfo() {
         if (patient == null || doctor == null || specialty == null || date == null || office == null || initiator == null) {
             throw new IllegalStateException();
         }
-        return new CanceledInfo(doctor, patient, specialty, office, date, initiator);
+        return new AppointmentImpl(doctor, patient, specialty, office, new CanceledInfo(date, initiator));
     }
 
-    private ConsumedInfo makeConsumedInfo() {
+    private Appointment makeConsumedInfo() {
         if (patient == null || doctor == null || specialty == null || date == null || office == null) {
             throw new IllegalStateException();
         }
-        return new ConsumedInfo(doctor, patient, specialty, office, date);
+        return new AppointmentImpl(doctor, patient, specialty, office, new ConsumedInfo(date));
     }
 
-    private PendingInfo makePendingInfo() {
+    private Appointment makePendingInfo() {
         if (patient == null || doctor == null || specialty == null || date == null || oldDate == null || office == null || initiator == null) {
             throw new IllegalStateException();
         }
-        return new PendingInfo(doctor, patient, specialty, office, initiator, date, oldDate);
+        return new AppointmentImpl(doctor, patient, specialty, office, new PendingInfo(oldDate, date, specialty.getDuration(), initiator));
     }
 
-    private IncomingInfo makeScheduledInfo() {
+    private Appointment makeScheduledInfo() {
         if (patient == null || doctor == null || specialty == null || date == null || office == null) {
             throw new IllegalStateException();
         }
-        return new IncomingInfo(doctor, patient, specialty, office, date);
+        return new AppointmentImpl(doctor, patient, specialty, office, new IncomingInfo(date, specialty.getDuration()));
     }
 
     @Override

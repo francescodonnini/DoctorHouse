@@ -2,11 +2,15 @@ package ispw.uniroma2.doctorhouse.model.appointment;
 
 import ispw.uniroma2.doctorhouse.model.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class IncomingInfo extends AppointmentInfo implements TakenSlot {
-    public IncomingInfo(Doctor doctor, User patient, Specialty specialty, Office office, LocalDateTime date) {
-        super(doctor, patient, specialty, office, date);
+    private final Duration duration;
+
+    public IncomingInfo(LocalDateTime date, Duration duration) {
+        super(date);
+        this.duration = duration;
     }
 
     @Override
@@ -16,6 +20,6 @@ public class IncomingInfo extends AppointmentInfo implements TakenSlot {
 
     @Override
     public TimeInterval getInterval() {
-        return new ClockInterval(getDateTime().toLocalTime(), getSpecialty().getDuration());
+        return new ClockInterval(getDateTime().toLocalTime(), duration);
     }
 }

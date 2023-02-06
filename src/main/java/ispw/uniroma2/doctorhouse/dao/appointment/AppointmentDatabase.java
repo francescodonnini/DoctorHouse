@@ -179,20 +179,20 @@ public class AppointmentDatabase implements AppointmentDao {
     public void save(Appointment appointment) throws PersistentLayerException, InvalidTimeSlot {
         AppointmentInfo info = appointment.getInfo();
         if (info instanceof CanceledInfo) {
-            cancel((CanceledInfo) info);
+            cancel(appointment, (CanceledInfo) info);
         } else if (info instanceof ConsumedInfo) {
-            consume((ConsumedInfo) info);
+            consume(appointment, (ConsumedInfo) info);
         } else if (info instanceof IncomingInfo) {
-            incoming((IncomingInfo)info);
+            incoming(appointment, (IncomingInfo)info);
         } else if (info instanceof PendingInfo) {
-           pending((PendingInfo)info);
+           pending(appointment, (PendingInfo)info);
         }
     }
 
-    private void pending(PendingInfo info) throws InvalidTimeSlot, PersistentLayerException {
+    private void pending(Appointment appointment, PendingInfo info) throws InvalidTimeSlot, PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL pending(?, ?, ?, ?, ?);")) {
-            statement.setString(1, info.getDoctor().getEmail());
-            statement.setString(2, info.getPatient().getEmail());
+            statement.setString(1, appointment.getDoctor().getEmail());
+            statement.setString(2, appointment.getPatient().getEmail());
             statement.setObject(3, info.getOldDate());
             statement.setObject(4, info.getNewDate());
             statement.setString(5, info.getInitiator().getEmail());
@@ -204,10 +204,10 @@ public class AppointmentDatabase implements AppointmentDao {
         }
     }
 
-    private void incoming(IncomingInfo info) throws InvalidTimeSlot, PersistentLayerException {
+    private void incoming(Appointment appointment, IncomingInfo info) throws InvalidTimeSlot, PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL incoming(?, ?, ?);")) {
-            statement.setString(1, info.getDoctor().getEmail());
-            statement.setString(2, info.getPatient().getEmail());
+            statement.setString(1, appointment.getDoctor().getEmail());
+            statement.setString(2, appointment.getPatient().getEmail());
             statement.setObject(3, info.getDate());
             statement.execute();
         } catch (SQLTransactionRollbackException e){
@@ -217,10 +217,10 @@ public class AppointmentDatabase implements AppointmentDao {
         }
     }
 
-    private void cancel(CanceledInfo info) throws PersistentLayerException {
+    private void cancel(Appointment appointment, CanceledInfo info) throws PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL cancel(?, ?, ?, ?);")) {
-            statement.setString(1, info.getDoctor().getEmail());
-            statement.setString(2, info.getPatient().getEmail());
+            statement.setString(1, appointment.getDoctor().getEmail());
+            statement.setString(2, appointment.getPatient().getEmail());
             statement.setObject(3, info.getDate());
             Optional<User> initiator = info.getInitiator();
             if (initiator.isPresent()) {
@@ -234,10 +234,10 @@ public class AppointmentDatabase implements AppointmentDao {
         }
     }
 
-    private void consume(ConsumedInfo info) throws PersistentLayerException {
+    private void consume(Appointment appointment, ConsumedInfo info) throws PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL consume(?, ?, ?);")) {
-            statement.setString(1, info.getDoctor().getEmail());
-            statement.setString(2, info.getPatient().getEmail());
+            statement.setString(1, appointment.getDoctor().getEmail());
+            statement.setString(2, appointment.getPatient().getEmail());
             statement.setObject(3, info.getDate());
             statement.execute();
         } catch (SQLException e) {

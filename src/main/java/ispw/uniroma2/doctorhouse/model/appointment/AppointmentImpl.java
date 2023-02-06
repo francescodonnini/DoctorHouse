@@ -23,8 +23,12 @@ public class AppointmentImpl implements Appointment {
             state = new Canceled((CanceledInfo) info);
         } else if (info instanceof PendingInfo) {
             state = new Pending((PendingInfo) info);
-        } else {
+        } else if (info instanceof IncomingInfo){
             state = new Incoming((IncomingInfo) info);
+        } else if (info instanceof ConsumedInfo) {
+            state = new Consumed((ConsumedInfo) info);
+        } else {
+            throw new IllegalArgumentException();
         }
     }
 

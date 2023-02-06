@@ -7,15 +7,17 @@ import ispw.uniroma2.doctorhouse.beans.LoginRequestBean;
 import ispw.uniroma2.doctorhouse.beans.UserBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 
-import java.util.Optional;
-
 
 public class SecondLoginInterface implements State {
 
     private final Login login;
 
-    public SecondLoginInterface(Login login) {
+    private final StateFactory stateFactory;
+
+
+    public SecondLoginInterface(Login login, StateFactory stateFactory) {
         this.login = login;
+        this.stateFactory = stateFactory;
     }
 
     private String getEmail(String command) {
@@ -38,21 +40,26 @@ public class SecondLoginInterface implements State {
     public void enter(CommandLine commandLine, String command) throws UserNotFound, PersistentLayerException {
         String email = "";
         String password = "";
-        if( ! command.contains("Login") && !command.contains("-u") && !command.contains("-p")) {
-            commandLine.setResponse(Optional.of("Insert a valid command"));
+        if(command.equals("Help")) {
+            commandLine.setResponse("possible commands : " + "Login -u Email -p Password");
+        } else if( !command.contains("Login") && !command.contains("-u") && !command.contains("-p")) {
+            commandLine.setResponse("Insert a valid command");
         } else {
             email = getEmail(command);
             password = getPassword(command);
         }
+
         LoginRequestBean loginRequestBean = new LoginRequestBean();
         loginRequestBean.setEmail(email.trim());
         loginRequestBean.setPassword(password.trim());
         try {
             UserBean userBean = login.login(loginRequestBean);
             if(userBean instanceof DoctorBean) {
-                commandLine.setState(new DoctorHomePageState());
+                commandLine.setState(stateFactory.createDoctorHomePageState());
+                commandLine.setResponse("On doctor page");
             } else if (userBean instanceof UserBean) {
-                commandLine.setState(new UserHomePageState());
+                commandLine.setState(stateFactory.createUserHomePageState());
+                commandLine.setResponse("On user page");
             }
         } catch (UserNotFound u){
             throw new UserNotFound();

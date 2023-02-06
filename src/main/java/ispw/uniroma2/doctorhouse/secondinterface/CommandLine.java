@@ -8,7 +8,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Paint;
 
-import java.util.Optional;
 
 public class CommandLine {
     @FXML
@@ -28,8 +27,8 @@ public class CommandLine {
         this.state = state;
     }
 
-    public void setResponse(Optional<String> result) {
-        response.setText(result.orElseThrow());
+    public void setResponse(String result) {
+        response.setText(result);
     }
 
     @FXML
@@ -48,10 +47,10 @@ public class CommandLine {
                     msg.setTextFill(Paint.valueOf("RED"));
                     msg.setText("This field is required");
                 }
+                command.setText("");
             } else {
                 msg.setText("When you finish to type the command click enter");
             }
         });
-        msg.setText("");
     }
 }

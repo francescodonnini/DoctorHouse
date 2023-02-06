@@ -29,6 +29,7 @@ import ispw.uniroma2.doctorhouse.navigation.login.LoginDestination;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginNavigator;
 import ispw.uniroma2.doctorhouse.secondinterface.CommandLine;
 import ispw.uniroma2.doctorhouse.secondinterface.SecondLoginInterface;
+import ispw.uniroma2.doctorhouse.secondinterface.StateFactory;
 import ispw.uniroma2.doctorhouse.view.LoginControllerFactoryImpl;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -84,10 +85,11 @@ public class Main extends Application {
             loginFactory.setLoginNavigator(loginNavigator);
             loginNavigator.navigate(LoginDestination.LOGIN);
         } else {
+
             loader.setLocation(getClass().getResource("view/command_line.fxml"));
-            loader.setControllerFactory(f -> new CommandLine(new SecondLoginInterface(loginControllerFactory.create())));
+            loader.setControllerFactory(f -> new CommandLine(new SecondLoginInterface(loginControllerFactory.create(), new StateFactory(patientApplicationControllersFactory, doctorApplicationControllersFactory))));
             scene = new Scene(loader.load());
-        }
+        //}
 
         stage.setScene(scene);
         stage.setMaximized(true);

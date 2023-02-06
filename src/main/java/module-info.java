@@ -23,4 +23,6 @@ module ispw.uniroma2.doctorhouse {
     exports ispw.uniroma2.doctorhouse.dao.specialty;
     exports ispw.uniroma2.doctorhouse.dao.shift;
     exports ispw.uniroma2.doctorhouse.auth;
+    exports ispw.uniroma2.doctorhouse.secondinterface;
+    opens ispw.uniroma2.doctorhouse.secondinterface;
 }

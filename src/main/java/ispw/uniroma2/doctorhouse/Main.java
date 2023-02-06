@@ -27,6 +27,8 @@ import ispw.uniroma2.doctorhouse.dao.users.UserFileFactory;
 import ispw.uniroma2.doctorhouse.navigation.NavigatorController;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginDestination;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginNavigator;
+import ispw.uniroma2.doctorhouse.secondinterface.CommandLine;
+import ispw.uniroma2.doctorhouse.secondinterface.SecondLoginInterface;
 import ispw.uniroma2.doctorhouse.view.LoginControllerFactoryImpl;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -66,23 +68,26 @@ public class Main extends Application {
 
         SlotDaoFactory slotDaoFactory = new SlotDatabaseFactory(ConnectionFactory.getConnection(), appointmentDao);
         SlotDao slotDao = slotDaoFactory.create();
-
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("view/navigator.fxml"));
-        Scene scene = new Scene(loader.load());
-        NavigatorController navigatorController = loader.getController();
-
+        Scene scene = null;
+        NavigatorController navigatorController = null;
         PatientApplicationControllersFactory patientApplicationControllersFactory = new PatientApplicationControllersFactoryImpl(appointmentDao, requestDaoFactory.create(), responseDaoFactory.create(), officeDao, slotDao);
         LoginFactory loginControllerFactory = new LoginFactoryImpl(userDao);
         RegisterUserFactory registerUserFactory = new RegisterUserFactoryImpl(userDao);
-
         DoctorApplicationControllersFactory doctorApplicationControllersFactory = new DoctorApplicationControllerFactoryImpl(appointmentDao, slotDao, officeDao, responseDaoFactory.create(), requestDaoFactory.create());
-
         LoginControllerFactoryImpl loginFactory = new LoginControllerFactoryImpl(loginControllerFactory, registerUserFactory, patientApplicationControllersFactory, doctorApplicationControllersFactory);
-        LoginNavigator loginNavigator = new LoginNavigator(navigatorController, loginFactory);
-
-        loginFactory.setLoginNavigator(loginNavigator);
-        loginNavigator.navigate(LoginDestination.LOGIN);
+        if(System.currentTimeMillis() %2 == 0) {
+            loader.setLocation(getClass().getResource("view/navigator.fxml"));
+            scene = new Scene(loader.load());
+            navigatorController = loader.getController();
+            LoginNavigator loginNavigator = new LoginNavigator(navigatorController, loginFactory);
+            loginFactory.setLoginNavigator(loginNavigator);
+            loginNavigator.navigate(LoginDestination.LOGIN);
+        } else {
+            loader.setLocation(getClass().getResource("view/command_line.fxml"));
+            loader.setControllerFactory(f -> new CommandLine(new SecondLoginInterface(loginControllerFactory.create())));
+            scene = new Scene(loader.load());
+        }
 
         stage.setScene(scene);
         stage.setMaximized(true);

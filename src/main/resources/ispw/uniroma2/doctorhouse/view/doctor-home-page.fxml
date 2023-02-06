@@ -10,7 +10,7 @@
       <TabPane fx:id="tab" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" />
    </center>
    <top>
-      <Button fx:id="logout" onAction="#logout" mnemonicParsing="false" text="Logout" BorderPane.alignment="CENTER_RIGHT">
+      <Button fx:id="logout" mnemonicParsing="false" onAction="#logout" text="Logout" BorderPane.alignment="CENTER_RIGHT">
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>

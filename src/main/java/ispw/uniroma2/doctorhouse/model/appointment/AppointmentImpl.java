@@ -1,19 +1,34 @@
 package ispw.uniroma2.doctorhouse.model.appointment;
 
+import ispw.uniroma2.doctorhouse.model.Doctor;
+import ispw.uniroma2.doctorhouse.model.Office;
+import ispw.uniroma2.doctorhouse.model.Specialty;
 import ispw.uniroma2.doctorhouse.model.User;
 
 import java.time.LocalDateTime;
 
 public class AppointmentImpl implements Appointment {
+    private final Doctor doctor;
+    private final User patient;
+    private final Specialty specialty;
+    private final Office office;
     private AppointmentState state;
 
-    public AppointmentImpl(AppointmentInfo info) {
+    public AppointmentImpl(Doctor doctor, User patient, Specialty specialty, Office office, AppointmentInfo info) {
+        this.doctor = doctor;
+        this.patient = patient;
+        this.specialty = specialty;
+        this.office = office;
         if (info instanceof CanceledInfo) {
             state = new Canceled((CanceledInfo) info);
         } else if (info instanceof PendingInfo) {
             state = new Pending((PendingInfo) info);
-        } else {
+        } else if (info instanceof IncomingInfo){
             state = new Incoming((IncomingInfo) info);
+        } else if (info instanceof ConsumedInfo) {
+            state = new Consumed((ConsumedInfo) info);
+        } else {
+            throw new IllegalArgumentException();
         }
     }
 
@@ -54,6 +69,26 @@ public class AppointmentImpl implements Appointment {
         } else if (info instanceof ConsumedInfo){
             setState(new Consumed((ConsumedInfo) info));
         }
+    }
+
+    @Override
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    @Override
+    public Office getOffice() {
+        return office;
+    }
+
+    @Override
+    public User getPatient() {
+        return patient;
+    }
+
+    @Override
+    public Specialty getSpecialty() {
+        return specialty;
     }
 
     public void setState(AppointmentState state) {

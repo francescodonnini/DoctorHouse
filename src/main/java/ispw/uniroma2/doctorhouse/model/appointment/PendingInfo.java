@@ -2,16 +2,19 @@ package ispw.uniroma2.doctorhouse.model.appointment;
 
 import ispw.uniroma2.doctorhouse.model.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class PendingInfo extends AppointmentInfo implements TakenSlot {
     private final User initiator;
     private final LocalDateTime oldDate;
+    private final Duration duration;
 
-    public PendingInfo(Doctor doctor, User patient, Specialty specialty, Office office, User initiator, LocalDateTime oldDate, LocalDateTime newDate) {
-        super(doctor, patient, specialty, office, newDate);
+    public PendingInfo(LocalDateTime oldDate, LocalDateTime newDate, Duration duration, User initiator) {
+        super(newDate);
         this.initiator = initiator;
         this.oldDate = oldDate;
+        this.duration = duration;
     }
 
     public User getInitiator() {
@@ -33,6 +36,6 @@ public class PendingInfo extends AppointmentInfo implements TakenSlot {
 
     @Override
     public TimeInterval getInterval() {
-        return new ClockInterval(getNewDate().toLocalTime(), getSpecialty().getDuration());
+        return new ClockInterval(getNewDate().toLocalTime(), duration);
     }
 }

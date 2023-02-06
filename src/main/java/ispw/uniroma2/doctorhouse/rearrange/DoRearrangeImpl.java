@@ -39,7 +39,7 @@ public class DoRearrangeImpl implements DoRearrange {
     public List<PendingAppointmentBean> getPendingAppointments() throws PersistentLayerException {
         UserBean participant = new UserBean();
         participant.setEmail(Session.getSession().getUser().getEmail());
-        appointmentDao.find(participant, PendingInfo.class).forEach(a -> appointmentMap.put(new PendingAppointmentAdapter((PendingInfo) a.getInfo()), a));
+        appointmentDao.find(participant, PendingInfo.class).forEach(a -> appointmentMap.put(new PendingAppointmentAdapter(a), a));
         return new ArrayList<>(appointmentMap.keySet());
     }
 }

@@ -113,7 +113,7 @@ public class AskForRearrangeImpl implements AskForRearrange {
         appointmentMap.clear();
         UserBean participant = new UserBean();
         participant.setEmail(Session.getSession().getUser().getEmail());
-        appointmentDao.find(participant, IncomingInfo.class).forEach(a -> appointmentMap.put(new AppointmentBeanAdapter(a.getInfo()), a));
+        appointmentDao.find(participant, IncomingInfo.class).forEach(a -> appointmentMap.put(new AppointmentBeanAdapter(a), a));
         return new ArrayList<>(appointmentMap.keySet());
     }
 }

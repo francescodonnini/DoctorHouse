@@ -21,7 +21,7 @@ public class SecondLoginInterface implements State {
     private String getEmail(String command) {
         String email = "";
         for(int i = command.indexOf("-u"); i < command.length(); i++)
-            if ((command.charAt(i) != '-') && (command.charAt(i) != 'u' && command.charAt(i - 1) == '-') && i < command.indexOf("-p"))
+            if ((command.charAt(i) != '-') && !(command.charAt(i) == 'u' && command.charAt(i - 1) == '-') && i < command.indexOf("-p"))
                 email = email.concat(String.valueOf(command.charAt(i)));
         return email;
     }
@@ -29,7 +29,7 @@ public class SecondLoginInterface implements State {
     private String getPassword(String command) {
         String password = "";
         for(int i = command.indexOf("-u"); i < command.length(); i++)
-            if ((command.charAt(i) != '-') && (command.charAt(i) != 'p' && command.charAt(i - 1) == '-') && i > command.indexOf("-p"))
+            if ((command.charAt(i) != '-') && !(command.charAt(i) == 'p' && command.charAt(i - 1) == '-') && i > command.indexOf("-p"))
                 password = password.concat(String.valueOf(command.charAt(i)));
         return password;
     }

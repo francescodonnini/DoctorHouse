@@ -27,4 +27,7 @@ module ispw.uniroma2.doctorhouse {
     opens ispw.uniroma2.doctorhouse.secondinterface;
     exports ispw.uniroma2.doctorhouse.secondinterface.responserequest;
     opens ispw.uniroma2.doctorhouse.secondinterface.responserequest;
+    exports ispw.uniroma2.doctorhouse.dao.requests;
+    exports ispw.uniroma2.doctorhouse.dao.responses;
+    exports ispw.uniroma2.doctorhouse.dao.prescriptions;
 }

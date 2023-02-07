@@ -40,4 +40,6 @@ public class StateFactory {
     public CreateVisitPrescriptionState visitPrescriptionState(ResponseRequest responseRequest) {
         return new CreateVisitPrescriptionState(responseRequest, this);
     }
+
+
 }

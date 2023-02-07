@@ -1,4 +1,4 @@
-package ispw.uniroma2.doctorhouse.dao;
+package ispw.uniroma2.doctorhouse.dao.requests;
 
 
 import java.sql.Connection;

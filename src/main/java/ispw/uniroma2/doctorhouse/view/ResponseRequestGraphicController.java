@@ -70,7 +70,6 @@ public class ResponseRequestGraphicController implements ViewController {
     private final ResponseRequest responseRequest;
     private int requestId;
 
-
     public ResponseRequestGraphicController(ResponseRequest responseRequest) {
         this.responseRequest = responseRequest;
     }
@@ -99,7 +98,7 @@ public class ResponseRequestGraphicController implements ViewController {
                 idTxtFld.setVisible(true);
             }
         } catch (PersistentLayerException e) {
-            throw new RuntimeException(e);
+            thirdErrLbl.setText("Persistent layer exception");
         }
     }
 

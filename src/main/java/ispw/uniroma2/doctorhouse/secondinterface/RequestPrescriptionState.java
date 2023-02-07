@@ -25,7 +25,7 @@ public class RequestPrescriptionState implements State{
         StringBuilder result = new StringBuilder();
         if(command.isEmpty()) {
             commandLine.setResponse("Specify a message for the doctor");
-        } else if(!command.equals("See response") && !command.equals("Home page")) {
+        } else if(!command.equals("See response") && !command.equals("Home page") && !command.equals("Help")) {
             PrescriptionRequestBean bean = new PrescriptionRequestBean();
             bean.setMessage(command);
             requestPrescription.sendPrescriptionRequest(bean);

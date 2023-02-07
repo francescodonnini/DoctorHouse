@@ -1,7 +1,8 @@
-package ispw.uniroma2.doctorhouse.dao;
+package ispw.uniroma2.doctorhouse.dao.responses;
 
 
 import ispw.uniroma2.doctorhouse.beans.*;
+import ispw.uniroma2.doctorhouse.dao.prescriptions.PrescriptionDao;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.Session;
 import java.sql.*;

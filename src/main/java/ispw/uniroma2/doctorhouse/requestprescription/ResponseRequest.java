@@ -1,8 +1,8 @@
 package ispw.uniroma2.doctorhouse.requestprescription;
 
 import ispw.uniroma2.doctorhouse.beans.*;
-import ispw.uniroma2.doctorhouse.dao.RequestDao;
-import ispw.uniroma2.doctorhouse.dao.ResponseDao;
+import ispw.uniroma2.doctorhouse.dao.requests.RequestDao;
+import ispw.uniroma2.doctorhouse.dao.responses.ResponseDao;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 
 import java.util.List;

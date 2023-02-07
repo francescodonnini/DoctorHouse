@@ -33,11 +33,15 @@ public class RequestPrescriptionState implements State{
             Optional<List<ResponsePatientBean>> returnValue =  requestPrescription.getResponse();
             returnValue.orElseThrow().forEach(f -> result.append("Message : ").append(f.getMessage()).append(" Kind : ").append(f.getKind()).append(" Name : ").append(f.getName()).append(" Quantity : ").append(f.getQuantity()).append("\n"));
             commandLine.setResponse(result.toString());
-        } else if(command.equals("Help")) {
-            commandLine.setResponse("Specify a message for the doctor or enter the command 'See response'");
         } else if(command.equals("Home page")) {
             commandLine.setState(stateFactory.createUserHomePageState());
-            commandLine.setResponse("On user home page");
+            commandLine.setResponse("On home page");
+        } else if(command.equals("Help")) {
+            commandLine.setResponse("Possible command : " + "\n" +
+                    "1)See response" + "\n" +
+                    "2)Home page" + "\n" +
+                    "3)Request prescription" + "\n"
+            );
         }
     }
 }

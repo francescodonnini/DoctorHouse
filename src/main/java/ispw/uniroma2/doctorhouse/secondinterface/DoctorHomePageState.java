@@ -13,6 +13,14 @@ public class DoctorHomePageState implements State{
 
     @Override
     public void enter(CommandLine commandLine, String command) throws UserNotFound, PersistentLayerException {
-        //
+        if(command.equals("Response request")) {
+            commandLine.setState(stateFactory.createResponsePrescriptionState());
+            commandLine.setResponse("On response request - possible command: " + "\n" +
+                    "1)Show request" + "\n" +
+                    "2)Response to -i requestId -m message");
+        } else if(command.equals("Request prescription")) {
+            commandLine.setState(stateFactory.createRequestPrescriptionState());
+            commandLine.setResponse("On request prescription page - Enter a message or the command 'See response'");
+        }
     }
 }

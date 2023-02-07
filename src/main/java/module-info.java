@@ -25,4 +25,6 @@ module ispw.uniroma2.doctorhouse {
     exports ispw.uniroma2.doctorhouse.auth;
     exports ispw.uniroma2.doctorhouse.secondinterface;
     opens ispw.uniroma2.doctorhouse.secondinterface;
+    exports ispw.uniroma2.doctorhouse.secondinterface.responserequest;
+    opens ispw.uniroma2.doctorhouse.secondinterface.responserequest;
 }

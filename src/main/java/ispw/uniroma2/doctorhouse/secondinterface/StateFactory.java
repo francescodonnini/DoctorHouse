@@ -2,6 +2,10 @@ package ispw.uniroma2.doctorhouse.secondinterface;
 
 import ispw.uniroma2.doctorhouse.DoctorApplicationControllersFactory;
 import ispw.uniroma2.doctorhouse.PatientApplicationControllersFactory;
+import ispw.uniroma2.doctorhouse.requestprescription.ResponseRequest;
+import ispw.uniroma2.doctorhouse.secondinterface.responserequest.CreateDrugPrescriptionState;
+import ispw.uniroma2.doctorhouse.secondinterface.responserequest.CreateVisitPrescriptionState;
+import ispw.uniroma2.doctorhouse.secondinterface.responserequest.ResponsePrescriptionState;
 
 public class StateFactory {
     private final PatientApplicationControllersFactory patientApplicationControllersFactory;
@@ -25,5 +29,15 @@ public class StateFactory {
         return new DoctorHomePageState(this);
     }
 
+    public ResponsePrescriptionState createResponsePrescriptionState() {
+        return new ResponsePrescriptionState(doctorApplicationControllersFactory.createResponseRequest(), this);
+    }
 
+    public CreateDrugPrescriptionState drugPrescriptionState(ResponseRequest responseRequest) {
+        return new CreateDrugPrescriptionState(responseRequest, this);
+    }
+
+    public CreateVisitPrescriptionState visitPrescriptionState(ResponseRequest responseRequest) {
+        return new CreateVisitPrescriptionState(responseRequest, this);
+    }
 }

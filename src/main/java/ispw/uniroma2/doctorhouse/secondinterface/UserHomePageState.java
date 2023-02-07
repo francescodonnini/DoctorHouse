@@ -1,9 +1,5 @@
 package ispw.uniroma2.doctorhouse.secondinterface;
 
-import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
-import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
-
-
 public class UserHomePageState implements State {
 
     private final StateFactory stateFactory;
@@ -12,12 +8,12 @@ public class UserHomePageState implements State {
     }
 
     @Override
-    public void enter(CommandLine commandLine, String command) throws UserNotFound, PersistentLayerException {
+    public void enter(CommandLine commandLine, String command) {
         if(command.equals("Request prescription")) {
            commandLine.setResponse("On request prescription page - Enter a message or the command 'See response'");
            commandLine.setState(stateFactory.createRequestPrescriptionState());
         } else if(command.equals("Help")) {
-            commandLine.setResponse("possible commands: " + "Request prescription");
-        }
+            commandLine.setResponse("On user home page - possible commands: " + "Request prescription");
+        } else commandLine.setResponse("Insert a valid command");
     }
 }

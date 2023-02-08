@@ -1,6 +1,5 @@
 package ispw.uniroma2.doctorhouse.dao.shift;
 
-import ispw.uniroma2.doctorhouse.beans.OfficeBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.ClockInterval;
 import ispw.uniroma2.doctorhouse.model.Shift;
@@ -26,10 +25,10 @@ public class ShiftDatabase implements ShiftDao {
     }
 
     @Override
-    public List<Shift> getShifts(OfficeBean office) throws PersistentLayerException {
+    public List<Shift> getShifts(int officeId, String doctorEmail) throws PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL getShifts(?, ?);")) {
-            statement.setString(1, office.getDoctor().getEmail());
-            statement.setInt(2, office.getId());
+            statement.setString(1, doctorEmail);
+            statement.setInt(2, officeId);
             if (statement.execute()) {
                 List<Shift> shifts = new ArrayList<>();
                 ResultSet resultSet = statement.getResultSet();

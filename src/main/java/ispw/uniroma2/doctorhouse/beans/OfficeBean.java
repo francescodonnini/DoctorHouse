@@ -52,7 +52,7 @@ public class OfficeBean {
         return doctor;
     }
 
-    public void setDoctor(DoctorBean doctorBean) {
-        this.doctor = doctorBean;
+    public void setDoctor(DoctorBean doctor) {
+        this.doctor = doctor;
     }
 }

@@ -1,7 +1,5 @@
 package ispw.uniroma2.doctorhouse.dao.specialty;
 
-import ispw.uniroma2.doctorhouse.beans.DoctorBean;
-import ispw.uniroma2.doctorhouse.beans.OfficeBean;
 import ispw.uniroma2.doctorhouse.beans.SpecialtyBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.Specialty;
@@ -23,10 +21,10 @@ public class SpecialtyDatabase implements SpecialtyDao {
         this.connection = connection;
     }
     @Override
-    public List<Specialty> getSpecialties(OfficeBean office) throws PersistentLayerException {
+    public List<Specialty> getSpecialties(int officeId, String doctorEmail) throws PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL getSpecialties(?, ?);")) {
-            statement.setString(1, office.getDoctor().getEmail());
-            statement.setInt(2, office.getId());
+            statement.setString(1, doctorEmail);
+            statement.setInt(2, officeId);
             if (statement.execute()) {
                 List<Specialty> specialties = new ArrayList<>();
                 ResultSet resultSet = statement.getResultSet();
@@ -44,10 +42,10 @@ public class SpecialtyDatabase implements SpecialtyDao {
     }
 
     @Override
-    public Optional<Specialty> getSpecialty(String specialtyName, DoctorBean doctorBean) throws PersistentLayerException {
+    public Optional<Specialty> getSpecialty(String specialtyName, String doctorEmail) throws PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL getSpecialty(?, ?);")) {
             statement.setString(1, specialtyName);
-            statement.setString(2, doctorBean.getEmail());
+            statement.setString(2, doctorEmail);
             if (statement.execute()) {
                 ResultSet resultSet = statement.getResultSet();
                 if (resultSet.next()) {

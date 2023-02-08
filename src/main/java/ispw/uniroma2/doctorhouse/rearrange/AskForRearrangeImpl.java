@@ -1,8 +1,6 @@
 package ispw.uniroma2.doctorhouse.rearrange;
 
-import ispw.uniroma2.doctorhouse.beans.AppointmentBean;
-import ispw.uniroma2.doctorhouse.beans.AppointmentBeanAdapter;
-import ispw.uniroma2.doctorhouse.beans.UserBean;
+import ispw.uniroma2.doctorhouse.beans.*;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDao;
 import ispw.uniroma2.doctorhouse.dao.exceptions.InvalidTimeSlot;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
@@ -67,14 +65,18 @@ public class AskForRearrangeImpl implements AskForRearrange {
      */
     @Override
     public List<DateTimeInterval> getFreeSlots(AppointmentBean bean, LocalDate start, LocalDate endInclusive) throws PersistentLayerException {
-        Optional<Office> optionalOffice = officeDao.getOffice(bean.getOffice());
+        OfficeBean officeBean = bean.getOffice();
+        int officeId = officeBean.getId();
+        DoctorBean doctorBean = officeBean.getDoctor();
+        String doctorEmail = doctorBean.getEmail();
+        Optional<Office> optionalOffice = officeDao.getOffice(officeId, doctorEmail);
         if (optionalOffice.isEmpty()) {
             return List.of();
         }
         Office office = optionalOffice.get();
         Duration specialtyDuration = bean.getSpecialty().getDuration();
         Map<LocalDate, List<TakenSlot>> slots = new HashMap<>();
-        for (TakenSlot slot : slotDao.getSlots(bean.getOffice())) {
+        for (TakenSlot slot : slotDao.getSlots(officeId, doctorEmail)) {
             slots.computeIfAbsent(slot.getDateTime().toLocalDate(), m -> new ArrayList<>()).add(slot);
         }
         List<DateTimeInterval> freeSlots = new ArrayList<>();
@@ -111,9 +113,8 @@ public class AskForRearrangeImpl implements AskForRearrange {
     @Override
     public List<AppointmentBean> getIncomingAppointments() throws PersistentLayerException {
         appointmentMap.clear();
-        UserBean participant = new UserBean();
-        participant.setEmail(Session.getSession().getUser().getEmail());
-        appointmentDao.find(participant, IncomingInfo.class).forEach(a -> appointmentMap.put(new AppointmentBeanAdapter(a), a));
+        String email = Session.getSession().getUser().getEmail();
+        appointmentDao.find(email, IncomingInfo.class).forEach(a -> appointmentMap.put(new AppointmentBeanAdapter(a), a));
         return new ArrayList<>(appointmentMap.keySet());
     }
 }

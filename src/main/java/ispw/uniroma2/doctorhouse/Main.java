@@ -8,6 +8,8 @@ import ispw.uniroma2.doctorhouse.dao.*;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDao;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDatabaseFactory;
+import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentFileFactory;
+import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.dao.office.OfficeDao;
 import ispw.uniroma2.doctorhouse.dao.office.OfficeDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.office.OfficeDatabaseFactory;
@@ -28,7 +30,6 @@ import ispw.uniroma2.doctorhouse.navigation.NavigatorController;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginDestination;
 import ispw.uniroma2.doctorhouse.navigation.login.LoginNavigator;
 import ispw.uniroma2.doctorhouse.secondinterface.CommandLine;
-import ispw.uniroma2.doctorhouse.secondinterface.SecondLoginInterface;
 import ispw.uniroma2.doctorhouse.secondinterface.StateFactory;
 import ispw.uniroma2.doctorhouse.view.LoginControllerFactoryImpl;
 import javafx.application.Application;
@@ -37,10 +38,11 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 public class Main extends Application {
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException, PersistentLayerException {
         // creating all the factories needed to create DAOs
         SpecialtyDaoFactory specialtyDaoFactory = new SpecialtyDatabaseFactory(ConnectionFactory.getConnection());
         SpecialtyDao specialtyDao = specialtyDaoFactory.create();
@@ -58,8 +60,12 @@ public class Main extends Application {
             userDaoFactory = new UserFileFactory(officeDao);
         }
         UserDao userDao = userDaoFactory.create();
-
-        AppointmentDaoFactory appointmentDaoFactory = new AppointmentDatabaseFactory(ConnectionFactory.getConnection(), officeDao, specialtyDao, userDao);
+        AppointmentDaoFactory appointmentDaoFactory;
+        if (System.currentTimeMillis() % 2 == 0) {
+            appointmentDaoFactory = new AppointmentDatabaseFactory(ConnectionFactory.getConnection(), officeDao, specialtyDao, userDao);
+        } else {
+            appointmentDaoFactory = new AppointmentFileFactory(officeDao, specialtyDao, userDao);
+        }
         AppointmentDao appointmentDao = appointmentDaoFactory.create();
 
         PrescriptionDaoFactory prescriptionDaoFactory = new PrescriptionDatabaseFactory(ConnectionFactory.getConnection());
@@ -70,14 +76,14 @@ public class Main extends Application {
         SlotDaoFactory slotDaoFactory = new SlotDatabaseFactory(ConnectionFactory.getConnection(), appointmentDao);
         SlotDao slotDao = slotDaoFactory.create();
         FXMLLoader loader = new FXMLLoader();
-        Scene scene = null;
+        Scene scene;
         NavigatorController navigatorController = null;
         PatientApplicationControllersFactory patientApplicationControllersFactory = new PatientApplicationControllersFactoryImpl(appointmentDao, requestDaoFactory.create(), responseDaoFactory.create(), officeDao, slotDao);
         LoginFactory loginControllerFactory = new LoginFactoryImpl(userDao);
         RegisterUserFactory registerUserFactory = new RegisterUserFactoryImpl(userDao);
         DoctorApplicationControllersFactory doctorApplicationControllersFactory = new DoctorApplicationControllerFactoryImpl(appointmentDao, slotDao, officeDao, responseDaoFactory.create(), requestDaoFactory.create());
         LoginControllerFactoryImpl loginFactory = new LoginControllerFactoryImpl(loginControllerFactory, registerUserFactory, patientApplicationControllersFactory, doctorApplicationControllersFactory);
-        if(System.currentTimeMillis() %2 == 0) {
+        if(System.currentTimeMillis() % 2 == 0) {
             loader.setLocation(getClass().getResource("view/navigator.fxml"));
             scene = new Scene(loader.load());
             navigatorController = loader.getController();
@@ -86,13 +92,19 @@ public class Main extends Application {
             loginNavigator.navigate(LoginDestination.LOGIN);
         } else {
             loader.setLocation(getClass().getResource("view/command_line.fxml"));
-            loader.setControllerFactory(f -> new CommandLine(new SecondLoginInterface(loginControllerFactory.create(), new StateFactory(patientApplicationControllersFactory, doctorApplicationControllersFactory))));
+            StateFactory factory = new StateFactory(loginControllerFactory, patientApplicationControllersFactory, doctorApplicationControllersFactory);
+            loader.setControllerFactory(f -> new CommandLine(factory.createLoginState()));
             scene = new Scene(loader.load());
         }
-
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        Connection connection = ConnectionFactory.getConnection();
+        connection.close();
     }
 
     public static void main(String[] args) {

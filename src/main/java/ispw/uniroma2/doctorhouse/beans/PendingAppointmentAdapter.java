@@ -18,10 +18,8 @@ public class PendingAppointmentAdapter extends PendingAppointmentBean {
         } else {
             throw new IllegalArgumentException();
         }
-        doctorBean = new DoctorBean();
-        doctorBean.setEmail(appointment.getDoctor().getEmail());
-        userBean = new UserBean();
-        userBean.setEmail(appointment.getPatient().getEmail());
+        doctorBean = new DoctorBean(appointment.getDoctor());
+        userBean = new UserBean(appointment.getPatient());
         officeBean = new OfficeBean();
         officeBean.setId(appointment.getOffice().getId());
         officeBean.setDoctor(doctorBean);

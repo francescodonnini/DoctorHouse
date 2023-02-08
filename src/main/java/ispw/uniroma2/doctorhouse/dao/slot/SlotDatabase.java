@@ -1,6 +1,5 @@
 package ispw.uniroma2.doctorhouse.dao.slot;
 
-import ispw.uniroma2.doctorhouse.beans.OfficeBean;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDao;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.ClockInterval;
@@ -25,11 +24,11 @@ public class SlotDatabase implements SlotDao {
     }
 
     @Override
-    public List<TakenSlot> getSlots(OfficeBean bean) throws PersistentLayerException {
-        List<TakenSlot> slots = appointmentDao.find(bean);
+    public List<TakenSlot> getSlots(int officeId, String doctorEmail) throws PersistentLayerException {
+        List<TakenSlot> slots = appointmentDao.find(doctorEmail);
         try (PreparedStatement statement = connection.prepareStatement("CALL findSlots(?, ?);")) {
-            statement.setString(1, bean.getDoctor().getEmail());
-            statement.setLong(2, bean.getId());
+            statement.setString(1, doctorEmail);
+            statement.setLong(2, officeId);
             if (statement.execute()) {
                 ResultSet resultSet = statement.getResultSet();
                 while (resultSet.next()) {

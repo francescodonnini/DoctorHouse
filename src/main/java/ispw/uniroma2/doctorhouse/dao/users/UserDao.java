@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface UserDao {
     Optional<User> get(LoginRequestBean loginRequest) throws PersistentLayerException;
     void create(UserRegistrationRequestBean registrationRequest) throws DuplicateEmail, PersistentLayerException;
-    Optional<User> getUser(UserBean userBean) throws PersistentLayerException;
-    Optional<Doctor> getDoctor(DoctorBean doctorBean) throws PersistentLayerException;
+    Optional<User> getUser(String email) throws PersistentLayerException;
+    Optional<Doctor> getDoctor(String email) throws PersistentLayerException;
     List<Doctor> getByField(String field) throws PersistentLayerException;
 }

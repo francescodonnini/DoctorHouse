@@ -40,10 +40,11 @@ public class AppointmentDatabase implements AppointmentDao {
             statement.setObject(5, appointment.getDateTime());
             statement.execute();
             AppointmentBuilder builder = new AppointmentBuilderImpl();
-            userDao.getUser(appointment.getPatient()).ifPresent(builder::setPatient);
-            userDao.getDoctor(appointment.getDoctor()).ifPresent(builder::setDoctor);
-            specialtyDao.getSpecialty(appointment.getSpecialty().getName(), appointment.getDoctor()).ifPresent(builder::setSpecialty);
-            officeDao.getOffice(appointment.getOffice()).ifPresent(builder::setOffice);
+            userDao.getUser(appointment.getPatient().getEmail()).ifPresent(builder::setPatient);
+            userDao.getDoctor(appointment.getDoctor().getEmail()).ifPresent(builder::setDoctor);
+            specialtyDao.getSpecialty(appointment.getSpecialty().getName(), appointment.getDoctor().getEmail()).ifPresent(builder::setSpecialty);
+            OfficeBean office = appointment.getOffice();
+            officeDao.getOffice(office.getId(), office.getDoctor().getEmail()).ifPresent(builder::setOffice);
             builder.setDate(appointment.getDateTime());
             return Optional.ofNullable(builder.build(IncomingInfo.class));
         } catch (SQLException e) {
@@ -52,53 +53,43 @@ public class AppointmentDatabase implements AppointmentDao {
     }
 
     @Override
-    public List<Appointment> find(UserBean participant, Class<? extends AppointmentInfo> type) throws PersistentLayerException {
+    public List<Appointment> find(String participantEmail, Class<? extends AppointmentInfo> type) throws PersistentLayerException {
         if (PendingInfo.class.equals(type)) {
-            return getPendingAppointments(participant);
+            return getPendingAppointments(participantEmail);
         } else {
-            return getAppointments(participant, type);
+            return getAppointments(participantEmail, type);
         }
-
     }
 
-    private List<Appointment> getPendingAppointments(UserBean participant) throws PersistentLayerException {
+    private List<Appointment> getPendingAppointments(String participantEmail) throws PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL getPendingAppointments(?);")) {
-            statement.setString(1, participant.getEmail());
+            statement.setString(1, participantEmail);
             if (statement.execute()) {
                 List<Appointment> appointments = new ArrayList<>();
                 AppointmentBuilder builder = new AppointmentBuilderImpl();
-                DoctorBean doctorBean = new DoctorBean();
-                OfficeBean officeBean = new OfficeBean();
-                SpecialtyBean specialtyBean = new SpecialtyBean();
-                UserBean userBean = new UserBean();
                 ResultSet resultSet = statement.getResultSet();
+                final int doctorCol = 1;
+                final int patientCol = 2;
+                final int officeCol = 3;
+                final int specialtyNameCol = 4;
+                final int dateCol = 5;
+                final int oldDateCol = 6;
+                final int initiatorCol = 7;
                 while (resultSet.next()) {
-                    String doctorEmail = resultSet.getString(1);
-                    doctorBean.setEmail(doctorEmail);
-                    userDao.getDoctor(doctorBean).ifPresent(builder::setDoctor);
-
-                    String patientEmail = resultSet.getString(2);
-                    userBean.setEmail(patientEmail);
-                    userDao.getUser(userBean).ifPresent(builder::setPatient);
-
-                    officeBean.setId(resultSet.getInt(3));
-                    officeBean.setDoctor(doctorBean);
-                    officeDao.getOffice(officeBean).ifPresent(builder::setOffice);
-
-                    specialtyBean.setName(resultSet.getString(4));
-                    specialtyBean.setDoctor(doctorBean);
-                    specialtyDao.getSpecialty(specialtyBean).ifPresent(builder::setSpecialty);
-
-                    LocalDateTime date = resultSet.getObject(5, LocalDateTime.class);
-                    builder.setDate(date);
-
-                    LocalDateTime oldDate = resultSet.getObject(6, LocalDateTime.class);
-                    builder.setOldDate(oldDate);
-
-                    String initiatorEmail = resultSet.getString(7);
-                    userBean.setEmail(initiatorEmail);
-                    userDao.getUser(userBean).ifPresent(builder::setInitiator);
-
+                    // 1: doctor
+                    // 2: patient
+                    // 3: office
+                    // 4: specialty-name
+                    // 5: date
+                    // 6: old-date
+                    // 7: initiator
+                    userDao.getDoctor(resultSet.getString(doctorCol)).ifPresent(builder::setDoctor);
+                    userDao.getUser(resultSet.getString(patientCol)).ifPresent(builder::setPatient);
+                    officeDao.getOffice(resultSet.getInt(officeCol), resultSet.getString(doctorCol)).ifPresent(builder::setOffice);
+                    specialtyDao.getSpecialty(resultSet.getString(specialtyNameCol), resultSet.getString(doctorCol)).ifPresent(builder::setSpecialty);
+                    builder.setDate(resultSet.getObject(dateCol, LocalDateTime.class));
+                    builder.setOldDate(resultSet.getObject(oldDateCol, LocalDateTime.class));
+                    userDao.getUser(resultSet.getString(initiatorCol)).ifPresent(builder::setInitiator);
                     appointments.add(builder.build(PendingInfo.class));
                     builder.reset();
                 }
@@ -109,9 +100,9 @@ public class AppointmentDatabase implements AppointmentDao {
             throw new PersistentLayerException(e);
         }
     }
-    private List<Appointment> getAppointments(UserBean participant, Class<? extends AppointmentInfo> type) throws PersistentLayerException {
+    private List<Appointment> getAppointments(String participantEmail, Class<? extends AppointmentInfo> type) throws PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL getAppointments(?, ?);")) {
-            statement.setString(1, participant.getEmail());
+            statement.setString(1, participantEmail);
             if (CanceledInfo.class.equals(type)) {
                 statement.setString(2, "c");
             } else if (ConsumedInfo.class.equals(type)) {
@@ -122,38 +113,22 @@ public class AppointmentDatabase implements AppointmentDao {
             if (statement.execute()) {
                 List<Appointment> appointments = new ArrayList<>();
                 AppointmentBuilder builder = new AppointmentBuilderImpl();
-                DoctorBean doctorBean = new DoctorBean();
-                OfficeBean officeBean = new OfficeBean();
-                SpecialtyBean specialtyBean = new SpecialtyBean();
-                UserBean userBean = new UserBean();
                 ResultSet resultSet = statement.getResultSet();
+                final int doctorCol = 1;
+                final int patientCol = 2;
+                final int officeCol = 3;
+                final int specialtyNameCol = 4;
+                final int dateCol = 5;
+                final int oldDateCol = 6;
+                final int initiatorCol = 7;
                 while (resultSet.next()) {
-                    String doctorEmail = resultSet.getString(1);
-                    doctorBean.setEmail(doctorEmail);
-                    userDao.getDoctor(doctorBean).ifPresent(builder::setDoctor);
-
-                    String patientEmail = resultSet.getString(2);
-                    userBean.setEmail(patientEmail);
-                    userDao.getUser(userBean).ifPresent(builder::setPatient);
-
-                    officeBean.setId(resultSet.getInt(3));
-                    officeBean.setDoctor(doctorBean);
-                    officeDao.getOffice(officeBean).ifPresent(builder::setOffice);
-
-                    specialtyBean.setName(resultSet.getString(4));
-                    specialtyBean.setDoctor(doctorBean);
-                    specialtyDao.getSpecialty(specialtyBean).ifPresent(builder::setSpecialty);
-
-                    LocalDateTime date = resultSet.getObject(5, LocalDateTime.class);
-                    builder.setDate(date);
-
-                    LocalDateTime newDate = resultSet.getObject(6, LocalDateTime.class);
-                    builder.setOldDate(newDate);
-
-                    String initiatorEmail = resultSet.getString(7);
-                    userBean.setEmail(initiatorEmail);
-                    userDao.getUser(userBean).ifPresent(builder::setInitiator);
-
+                    userDao.getDoctor(resultSet.getString(doctorCol)).ifPresent(builder::setDoctor);
+                    userDao.getUser(resultSet.getString(patientCol)).ifPresent(builder::setPatient);
+                    officeDao.getOffice(resultSet.getInt(officeCol), resultSet.getString(doctorCol)).ifPresent(builder::setOffice);
+                    specialtyDao.getSpecialty(resultSet.getString(specialtyNameCol), resultSet.getString(doctorCol)).ifPresent(builder::setSpecialty);
+                    builder.setDate(resultSet.getObject(dateCol, LocalDateTime.class));
+                    builder.setOldDate(resultSet.getObject(oldDateCol, LocalDateTime.class));
+                    userDao.getUser(resultSet.getString(initiatorCol)).ifPresent(builder::setInitiator);
                     appointments.add(builder.build(type));
                     builder.reset();
                 }
@@ -166,12 +141,10 @@ public class AppointmentDatabase implements AppointmentDao {
     }
 
     @Override
-    public List<TakenSlot> find(OfficeBean office) throws PersistentLayerException {
-        UserBean participant = new UserBean();
-        participant.setEmail(office.getDoctor().getEmail());
+    public List<TakenSlot> find(String doctorEmail) throws PersistentLayerException {
         List<TakenSlot> slots = new ArrayList<>();
-        slots.addAll(find(participant, IncomingInfo.class).stream().map(a -> (TakenSlot) a.getInfo()).collect(Collectors.toList()));
-        slots.addAll(find(participant, PendingInfo.class).stream().map(a -> (TakenSlot) a.getInfo()).collect(Collectors.toList()));
+        slots.addAll(find(doctorEmail, IncomingInfo.class).stream().map(a -> (TakenSlot) a.getInfo()).collect(Collectors.toList()));
+        slots.addAll(find(doctorEmail, PendingInfo.class).stream().map(a -> (TakenSlot) a.getInfo()).collect(Collectors.toList()));
         return slots;
     }
 

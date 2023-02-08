@@ -1,18 +1,23 @@
 package ispw.uniroma2.doctorhouse.dao.users;
 
-import com.opencsv.*;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.CSVWriterBuilder;
+import com.opencsv.ICSVWriter;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import com.opencsv.exceptions.CsvValidationException;
 import ispw.uniroma2.doctorhouse.auth.exceptions.DuplicateEmail;
 import ispw.uniroma2.doctorhouse.beans.DoctorBean;
 import ispw.uniroma2.doctorhouse.beans.LoginRequestBean;
-import ispw.uniroma2.doctorhouse.beans.UserBean;
 import ispw.uniroma2.doctorhouse.beans.UserRegistrationRequestBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.dao.office.OfficeDao;
 import ispw.uniroma2.doctorhouse.model.*;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -48,15 +53,12 @@ public class UserFile implements UserDao {
                 String email = line[USER_EMAIL_COL];
                 String password = line[USER_PASSWORD_HASH_COL];
                 if (authenticate(email, loginRequest.getEmail(), password, loginRequest.getPassword())) {
-                    DoctorBean doctorBean = new DoctorBean();
-                    doctorBean.setEmail(line[USER_FAMILY_DOCTOR_COL]);
-                    Doctor doctor = getDoctor(doctorBean).orElse(null);
+                    Doctor doctor = getDoctor(line[USER_FAMILY_DOCTOR_COL]).orElse(null);
                     String field = line[DOCT_FIELD_COL];
                     if (field.isEmpty()) {
                         return Optional.of(new User(email, fromCSVLine(line), doctor));
                     } else {
-                        doctorBean.setEmail(email);
-                        List<Office> offices = officeDao.getOffices(doctorBean);
+                        List<Office> offices = officeDao.getOffices(email);
                         return Optional.of(new Doctor(email, fromCSVLine(line), doctor, field, offices));
                     }
                 }
@@ -88,7 +90,7 @@ public class UserFile implements UserDao {
             String familyDoctorEmail = "";
             Optional<DoctorBean> bean = registrationRequest.getFamilyDoctor();
             if (bean.isPresent()) {
-                Optional<Doctor> doctor = getDoctor(bean.get());
+                Optional<Doctor> doctor = getDoctor(bean.get().getEmail());
                 if (doctor.isPresent()) {
                     familyDoctorEmail = doctor.get().getEmail();
                 }
@@ -114,8 +116,8 @@ public class UserFile implements UserDao {
     }
 
     @Override
-    public Optional<User> getUser(UserBean userBean) throws PersistentLayerException {
-        List<User> user = getUserBy(List.of(Field.of(USER_EMAIL_COL, userBean.getEmail())));
+    public Optional<User> getUser(String userEmail) throws PersistentLayerException {
+        List<User> user = getUserBy(List.of(Field.of(USER_EMAIL_COL, userEmail)));
         if (user.size() == 1) {
             return Optional.of(user.get(0));
         }
@@ -123,8 +125,8 @@ public class UserFile implements UserDao {
     }
 
     @Override
-    public Optional<Doctor> getDoctor(DoctorBean doctorBean) throws PersistentLayerException {
-        List<Doctor> doctor = getDoctorBy(List.of(Field.of(USER_EMAIL_COL, doctorBean.getEmail())));
+    public Optional<Doctor> getDoctor(String email) throws PersistentLayerException {
+        List<Doctor> doctor = getDoctorBy(List.of(Field.of(USER_EMAIL_COL, email)));
         if (doctor.size() == 1) {
             return Optional.of(doctor.get(0));
         }
@@ -150,9 +152,7 @@ public class UserFile implements UserDao {
                 String field = line[DOCT_FIELD_COL];
                 if (field != null && check(line, fields)) {
                     String email = line[USER_EMAIL_COL];
-                    DoctorBean doctorBean = new DoctorBean();
-                    doctorBean.setEmail(email);
-                    users.add(new Doctor(email, fromCSVLine(line), null, field, officeDao.getOffices(doctorBean)));
+                    users.add(new Doctor(email, fromCSVLine(line), null, field, officeDao.getOffices(email)));
                 }
             }
             return users;
@@ -168,9 +168,7 @@ public class UserFile implements UserDao {
             while ((line = reader.readNext()) != null) {
                 if (check(line, fields)) {
                     String email = line[USER_EMAIL_COL];
-                    DoctorBean doctorBean = new DoctorBean();
-                    doctorBean.setEmail(line[USER_FAMILY_DOCTOR_COL]);
-                    Optional<Doctor> doctor = getDoctor(doctorBean);
+                    Optional<Doctor> doctor = getDoctor(line[USER_FAMILY_DOCTOR_COL]);
                     users.add(new User(email, fromCSVLine(line), doctor.orElse(null)));
                 }
             }

@@ -1,12 +1,13 @@
 package ispw.uniroma2.doctorhouse.secondinterface;
 
-import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.paint.Paint;
 
 
 public class CommandLine {
@@ -16,41 +17,48 @@ public class CommandLine {
     private Label msg;
     @FXML
     private Label response;
+    private final StringProperty responseProperty;
 
     private State state;
 
     public CommandLine(State state) {
         this.state = state;
+        responseProperty = new SimpleStringProperty();
+        state.onEnter(this);
     }
 
     public void setState(State state) {
         this.state = state;
+        state.onEnter(this);
     }
 
     public void setResponse(String result) {
-        response.setText(result);
+        responseProperty.set(result);
     }
 
+    public void quit() {
+        Platform.exit();
+    }
     @FXML
     public void enterCommand() {
         command.setOnKeyPressed( event -> {
-            if(event.getCode() == KeyCode.ENTER) {
-                if(!command.getText().isEmpty()) {
-                    try {
+            try {
+                if(event.getCode() == KeyCode.ENTER) {
+                    if(!command.getText().isEmpty()) {
                         state.enter(this, command.getText());
-                    } catch (UserNotFound u) {
-                        msg.setText("User not found");
-                    } catch (PersistentLayerException p) {
-                        msg.setText("Persistent layer exception");
+                        command.clear();
                     }
                 } else {
-                    msg.setTextFill(Paint.valueOf("RED"));
-                    msg.setText("This field is required");
+                    msg.setText("When you finish to type the command click enter");
                 }
-                command.setText("");
-            } else {
-                msg.setText("When you finish to type the command click enter");
+            } catch (PersistentLayerException ignored) {
+                msg.setText("error");
             }
         });
+    }
+
+    @FXML
+    private void initialize() {
+        response.textProperty().bind(responseProperty);
     }
 }

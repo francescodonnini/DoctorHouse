@@ -1,11 +1,12 @@
 package ispw.uniroma2.doctorhouse.dao.office;
 
-import ispw.uniroma2.doctorhouse.beans.DoctorBean;
-import ispw.uniroma2.doctorhouse.beans.OfficeBean;
+import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.dao.shift.ShiftDao;
 import ispw.uniroma2.doctorhouse.dao.specialty.SpecialtyDao;
-import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
-import ispw.uniroma2.doctorhouse.model.*;
+import ispw.uniroma2.doctorhouse.model.Location;
+import ispw.uniroma2.doctorhouse.model.Office;
+import ispw.uniroma2.doctorhouse.model.OfficeBuilder;
+import ispw.uniroma2.doctorhouse.model.OfficeBuilderImpl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,14 +29,14 @@ public class OfficeDatabase implements OfficeDao {
     }
 
     @Override
-    public Optional<Office> getOffice(OfficeBean office) throws PersistentLayerException {
+    public Optional<Office> getOffice(int officeId, String doctorEmail) throws PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL getOffice(?, ?);")) {
-            statement.setString(1, office.getDoctor().getEmail());
-            statement.setInt(2, office.getId());
+            statement.setString(1, doctorEmail);
+            statement.setInt(2, officeId);
             if (statement.execute()) {
                 ResultSet resultSet = statement.getResultSet();
                 if (resultSet.next()) {
-                    return fromResultSet(resultSet, office.getDoctor());
+                    return fromResultSet(resultSet, doctorEmail);
                 }
             }
             return Optional.empty();
@@ -45,14 +46,14 @@ public class OfficeDatabase implements OfficeDao {
     }
 
     @Override
-    public List<Office> getOffices(DoctorBean doctor) throws PersistentLayerException {
+    public List<Office> getOffices(String email) throws PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL getOffices(?);")) {
-            statement.setString(1, doctor.getEmail());
+            statement.setString(1, email);
             if (statement.execute()) {
                 List<Office> offices = new ArrayList<>();
                 ResultSet resultSet = statement.getResultSet();
                 while (resultSet.next()) {
-                    Optional<Office> office = fromResultSet(resultSet, doctor);
+                    Optional<Office> office = fromResultSet(resultSet, email);
                     office.ifPresent(offices::add);
                 }
                 return offices;
@@ -63,7 +64,7 @@ public class OfficeDatabase implements OfficeDao {
         }
     }
 
-    private Optional<Office> fromResultSet(ResultSet resultSet, DoctorBean doctor) throws SQLException, PersistentLayerException {
+    private Optional<Office> fromResultSet(ResultSet resultSet, String email) throws SQLException, PersistentLayerException {
         OfficeBuilder builder = new OfficeBuilderImpl();
         int id = resultSet.getInt(1);
         builder.setId(id);
@@ -73,11 +74,8 @@ public class OfficeDatabase implements OfficeDao {
         String address = resultSet.getString(5);
         Location location = new Location(country, province, city, address);
         builder.setLocation(location);
-        OfficeBean officeBean = new OfficeBean();
-        officeBean.setId(id);
-        officeBean.setDoctor(doctor);
-        specialtyDao.getSpecialties(officeBean).forEach(builder::addSpecialty);
-        shiftDao.getShifts(officeBean).forEach(builder::addShift);
+        specialtyDao.getSpecialties(id, email).forEach(builder::addSpecialty);
+        shiftDao.getShifts(id, email).forEach(builder::addShift);
         return Optional.ofNullable(builder.build());
     }
 }

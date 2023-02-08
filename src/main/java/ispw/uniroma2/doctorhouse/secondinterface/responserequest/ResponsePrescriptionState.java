@@ -1,8 +1,8 @@
 package ispw.uniroma2.doctorhouse.secondinterface.responserequest;
 
-import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
 import ispw.uniroma2.doctorhouse.beans.DoctorRequestBean;
 import ispw.uniroma2.doctorhouse.beans.ResponseBean;
+import ispw.uniroma2.doctorhouse.beans.UserBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.requestprescription.ResponseRequest;
 import ispw.uniroma2.doctorhouse.secondinterface.CommandLine;
@@ -16,10 +16,12 @@ public class ResponsePrescriptionState implements State {
     private final ResponseRequest responseRequest;
     private final StateFactory stateFactory;
     protected static ResponseBean responseBean = new ResponseBean();
+    private final UserBean loggedUser;
 
-    public ResponsePrescriptionState(ResponseRequest responseRequest, StateFactory stateFactory) {
+    public ResponsePrescriptionState(ResponseRequest responseRequest, StateFactory stateFactory, UserBean loggedUser) {
         this.responseRequest = responseRequest;
         this.stateFactory = stateFactory;
+        this.loggedUser = loggedUser;
     }
 
 
@@ -48,7 +50,12 @@ public class ResponsePrescriptionState implements State {
     }
 
     @Override
-    public void enter(CommandLine commandLine, String command) throws UserNotFound, PersistentLayerException {
+    public void onEnter(CommandLine context) {
+        // fill if necessary
+    }
+
+    @Override
+    public void enter(CommandLine commandLine, String command) throws PersistentLayerException {
         StringBuilder builder = new StringBuilder();
         if (command.equals("Show request")) {
             Optional<List<DoctorRequestBean>> bean = responseRequest.getRequest();
@@ -59,10 +66,10 @@ public class ResponsePrescriptionState implements State {
             responseBean.setRequestId(Integer.parseInt(getId(command)));
             responseBean.setMessage(getMessage(command));
             if (getKind(command).equals("Drug") || getKind(command).equals("D")) {
-                commandLine.setState(stateFactory.drugPrescriptionState(responseRequest));
+                commandLine.setState(stateFactory.drugPrescriptionState(responseRequest, loggedUser));
                 commandLine.setResponse("You chose to response to request number " + responseBean.getRequestId() + " with a drug prescription. Enter -n name and -q quantity");
             } else if (getKind(command).equals("Visit") || getKind(command).equals("V")) {
-                commandLine.setState(stateFactory.visitPrescriptionState(responseRequest));
+                commandLine.setState(stateFactory.visitPrescriptionState(responseRequest, loggedUser));
                 commandLine.setResponse("You chose to response to request number " + responseBean.getRequestId() + " with a visit prescription. Enter -n name");
             }
         } else if (command.equals("Help")) {
@@ -71,7 +78,7 @@ public class ResponsePrescriptionState implements State {
                     "2)Response to -i requestId -m message" + "\n" +
                     "3)Home page");
         } else if(command.equals("Home page")) {
-            commandLine.setState(stateFactory.createDoctorHomePageState());
+            commandLine.setState(stateFactory.createDoctorHomePageState(loggedUser));
         } else {
             commandLine.setResponse("Insert a valid command");
         }

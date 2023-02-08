@@ -1,7 +1,7 @@
 package ispw.uniroma2.doctorhouse.secondinterface.responserequest;
 
-import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
 import ispw.uniroma2.doctorhouse.beans.DrugPrescriptionBean;
+import ispw.uniroma2.doctorhouse.beans.UserBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.requestprescription.ResponseRequest;
 import ispw.uniroma2.doctorhouse.secondinterface.CommandLine;
@@ -11,10 +11,12 @@ import ispw.uniroma2.doctorhouse.secondinterface.StateFactory;
 public class CreateDrugPrescriptionState implements State {
     private final ResponseRequest responseRequest;
     private final StateFactory stateFactory;
+    private final UserBean loggedUser;
 
-    public CreateDrugPrescriptionState(ResponseRequest responseRequest, StateFactory stateFactory) {
+    public CreateDrugPrescriptionState(ResponseRequest responseRequest, StateFactory stateFactory, UserBean loggedUser) {
         this.responseRequest = responseRequest;
         this.stateFactory = stateFactory;
+        this.loggedUser = loggedUser;
     }
 
     private String getName(String command) {
@@ -34,13 +36,18 @@ public class CreateDrugPrescriptionState implements State {
     }
 
     @Override
-    public void enter(CommandLine commandLine, String command) throws UserNotFound, PersistentLayerException {
+    public void onEnter(CommandLine context) {
+        // fill if necessary
+    }
+
+    @Override
+    public void enter(CommandLine commandLine, String command) throws PersistentLayerException {
         if(command.contains("-n") && command.contains("-q")) {
             DrugPrescriptionBean drugPrescriptionBean = new DrugPrescriptionBean();
             drugPrescriptionBean.setName(getName(command));
             drugPrescriptionBean.setQuantity(getQuantity(command));
             responseRequest.insertDrugPrescriptionResponse(ResponsePrescriptionState.responseBean, drugPrescriptionBean);
-            commandLine.setState(stateFactory.createResponsePrescriptionState());
+            commandLine.setState(stateFactory.createResponsePrescriptionState(loggedUser));
             commandLine.setResponse("On response request - possible command: Show request, Response to -i requestId -m message -k Kind");
         } else {
             commandLine.setResponse("Insert a valid command");

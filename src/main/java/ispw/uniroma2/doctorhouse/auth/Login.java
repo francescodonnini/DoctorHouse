@@ -20,15 +20,16 @@ public class Login {
     }
 
     public UserBean login(LoginRequestBean loginRequest) throws UserNotFound, PersistentLayerException {
-        Optional<User> user = dao.get(loginRequest);
-        if (user.isEmpty()) {
+        Optional<User> optional = dao.get(loginRequest);
+        if (optional.isEmpty()) {
             throw new UserNotFound();
         } else {
-            Session.init((user.get()));
-            if (user.get() instanceof Doctor) {
-                return new DoctorBean();
+            User user = optional.get();
+            Session.init(user);
+            if (user instanceof Doctor) {
+                return new DoctorBean((Doctor) user);
             }
-            return new UserBean();
+            return new UserBean(user);
         }
     }
 }

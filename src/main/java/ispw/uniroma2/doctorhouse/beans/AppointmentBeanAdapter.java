@@ -7,26 +7,24 @@ import java.time.LocalDateTime;
 
 public class AppointmentBeanAdapter extends AppointmentBean {
     private final AppointmentInfo adaptee;
-    private final DoctorBean doctorBean;
+    private final DoctorBean doctor;
     private final OfficeBean officeBean;
-    private final UserBean userBean;
+    private final UserBean patient;
     private final SpecialtyBean specialtyBean;
 
     public AppointmentBeanAdapter(Appointment appointment) {
         adaptee = appointment.getInfo();
-        doctorBean = new DoctorBean();
-        doctorBean.setEmail(appointment.getDoctor().getEmail());
-        userBean = new UserBean();
-        userBean.setEmail(appointment.getPatient().getEmail());
+        doctor = new DoctorBean(appointment.getDoctor());
+        patient = new UserBean(appointment.getPatient());
         officeBean = new OfficeBean();
         officeBean.setId(appointment.getOffice().getId());
-        officeBean.setDoctor(doctorBean);
+        officeBean.setDoctor(doctor);
         officeBean.setCountry(appointment.getOffice().getLocation().getCountry());
         officeBean.setProvince(appointment.getOffice().getLocation().getProvince());
         officeBean.setCity(appointment.getOffice().getLocation().getCity());
         officeBean.setAddress(appointment.getOffice().getLocation().getAddress());
         specialtyBean = new SpecialtyBean();
-        specialtyBean.setDoctor(doctorBean);
+        specialtyBean.setDoctor(doctor);
         specialtyBean.setName(appointment.getSpecialty().getName());
         specialtyBean.setDuration(appointment.getSpecialty().getDuration());
     }
@@ -38,7 +36,7 @@ public class AppointmentBeanAdapter extends AppointmentBean {
 
     @Override
     public DoctorBean getDoctor() {
-        return doctorBean;
+        return doctor;
     }
 
     @Override
@@ -48,7 +46,7 @@ public class AppointmentBeanAdapter extends AppointmentBean {
 
     @Override
     public UserBean getPatient() {
-        return userBean;
+        return patient;
     }
 
     @Override

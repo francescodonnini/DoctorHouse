@@ -36,16 +36,12 @@ public class UserDatabase implements UserDao {
             if (statement.execute()) {
                 ResultSet resultSet = statement.getResultSet();
                 if (resultSet.next()) {
-                    DoctorBean familyDoctorBean = new DoctorBean();
-                    familyDoctorBean.setEmail(resultSet.getString(6));
-                    Doctor familyDoctor = getDoctor(familyDoctorBean).orElse(null);
+                    Doctor familyDoctor = getDoctor(resultSet.getString(6)).orElse(null);
                     String field = resultSet.getString(7);
                     if (field == null) {
                         return Optional.of(new User(loginRequest.getEmail(), fromResultSet(resultSet), familyDoctor));
                     } else {
-                        DoctorBean doctorBean = new DoctorBean();
-                        doctorBean.setEmail(loginRequest.getEmail());
-                        List<Office> offices = officeDao.getOffices(doctorBean);
+                        List<Office> offices = officeDao.getOffices(loginRequest.getEmail());
                         return Optional.of(new Doctor(loginRequest.getEmail(), fromResultSet(resultSet), familyDoctor, field, offices));
                     }
                 }
@@ -81,15 +77,15 @@ public class UserDatabase implements UserDao {
     }
 
     @Override
-    public Optional<Doctor> getDoctor(DoctorBean doctorBean) throws PersistentLayerException {
+    public Optional<Doctor> getDoctor(String email) throws PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL getDoctor(?);")) {
-            statement.setString(1, doctorBean.getEmail());
+            statement.setString(1, email);
             if (statement.execute()) {
                 ResultSet resultSet = statement.getResultSet();
                 if (resultSet.next()) {
                     String field = resultSet.getString(6);
-                    List<Office> offices = officeDao.getOffices(doctorBean);
-                    return Optional.of(new Doctor(doctorBean.getEmail(), fromResultSet(resultSet), null, field, offices));
+                    List<Office> offices = officeDao.getOffices(email);
+                    return Optional.of(new Doctor(email, fromResultSet(resultSet), null, field, offices));
                 }
             }
             return Optional.empty();
@@ -99,13 +95,13 @@ public class UserDatabase implements UserDao {
     }
 
     @Override
-    public Optional<User> getUser(UserBean userBean) throws PersistentLayerException {
+    public Optional<User> getUser(String email) throws PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL getUser(?);")) {
-            statement.setString(1, userBean.getEmail());
+            statement.setString(1, email);
             if (statement.execute()) {
                 ResultSet resultSet = statement.getResultSet();
                 if (resultSet.next()) {
-                    return Optional.of(new User(userBean.getEmail(), fromResultSet(resultSet), null));
+                    return Optional.of(new User(email, fromResultSet(resultSet), null));
                 }
             }
             return Optional.empty();
@@ -123,9 +119,7 @@ public class UserDatabase implements UserDao {
                 ResultSet resultSet = statement.getResultSet();
                 while (resultSet.next()) {
                     String email = resultSet.getString(6);
-                    DoctorBean doctorBean = new DoctorBean();
-                    doctorBean.setEmail(email);
-                    List<Office> offices = officeDao.getOffices(doctorBean);
+                    List<Office> offices = officeDao.getOffices(email);
                     doctors.add(new Doctor(email, fromResultSet(resultSet), null, field, offices));
                 }
                 return doctors;

@@ -1,6 +1,7 @@
 package ispw.uniroma2.doctorhouse.view;
 
 import ispw.uniroma2.doctorhouse.beans.*;
+import ispw.uniroma2.doctorhouse.dao.exceptions.NotValidRequest;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
 import ispw.uniroma2.doctorhouse.requestprescription.ResponseRequest;
@@ -184,11 +185,19 @@ public class ResponseRequestGraphicController implements ViewController {
             DrugPrescriptionBean drugPrescriptionBean = new DrugPrescriptionBean();
             drugPrescriptionBean.setName(name);
             drugPrescriptionBean.setQuantity(quantity);
-            responseRequest.insertDrugPrescriptionResponse(responseBean, drugPrescriptionBean);
+            try {
+                responseRequest.insertDrugPrescriptionResponse(responseBean, drugPrescriptionBean);
+                initialize();
+                msgFld.setText("");
+                showRequest();
+            } catch (NotValidRequest n) {
+                initialize();
+                msgFld.setText("");
+                showRequest();
+                label.setText("Insert a valid request id");
+                label.setTextFill(Paint.valueOf("RED"));
+            }
         }
-        initialize();
-        msgFld.setText("");
-        showRequest();
     }
 
 
@@ -208,6 +217,8 @@ public class ResponseRequestGraphicController implements ViewController {
         secErrLbl.setVisible(false);
         thirdErrLbl.setVisible(false);
         sendReject.setVisible(false);
+        idTxtFld.setText("");
+        nameFld.setText("");
     }
 }
 

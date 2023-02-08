@@ -13,7 +13,6 @@ public class SecondLoginInterface implements State {
 
     private final StateFactory stateFactory;
 
-
     public SecondLoginInterface(Login login, StateFactory stateFactory) {
         this.login = login;
         this.stateFactory = stateFactory;

@@ -1,7 +1,7 @@
 package ispw.uniroma2.doctorhouse.secondinterface;
 
-import ispw.uniroma2.doctorhouse.beans.PrescriptionRequestBean;
-import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
+import ispw.uniroma2.doctorhouse.Logout;
+import ispw.uniroma2.doctorhouse.beans.DoctorBean;
 import ispw.uniroma2.doctorhouse.beans.ResponsePatientBean;
 import ispw.uniroma2.doctorhouse.beans.UserBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
@@ -15,11 +15,13 @@ public class RequestPrescriptionState implements State{
     private final RequestPrescription requestPrescription;
     private final StateFactory stateFactory;
     private final UserBean loggedUser;
+    private final Logout logout;
 
-    public RequestPrescriptionState(RequestPrescription requestPrescription, StateFactory stateFactory, UserBean loggedUser) {
+    public RequestPrescriptionState(RequestPrescription requestPrescription, StateFactory stateFactory, UserBean loggedUser, Logout logout) {
         this.requestPrescription = requestPrescription;
         this.stateFactory = stateFactory;
         this.loggedUser = loggedUser;
+        this.logout = logout;
     }
 
     @Override
@@ -32,21 +34,24 @@ public class RequestPrescriptionState implements State{
         StringBuilder result = new StringBuilder();
         if(command.isEmpty()) {
             commandLine.setResponse("Specify a message for the doctor");
-        } else if(!command.equals("See response") && !command.equals("Home page") && !command.equals("Help")) {
-            requestPrescription.sendPrescriptionRequest(command);
-        } else if(command.equals("See response")) {
+        } else if(command.equals("see response")) {
             Optional<List<ResponsePatientBean>> returnValue =  requestPrescription.getResponse();
             returnValue.orElseThrow().forEach(f -> result.append("Message : ").append(f.getMessage()).append(" Kind : ").append(f.getKind()).append(" Name : ").append(f.getName()).append(" Quantity : ").append(f.getQuantity()).append("\n"));
             commandLine.setResponse(result.toString());
-        } else if(command.equals("Home page")) {
-            commandLine.setState(stateFactory.createUserHomePageState(loggedUser));
-            commandLine.setResponse("On home page");
-        } else if(command.equals("Help")) {
+        } else if(command.equals("home page")) {
+            if(loggedUser instanceof DoctorBean) {
+                commandLine.setState(stateFactory.createDoctorHomePageState(loggedUser));
+            } else commandLine.setState(stateFactory.createUserHomePageState(loggedUser));
+        } else if(command.equals("help")) {
             commandLine.setResponse("Possible command : " + "\n" +
-                    "1)See response" + "\n" +
-                    "2)Home page" + "\n" +
-                    "3)Request prescription" + "\n"
+                    "1)see response" + "\n" +
+                    "2)home page" + "\n" +
+                    "3)logout"+ "\n" +
+                    "4)otherwise the content is interpreted as a message"
             );
-        }
+        } else if(command.equals("logout")) {
+            logout.destroySession();
+            commandLine.setState(stateFactory.createLoginState());
+        } else requestPrescription.sendPrescriptionRequest(command);
     }
 }

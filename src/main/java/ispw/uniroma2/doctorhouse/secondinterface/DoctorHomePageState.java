@@ -26,18 +26,24 @@ public class DoctorHomePageState implements State{
         command = command.trim();
         switch (command) {
             case "response request":
-                commandLine.setState(stateFactory.createResponsePrescriptionState(loggedUser));
-                commandLine.setResponse("On response request - possible command: " + "\n" +
-                        "1)Show request" + "\n" +
-                        "2)Response to -i requestId -m message");
+                commandLine.setState(stateFactory.createResponsePrescriptionState(loggedUser, logout));
+                commandLine.setResponse("Welcome to RESPONSE REQUEST - possible command: " + "\n" +
+                        "1)show request" + "\n" +
+                        "2)response to -i requestId -m message -k kind" + "\n" +
+                        "3)logout"
+                );
                 break;
             case "logout":
                 logout.destroySession();
                 commandLine.setState(stateFactory.createLoginState());
                 break;
             case "request prescription":
-                commandLine.setState(stateFactory.createRequestPrescriptionState(loggedUser));
-                commandLine.setResponse("On request prescription page - Enter a message or the command 'See response'");
+                commandLine.setState(stateFactory.createRequestPrescriptionState(loggedUser, logout));
+                commandLine.setResponse("WELCOME TO REQUEST PRESCRIPTION HOME PAGE - possible command :" + "\n" +
+                        "1)see response" + "\n" +
+                        "2)home page" + "\n" +
+                        "3)logout" + "\n" +
+                        "4)otherwise the content is interpreted as a message");
                 break;
             case "incoming":
                 commandLine.setState(stateFactory.createAskState(loggedUser));

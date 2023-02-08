@@ -1,5 +1,6 @@
 package ispw.uniroma2.doctorhouse.secondinterface;
 
+import ispw.uniroma2.doctorhouse.dao.exceptions.NotValidRequest;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -53,6 +54,8 @@ public class CommandLine {
                 }
             } catch (PersistentLayerException ignored) {
                 msg.setText("error");
+            } catch (NotValidRequest e) {
+                msg.setText("Insert a valid request id - enter show request for see the request");
             }
         });
     }

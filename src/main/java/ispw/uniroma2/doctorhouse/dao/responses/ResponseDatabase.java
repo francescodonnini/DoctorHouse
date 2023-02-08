@@ -2,6 +2,7 @@ package ispw.uniroma2.doctorhouse.dao.responses;
 
 
 import ispw.uniroma2.doctorhouse.beans.*;
+import ispw.uniroma2.doctorhouse.dao.exceptions.NotValidRequest;
 import ispw.uniroma2.doctorhouse.dao.prescriptions.PrescriptionDao;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.Session;
@@ -37,7 +38,7 @@ public class ResponseDatabase implements ResponseDao{
     }
 
     @Override
-    public void insertDrugResponse(ResponseBean responseBean, DrugPrescriptionBean drugPrescriptionBean) throws PersistentLayerException {
+    public void insertDrugResponse(ResponseBean responseBean, DrugPrescriptionBean drugPrescriptionBean) throws PersistentLayerException, NotValidRequest {
         int prescriptionId = prescriptionDao.addDrugPrescription(drugPrescriptionBean);
         try (PreparedStatement ps = connection.prepareStatement(QUERY)){
             ps.setInt(1, responseBean.getRequestId());
@@ -45,7 +46,9 @@ public class ResponseDatabase implements ResponseDao{
             ps.setInt(3, prescriptionId);
             ps.execute();
         } catch (SQLException e) {
-            throw new PersistentLayerException(e);
+            if(e.getSQLState().equals("23000")) {
+                throw new NotValidRequest();
+            } else throw new PersistentLayerException(e);
         }
     }
 

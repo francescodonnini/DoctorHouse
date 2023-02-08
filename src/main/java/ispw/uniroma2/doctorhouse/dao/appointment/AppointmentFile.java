@@ -1,7 +1,9 @@
 package ispw.uniroma2.doctorhouse.dao.appointment;
 
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 import com.opencsv.CSVWriter;
+import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import com.opencsv.exceptions.CsvException;
 import com.opencsv.exceptions.CsvValidationException;
 import ispw.uniroma2.doctorhouse.beans.AppointmentBean;
@@ -22,6 +24,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class AppointmentFile implements AppointmentDao {
+    private static final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     private static final String DOCTOR_KEY = "doctor";
     private static final String PATIENT_KEY = "patient";
     private static final String DATE_KEY = "date";
@@ -46,15 +49,15 @@ public class AppointmentFile implements AppointmentDao {
     }
 
     private void initColumnMap() {
+        COLUMNS.put(PATIENT_KEY, 0);
         COLUMNS.put(DOCTOR_KEY, 1);
-        COLUMNS.put(PATIENT_KEY, 2);
-        COLUMNS.put(DATE_KEY, 3);
-        COLUMNS.put(SPECIALTY_NAME_KEY, 4);
-        COLUMNS.put(SPECIALTY_DOCTOR_KEY, 5);
-        COLUMNS.put(OFFICE_KEY, 6);
-        COLUMNS.put(STATE_KEY, 7);
-        COLUMNS.put(OLD_DATE_KEY, 8);
-        COLUMNS.put(INITIATOR_KEY, 9);
+        COLUMNS.put(DATE_KEY, 2);
+        COLUMNS.put(SPECIALTY_NAME_KEY, 3);
+        COLUMNS.put(SPECIALTY_DOCTOR_KEY, 4);
+        COLUMNS.put(OFFICE_KEY, 5);
+        COLUMNS.put(STATE_KEY, 6);
+        COLUMNS.put(OLD_DATE_KEY, 7);
+        COLUMNS.put(INITIATOR_KEY, 8);
     }
 
     private int columnOf(String colName) {
@@ -92,9 +95,15 @@ public class AppointmentFile implements AppointmentDao {
         line[columnOf(colName)] = colVal;
     }
 
+    private CSVReader getReader() throws FileNotFoundException {
+        return new CSVReaderBuilder(new FileReader(filePath))
+                .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_SEPARATORS)
+                .build();
+    }
+
     @Override
     public List<Appointment> find(String email, Class<? extends AppointmentInfo> type) throws PersistentLayerException {
-        try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
+        try (CSVReader reader = getReader()) {
             Predicate<String[]> filter;
             if (type.equals(PendingInfo.class)) {
                 filter = createPendingFilter(email);
@@ -104,6 +113,7 @@ public class AppointmentFile implements AppointmentDao {
             List<Appointment> appointments = new ArrayList<>();
             AppointmentBuilder builder = new AppointmentBuilderImpl();
             String[] line;
+            reader.readNext();
             while ((line = reader.readNext()) != null) {
                 if (filter.test(line)) {
                     String patient = getColumn(line, PATIENT_KEY).orElse("");
@@ -112,7 +122,7 @@ public class AppointmentFile implements AppointmentDao {
                     userDao.getDoctor(doctor).ifPresent(builder::setDoctor);
                     Optional<String> col = getColumn(line, DATE_KEY);
                     if (col.isPresent()) {
-                        LocalDateTime date = LocalDateTime.parse(col.get());
+                        LocalDateTime date = LocalDateTime.parse(col.get(), DateTimeFormatter.ofPattern(DATETIME_PATTERN));
                         builder.setDate(date);
                     }
                     String office = getColumn(line, OFFICE_KEY).orElse("");
@@ -123,10 +133,9 @@ public class AppointmentFile implements AppointmentDao {
                     String specialtyName = getColumn(line, SPECIALTY_NAME_KEY).orElse("");
                     String specialtyDoctor = getColumn(line, SPECIALTY_DOCTOR_KEY).orElse("");
                     specialtyDao.getSpecialty(specialtyName, specialtyDoctor).ifPresent(builder::setSpecialty);
-                    col = getColumn(line, OLD_DATE_KEY);
-                    if (col.isPresent()) {
-                        LocalDateTime oldDate = LocalDateTime.parse(col.get());
-                        builder.setOldDate(oldDate);
+                    String oldDate = getColumn(line, OLD_DATE_KEY).orElse("");
+                    if (!oldDate.isEmpty()) {
+                        builder.setOldDate(LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern(DATETIME_PATTERN)));
                     }
                     String initiator = getColumn(line, INITIATOR_KEY).orElse("");
                     userDao.getUser(initiator).ifPresent(builder::setInitiator);
@@ -150,7 +159,7 @@ public class AppointmentFile implements AppointmentDao {
     private Optional<String> getColumn(String[] line, String colName) {
         int colIndex = columnOf(colName);
         if (colIndex >= 0 && colIndex < line.length) {
-            return Optional.of(line[colIndex]);
+            return Optional.ofNullable(line[colIndex]);
         }
         return Optional.empty();
     }
@@ -288,8 +297,8 @@ public class AppointmentFile implements AppointmentDao {
             int index = optional.get();
             String[] line = lines.remove(index);
             writeColumn(line, STATE_KEY, "p");
-            writeColumn(line, DATE_KEY, info.getNewDate().format(DateTimeFormatter.ISO_DATE_TIME));
-            writeColumn(line, OLD_DATE_KEY, dateTime.format(DateTimeFormatter.ISO_DATE_TIME));
+            writeColumn(line, DATE_KEY, info.getNewDate().format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)));
+            writeColumn(line, OLD_DATE_KEY, dateTime.format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)));
             writeColumn(line, INITIATOR_KEY, initiator);
             lines.add(line);
             saveLines(lines);
@@ -309,13 +318,16 @@ public class AppointmentFile implements AppointmentDao {
     }
 
     private Optional<Integer> findLineByKey(List<String[]> lines, String patient, String doctor, LocalDateTime dateTime) {
-        String dateTimeStr = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(dateTime);
-        for (int i = 0; i < lines.size(); i++) {
+        for (int i = 1; i < lines.size(); i++) {
             String[] line = lines.get(i);
             String patient2 = getColumn(line, PATIENT_KEY).orElse("");
             String doctor2 = getColumn(line, DOCTOR_KEY).orElse("");
-            String dateTime2 = getColumn(line, DATE_KEY).orElse("");
-            if (patient.equals(patient2) && doctor.equals(doctor2) && dateTimeStr.equals(dateTime2)) {
+            String dateCol = getColumn(line, DATE_KEY).orElse("");
+            if (dateCol.isEmpty()) {
+                continue;
+            }
+            LocalDateTime dateTime2 = LocalDateTime.parse(dateCol, DateTimeFormatter.ofPattern(DATETIME_PATTERN));
+            if (patient.equals(patient2) && doctor.equals(doctor2) && dateTime2.equals(dateTime)) {
                 return Optional.of(i);
             }
         }

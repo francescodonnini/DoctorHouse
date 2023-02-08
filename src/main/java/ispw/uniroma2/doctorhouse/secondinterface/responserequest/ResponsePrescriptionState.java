@@ -1,5 +1,6 @@
 package ispw.uniroma2.doctorhouse.secondinterface.responserequest;
 
+import ispw.uniroma2.doctorhouse.Logout;
 import ispw.uniroma2.doctorhouse.beans.DoctorRequestBean;
 import ispw.uniroma2.doctorhouse.beans.ResponseBean;
 import ispw.uniroma2.doctorhouse.beans.UserBean;
@@ -18,10 +19,13 @@ public class ResponsePrescriptionState implements State {
     protected static ResponseBean responseBean = new ResponseBean();
     private final UserBean loggedUser;
 
-    public ResponsePrescriptionState(ResponseRequest responseRequest, StateFactory stateFactory, UserBean loggedUser) {
+    private final Logout logout;
+
+    public ResponsePrescriptionState(ResponseRequest responseRequest, StateFactory stateFactory, UserBean loggedUser, Logout logout) {
         this.responseRequest = responseRequest;
         this.stateFactory = stateFactory;
         this.loggedUser = loggedUser;
+        this.logout = logout;
     }
 
 
@@ -57,28 +61,34 @@ public class ResponsePrescriptionState implements State {
     @Override
     public void enter(CommandLine commandLine, String command) throws PersistentLayerException {
         StringBuilder builder = new StringBuilder();
-        if (command.equals("Show request")) {
+        if (command.equals("show request")) {
             Optional<List<DoctorRequestBean>> bean = responseRequest.getRequest();
-            if (bean.isPresent())
-                bean.get().forEach(f -> builder.append("ID : ").append(f.getId()).append(" patient : ").append(f.getPatient()).append(" message : ").append(f.getMessage()).append("\n"));
+            bean.ifPresent(doctorRequestBeans -> doctorRequestBeans.forEach(f -> builder.append("ID : ").append(f.getId()).append(" patient : ").append(f.getPatient()).append(" message : ").append(f.getMessage()).append("\n")));
             commandLine.setResponse(builder.toString());
-        } else if (command.contains("Response to") && command.contains("-i") && command.contains("-m") && command.contains("-k")) {
+        } else if (command.startsWith("response to") && command.contains("-i") && command.contains("-m") && command.contains("-k")) {
             responseBean.setRequestId(Integer.parseInt(getId(command)));
             responseBean.setMessage(getMessage(command));
-            if (getKind(command).equals("Drug") || getKind(command).equals("D")) {
-                commandLine.setState(stateFactory.drugPrescriptionState(responseRequest, loggedUser));
+            if (getKind(command).equals("drug")) {
+                commandLine.setState(stateFactory.drugPrescriptionState(responseRequest, loggedUser, logout));
                 commandLine.setResponse("You chose to response to request number " + responseBean.getRequestId() + " with a drug prescription. Enter -n name and -q quantity");
-            } else if (getKind(command).equals("Visit") || getKind(command).equals("V")) {
-                commandLine.setState(stateFactory.visitPrescriptionState(responseRequest, loggedUser));
+            } else if (getKind(command).equals("visit")) {
+                commandLine.setState(stateFactory.visitPrescriptionState(responseRequest, loggedUser, logout));
                 commandLine.setResponse("You chose to response to request number " + responseBean.getRequestId() + " with a visit prescription. Enter -n name");
+            } else if(getKind(command).equals("reject")) {
+                responseBean.setRequestId(Integer.parseInt(getId(command)));
+                responseBean.setMessage(getMessage(command));
+                responseRequest.insertRejection(responseBean);
             }
-        } else if (command.equals("Help")) {
-            commandLine.setResponse("On response request - possible command: " + "\n" +
-                    "1)Show request" + "\n" +
-                    "2)Response to -i requestId -m message" + "\n" +
-                    "3)Home page");
-        } else if(command.equals("Home page")) {
+        } else if (command.equals("help")) {
+            commandLine.setResponse("WELCOME TO RESPONSE REQUEST PAGE - possible command: " + "\n" +
+                    "1)show request" + "\n" +
+                    "2)response to -i requestId -m message" + "\n" +
+                    "3)home page");
+        } else if(command.equals("home page")) {
             commandLine.setState(stateFactory.createDoctorHomePageState(loggedUser));
+        } else if(command.equals("logout")) {
+            logout.destroySession();
+            commandLine.setState(stateFactory.createLoginState());
         } else {
             commandLine.setResponse("Insert a valid command");
         }

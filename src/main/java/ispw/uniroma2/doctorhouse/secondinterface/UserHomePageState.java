@@ -25,8 +25,12 @@ public class UserHomePageState implements State {
     public void enter(CommandLine commandLine, String command) throws PersistentLayerException {
         switch (command) {
             case "request prescription":
-                commandLine.setResponse("On request prescription page - Enter a message or the command 'See response'");
-                commandLine.setState(stateFactory.createRequestPrescriptionState(loggedUser));
+                commandLine.setResponse("WELCOME TO REQUEST PRESCRIPTION HOME PAGE - possible command :" + "\n" +
+                        "1)see response" + "\n" +
+                        "2)home page" + "\n" +
+                        "3)logout" + "\n" +
+                        "4)otherwise the content is interpreted as a message");
+                commandLine.setState(stateFactory.createRequestPrescriptionState(loggedUser, logout));
                 break;
             case "help":
                 commandLine.setResponse(HELP_COMMANDS);

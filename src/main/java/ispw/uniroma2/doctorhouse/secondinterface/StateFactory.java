@@ -1,6 +1,7 @@
 package ispw.uniroma2.doctorhouse.secondinterface;
 
 import ispw.uniroma2.doctorhouse.DoctorApplicationControllersFactory;
+import ispw.uniroma2.doctorhouse.Logout;
 import ispw.uniroma2.doctorhouse.PatientApplicationControllersFactory;
 import ispw.uniroma2.doctorhouse.auth.LoginFactory;
 import ispw.uniroma2.doctorhouse.beans.AppointmentBean;
@@ -28,8 +29,8 @@ public class StateFactory {
         this.doctorApplicationControllersFactory = doctorApplicationControllersFactory;
     }
 
-    public RequestPrescriptionState createRequestPrescriptionState(UserBean loggedUser) {
-        return new RequestPrescriptionState(patientApplicationControllersFactory.createRequestPrescription(), this, loggedUser);
+    public RequestPrescriptionState createRequestPrescriptionState(UserBean loggedUser, Logout logout) {
+        return new RequestPrescriptionState(patientApplicationControllersFactory.createRequestPrescription(), this, loggedUser, logout);
     }
 
     public UserHomePageState createUserHomePageState(UserBean loggedUser) {
@@ -40,16 +41,16 @@ public class StateFactory {
         return new DoctorHomePageState(this, loggedUser);
     }
 
-    public ResponsePrescriptionState createResponsePrescriptionState(UserBean loggedUser) {
-        return new ResponsePrescriptionState(doctorApplicationControllersFactory.createResponseRequest(), this, loggedUser);
+    public ResponsePrescriptionState createResponsePrescriptionState(UserBean loggedUser, Logout logout) {
+        return new ResponsePrescriptionState(doctorApplicationControllersFactory.createResponseRequest(), this, loggedUser, logout);
     }
 
-    public CreateDrugPrescriptionState drugPrescriptionState(ResponseRequest responseRequest, UserBean loggedUser) {
-        return new CreateDrugPrescriptionState(responseRequest, this, loggedUser);
+    public CreateDrugPrescriptionState drugPrescriptionState(ResponseRequest responseRequest, UserBean loggedUser, Logout logout) {
+        return new CreateDrugPrescriptionState(responseRequest, this, loggedUser, logout);
     }
 
-    public CreateVisitPrescriptionState visitPrescriptionState(ResponseRequest responseRequest, UserBean loggedUser) {
-        return new CreateVisitPrescriptionState(responseRequest, this, loggedUser);
+    public CreateVisitPrescriptionState visitPrescriptionState(ResponseRequest responseRequest, UserBean loggedUser, Logout logout) {
+        return new CreateVisitPrescriptionState(responseRequest, this, loggedUser, logout);
     }
 
     public State createAskState(UserBean loggedUser) {

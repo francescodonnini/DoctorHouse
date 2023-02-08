@@ -81,17 +81,16 @@ public class Main extends Application {
         RequestDaoFactory requestDaoFactory;
         ResponseDaoFactory responseDaoFactory;
 
-        if(System.currentTimeMillis() % 2 == 0) {
+      if(System.currentTimeMillis() % 2 == 0) {
             requestDaoFactory = new RequestDaoFactoryImpl(ConnectionFactory.getConnection());
             prescriptionDaoFactory = new PrescriptionDatabaseFactory(ConnectionFactory.getConnection());
             responseDaoFactory = new ResponseDaoFactoryImpl(ConnectionFactory.getConnection(), prescriptionDaoFactory.create());
-        } else {
-
-
+       } else {
             requestDaoFactory = new RequestFileFactory();
             prescriptionDaoFactory = new PrescriptionFileFactory();
             responseDaoFactory = new ResponseFileFactory(prescriptionDaoFactory.create());
-        }
+
+       }
 
         SlotDaoFactory slotDaoFactory = new SlotDatabaseFactory(ConnectionFactory.getConnection(), appointmentDao);
         SlotDao slotDao = slotDaoFactory.create();

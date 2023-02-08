@@ -1,6 +1,7 @@
 package ispw.uniroma2.doctorhouse.requestprescription;
 
 import ispw.uniroma2.doctorhouse.beans.*;
+import ispw.uniroma2.doctorhouse.dao.exceptions.NotValidRequest;
 import ispw.uniroma2.doctorhouse.dao.requests.RequestDao;
 import ispw.uniroma2.doctorhouse.dao.responses.ResponseDao;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
@@ -23,7 +24,7 @@ public class ResponseRequest {
         return requestDao.requestFinder();
     }
 
-    public void insertDrugPrescriptionResponse(ResponseBean responseBean, DrugPrescriptionBean drugPrescriptionBean) throws PersistentLayerException {
+    public void insertDrugPrescriptionResponse(ResponseBean responseBean, DrugPrescriptionBean drugPrescriptionBean) throws PersistentLayerException, NotValidRequest {
         dao.insertDrugResponse(responseBean, drugPrescriptionBean);
     }
 

@@ -10,4 +10,5 @@ public interface DoctorApplicationControllersFactory {
     DoRearrange createDoRearrange();
     RequestPrescription createRequestPrescription();
     ResponseRequest createResponseRequest();
+
 }

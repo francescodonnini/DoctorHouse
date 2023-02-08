@@ -13,6 +13,15 @@ import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.dao.office.OfficeDao;
 import ispw.uniroma2.doctorhouse.dao.office.OfficeDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.office.OfficeDatabaseFactory;
+import ispw.uniroma2.doctorhouse.dao.prescriptions.PrescriptionDaoFactory;
+import ispw.uniroma2.doctorhouse.dao.prescriptions.PrescriptionDatabaseFactory;
+import ispw.uniroma2.doctorhouse.dao.prescriptions.PrescriptionFileFactory;
+import ispw.uniroma2.doctorhouse.dao.requests.RequestDaoFactory;
+import ispw.uniroma2.doctorhouse.dao.requests.RequestDaoFactoryImpl;
+import ispw.uniroma2.doctorhouse.dao.requests.RequestFileFactory;
+import ispw.uniroma2.doctorhouse.dao.responses.ResponseDaoFactory;
+import ispw.uniroma2.doctorhouse.dao.responses.ResponseDaoFactoryImpl;
+import ispw.uniroma2.doctorhouse.dao.responses.ResponseFileFactory;
 import ispw.uniroma2.doctorhouse.dao.shift.ShiftDao;
 import ispw.uniroma2.doctorhouse.dao.shift.ShiftDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.shift.ShiftDatabaseFactory;
@@ -68,10 +77,21 @@ public class Main extends Application {
         }
         AppointmentDao appointmentDao = appointmentDaoFactory.create();
 
-        PrescriptionDaoFactory prescriptionDaoFactory = new PrescriptionDatabaseFactory(ConnectionFactory.getConnection());
+        PrescriptionDaoFactory prescriptionDaoFactory;
+        RequestDaoFactory requestDaoFactory;
+        ResponseDaoFactory responseDaoFactory;
 
-        RequestDaoFactory requestDaoFactory = new RequestDaoFactoryImpl(ConnectionFactory.getConnection());
-        ResponseDaoFactory responseDaoFactory = new ResponseDaoFactoryImpl(ConnectionFactory.getConnection(), prescriptionDaoFactory.create());
+        if(System.currentTimeMillis() % 2 == 0) {
+            requestDaoFactory = new RequestDaoFactoryImpl(ConnectionFactory.getConnection());
+            prescriptionDaoFactory = new PrescriptionDatabaseFactory(ConnectionFactory.getConnection());
+            responseDaoFactory = new ResponseDaoFactoryImpl(ConnectionFactory.getConnection(), prescriptionDaoFactory.create());
+        } else {
+
+
+            requestDaoFactory = new RequestFileFactory();
+            prescriptionDaoFactory = new PrescriptionFileFactory();
+            responseDaoFactory = new ResponseFileFactory(prescriptionDaoFactory.create());
+        }
 
         SlotDaoFactory slotDaoFactory = new SlotDatabaseFactory(ConnectionFactory.getConnection(), appointmentDao);
         SlotDao slotDao = slotDaoFactory.create();
@@ -90,7 +110,7 @@ public class Main extends Application {
             LoginNavigator loginNavigator = new LoginNavigator(navigatorController, loginFactory);
             loginFactory.setLoginNavigator(loginNavigator);
             loginNavigator.navigate(LoginDestination.LOGIN);
-        } else {
+         } else {
             loader.setLocation(getClass().getResource("view/command_line.fxml"));
             StateFactory factory = new StateFactory(loginControllerFactory, patientApplicationControllersFactory, doctorApplicationControllersFactory);
             loader.setControllerFactory(f -> new CommandLine(factory.createLoginState()));

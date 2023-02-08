@@ -1,7 +1,7 @@
 package ispw.uniroma2.doctorhouse;
 
-import ispw.uniroma2.doctorhouse.dao.RequestDao;
-import ispw.uniroma2.doctorhouse.dao.ResponseDao;
+import ispw.uniroma2.doctorhouse.dao.requests.RequestDao;
+import ispw.uniroma2.doctorhouse.dao.responses.ResponseDao;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDao;
 import ispw.uniroma2.doctorhouse.dao.office.OfficeDao;
 import ispw.uniroma2.doctorhouse.dao.slot.SlotDao;
@@ -47,4 +47,5 @@ public class DoctorApplicationControllerFactoryImpl implements DoctorApplication
     public ResponseRequest createResponseRequest() {
         return new ResponseRequest(responseDao, requestDao);
     }
+
 }

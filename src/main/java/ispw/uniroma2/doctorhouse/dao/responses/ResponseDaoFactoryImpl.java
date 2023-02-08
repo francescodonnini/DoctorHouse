@@ -1,5 +1,7 @@
-package ispw.uniroma2.doctorhouse.dao;
+package ispw.uniroma2.doctorhouse.dao.responses;
 
+
+import ispw.uniroma2.doctorhouse.dao.prescriptions.PrescriptionDao;
 
 import java.sql.Connection;
 

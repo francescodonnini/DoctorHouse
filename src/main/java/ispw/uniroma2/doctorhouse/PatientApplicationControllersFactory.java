@@ -8,4 +8,6 @@ public interface PatientApplicationControllersFactory {
     AskForRearrange createAskForRearrange();
     DoRearrange createDoRearrange();
     RequestPrescription createRequestPrescription();
+
+    Logout createLogout();
 }

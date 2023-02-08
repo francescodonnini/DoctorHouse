@@ -1,7 +1,6 @@
-package ispw.uniroma2.doctorhouse.dao;
+package ispw.uniroma2.doctorhouse.dao.requests;
 
 import ispw.uniroma2.doctorhouse.beans.DoctorRequestBean;
-import ispw.uniroma2.doctorhouse.beans.PrescriptionRequestBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.Session;
 
@@ -23,11 +22,11 @@ public class RequestDatabase implements RequestDao{
     }
 
     @Override
-    public void addRequestOfPrescription(PrescriptionRequestBean requestBean) throws PersistentLayerException {
+    public void addRequestOfPrescription(String message) throws PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL request_prescription(?, ?, ?);")) {
             statement.setString(1, Session.getSession().getUser().getFamilyDoctor().orElseThrow().getEmail());
             statement.setString(2, Session.getSession().getUser().getEmail());
-            statement.setString(3, requestBean.getMessage());
+            statement.setString(3, message);
             statement.execute();
         } catch (SQLException e) {
             throw new PersistentLayerException(e);

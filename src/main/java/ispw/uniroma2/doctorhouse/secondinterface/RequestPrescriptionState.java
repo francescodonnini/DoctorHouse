@@ -1,6 +1,7 @@
 package ispw.uniroma2.doctorhouse.secondinterface;
 
 import ispw.uniroma2.doctorhouse.beans.PrescriptionRequestBean;
+import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
 import ispw.uniroma2.doctorhouse.beans.ResponsePatientBean;
 import ispw.uniroma2.doctorhouse.beans.UserBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
@@ -31,10 +32,8 @@ public class RequestPrescriptionState implements State{
         StringBuilder result = new StringBuilder();
         if(command.isEmpty()) {
             commandLine.setResponse("Specify a message for the doctor");
-        } else if(!command.equals("See response") && !command.equals("Home page")) {
-            PrescriptionRequestBean bean = new PrescriptionRequestBean();
-            bean.setMessage(command);
-            requestPrescription.sendPrescriptionRequest(bean);
+        } else if(!command.equals("See response") && !command.equals("Home page") && !command.equals("Help")) {
+            requestPrescription.sendPrescriptionRequest(command);
         } else if(command.equals("See response")) {
             Optional<List<ResponsePatientBean>> returnValue =  requestPrescription.getResponse();
             returnValue.orElseThrow().forEach(f -> result.append("Message : ").append(f.getMessage()).append(" Kind : ").append(f.getKind()).append(" Name : ").append(f.getName()).append(" Quantity : ").append(f.getQuantity()).append("\n"));

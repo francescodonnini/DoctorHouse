@@ -37,7 +37,7 @@ public class PrescriptionFile implements PrescriptionDao{
         int lastId = getLastKey(prescriptions);
         //Create file writer
         try (FileWriter writer = new FileWriter(PATH, true)) {
-            builder.append(lastId+1).append(bean.getName()).append(",").append(bean.getQuantity()).append("\n");
+            builder.append(lastId+1).append(",").append("Drug").append(",").append(bean.getName()).append(",").append(bean.getQuantity()).append("\n");
             writer.write(builder.toString());
             return lastId + 1 ;
         } catch (IOException e) {
@@ -52,7 +52,7 @@ public class PrescriptionFile implements PrescriptionDao{
         int lastId = getLastKey(prescriptions);
         //Create file writer
         try (FileWriter writer = new FileWriter(PATH, true)) {
-            builder.append(lastId+1).append(bean.getName()).append(",").append("\n");
+            builder.append(lastId+1).append("Visit").append(",").append(bean.getName()).append(",").append("\n");
             writer.write(builder.toString());
             return lastId + 1 ;
         } catch (IOException e) {

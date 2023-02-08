@@ -1,6 +1,5 @@
 package ispw.uniroma2.doctorhouse.view;
 
-import ispw.uniroma2.doctorhouse.beans.PrescriptionRequestBean;
 import ispw.uniroma2.doctorhouse.beans.ResponsePatientBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
@@ -61,10 +60,8 @@ public abstract class RequestPrescriptionGraphicController implements ViewContro
         if(message.trim().isEmpty()) {
             errLbl.setText("This field is required");
         } else {
-            PrescriptionRequestBean requestBean = new PrescriptionRequestBean();
-            requestBean.setMessage(message);
             try {
-                requestPrescription.sendPrescriptionRequest(requestBean);
+                requestPrescription.sendPrescriptionRequest(message);
                 textRequest.setText("");
             } catch (PersistentLayerException e) {
                 persError.setVisible(true);

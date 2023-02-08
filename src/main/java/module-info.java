@@ -30,4 +30,5 @@ module ispw.uniroma2.doctorhouse {
     exports ispw.uniroma2.doctorhouse.dao.requests;
     exports ispw.uniroma2.doctorhouse.dao.responses;
     exports ispw.uniroma2.doctorhouse.dao.prescriptions;
+    exports ispw.uniroma2.doctorhouse.requestprescription;
 }

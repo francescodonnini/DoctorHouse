@@ -164,7 +164,7 @@ public class ResponseRequestGraphicController implements ViewController {
     }
 
     @FXML
-    public void send() throws PersistentLayerException {
+    public void send() throws PersistentLayerException, NotValidRequest {
         String name = nameFld.getText();
         String message = msgFld.getText();
         if(name.isEmpty()) {
@@ -174,19 +174,22 @@ public class ResponseRequestGraphicController implements ViewController {
             ResponseBean responseBean = new ResponseBean();
             responseBean.setRequestId(requestId);
             responseBean.setMessage(message);
-            VisitPrescriptionBean visitPrescriptionBean = new VisitPrescriptionBean();
-            visitPrescriptionBean.setName(name);
-            responseRequest.insertVisitPrescriptionResponse(responseBean, visitPrescriptionBean);
+            PrescriptionBean prescriptionBean = new PrescriptionBean();
+            prescriptionBean.setName(name);
+            responseRequest.insertResponse(responseBean, prescriptionBean);
+            initialize();
+            msgFld.setText("");
+            showRequest();
         } else {
             int quantity = Integer.parseInt(idTxtFld.getText());
             ResponseBean responseBean = new ResponseBean();
             responseBean.setRequestId(requestId);
             responseBean.setMessage(message);
-            DrugPrescriptionBean drugPrescriptionBean = new DrugPrescriptionBean();
-            drugPrescriptionBean.setName(name);
-            drugPrescriptionBean.setQuantity(quantity);
+            PrescriptionBean prescriptionBean = new PrescriptionBean();
+            prescriptionBean.setName(name);
+            prescriptionBean.setQuantity(quantity);
             try {
-                responseRequest.insertDrugPrescriptionResponse(responseBean, drugPrescriptionBean);
+                responseRequest.insertResponse(responseBean, prescriptionBean);
                 initialize();
                 msgFld.setText("");
                 showRequest();

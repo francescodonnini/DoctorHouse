@@ -2,8 +2,11 @@ package ispw.uniroma2.doctorhouse.beans;
 
 public class ResponsePatientBean {
     private String message;
+
     private String kind;
+
     private String name;
+
     private int quantity;
 
     public String getMessage() {

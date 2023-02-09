@@ -2,8 +2,7 @@ package ispw.uniroma2.doctorhouse.dao.prescriptions;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import ispw.uniroma2.doctorhouse.beans.DrugPrescriptionBean;
-import ispw.uniroma2.doctorhouse.beans.VisitPrescriptionBean;
+import ispw.uniroma2.doctorhouse.beans.PrescriptionBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 
 import java.io.File;
@@ -31,28 +30,15 @@ public class PrescriptionFile implements PrescriptionDao{
         }
     }
     @Override
-    public int addDrugPrescription(DrugPrescriptionBean bean) throws PersistentLayerException {
+    public int savePrescription(PrescriptionBean bean) throws PersistentLayerException {
         File prescriptions = new File(PATH);
         StringBuilder builder = new StringBuilder();
         int lastId = getLastKey(prescriptions);
         //Create file writer
         try (FileWriter writer = new FileWriter(PATH, true)) {
-            builder.append(lastId+1).append(",").append("Drug").append(",").append(bean.getName()).append(",").append(bean.getQuantity()).append("\n");
-            writer.write(builder.toString());
-            return lastId + 1 ;
-        } catch (IOException e) {
-            throw new PersistentLayerException(e);
-        }
-    }
-
-    @Override
-    public int addVisitPrescription(VisitPrescriptionBean bean) throws PersistentLayerException {
-        File prescriptions = new File(PATH);
-        StringBuilder builder = new StringBuilder();
-        int lastId = getLastKey(prescriptions);
-        //Create file writer
-        try (FileWriter writer = new FileWriter(PATH, true)) {
-            builder.append(lastId+1).append("Visit").append(",").append(bean.getName()).append(",").append("\n");
+            if(bean.getQuantity() != 0) {
+                builder.append(lastId + 1).append(",").append("Drug").append(",").append(bean.getName()).append(",").append(bean.getQuantity()).append("\n");
+            } else builder.append(lastId + 1).append(",").append("Visit").append(",").append(bean.getName()).append(",").append(0).append("\n");
             writer.write(builder.toString());
             return lastId + 1 ;
         } catch (IOException e) {

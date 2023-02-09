@@ -5,7 +5,9 @@ import ispw.uniroma2.doctorhouse.dao.exceptions.NotValidRequest;
 import ispw.uniroma2.doctorhouse.dao.requests.RequestDao;
 import ispw.uniroma2.doctorhouse.dao.responses.ResponseDao;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
+import ispw.uniroma2.doctorhouse.model.Request;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,16 +23,22 @@ public class ResponseRequest {
     }
 
     public Optional<List<DoctorRequestBean>> getRequest() throws PersistentLayerException {
-        return requestDao.requestFinder();
+        List<DoctorRequestBean> doctorRequestBeans = new ArrayList<>();
+        Optional<List<Request>> requests = requestDao.requestFinder();
+        requests.orElseThrow().forEach(f -> {
+            DoctorRequestBean doctorRequestBean = new DoctorRequestBean();
+            doctorRequestBean.setId(f.getId());
+            doctorRequestBean.setPatient(f.getPatientEmail());
+            doctorRequestBean.setMessage(f.getMessage());
+            doctorRequestBeans.add(doctorRequestBean);
+        });
+        return Optional.of(doctorRequestBeans);
     }
 
-    public void insertDrugPrescriptionResponse(ResponseBean responseBean, DrugPrescriptionBean drugPrescriptionBean) throws PersistentLayerException, NotValidRequest {
-        dao.insertDrugResponse(responseBean, drugPrescriptionBean);
+    public void insertResponse(ResponseBean responseBean, PrescriptionBean prescriptionBean) throws PersistentLayerException, NotValidRequest {
+        dao.insertResponse(responseBean, prescriptionBean);
     }
 
-    public void insertVisitPrescriptionResponse(ResponseBean responseBean, VisitPrescriptionBean visitPrescriptionBean) throws PersistentLayerException {
-        dao.insertVisitResponse(responseBean, visitPrescriptionBean);
-    }
 
     public void insertRejection(ResponseBean responseBean) throws PersistentLayerException {
         dao.insertRejection(responseBean);

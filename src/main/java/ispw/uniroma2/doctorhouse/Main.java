@@ -79,12 +79,14 @@ public class Main extends Application {
             LoginNavigator loginNavigator = new LoginNavigator(navigatorController, loginFactory);
             loginFactory.setLoginNavigator(loginNavigator);
             loginNavigator.navigate(LoginDestination.LOGIN);
-         } else {
+        } else {
+
             loader.setLocation(getClass().getResource("view/command_line.fxml"));
             StateFactory factory = new StateFactory(loginControllerFactory, patientApplicationControllersFactory, doctorApplicationControllersFactory);
             loader.setControllerFactory(f -> new CommandLine(factory.createLoginState()));
             scene = new Scene(loader.load());
-        }
+       }
+
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
@@ -129,7 +131,7 @@ public class Main extends Application {
             prescriptionDaoFactory = new PrescriptionDatabaseFactory(ConnectionFactory.getConnection());
             prescriptionDao = prescriptionDaoFactory.create();
             responseDaoFactory = new ResponseDaoFactoryImpl(ConnectionFactory.getConnection(), prescriptionDao);
-        } else {
+       } else {
             requestDaoFactory = new RequestFileFactory();
             requestDao = requestDaoFactory.create();
             prescriptionDaoFactory = new PrescriptionFileFactory();

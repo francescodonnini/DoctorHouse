@@ -2,13 +2,13 @@ package ispw.uniroma2.doctorhouse.dao.responses;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import ispw.uniroma2.doctorhouse.beans.DrugPrescriptionBean;
+import ispw.uniroma2.doctorhouse.beans.PrescriptionBean;
 import ispw.uniroma2.doctorhouse.beans.ResponseBean;
-import ispw.uniroma2.doctorhouse.beans.ResponsePatientBean;
-import ispw.uniroma2.doctorhouse.beans.VisitPrescriptionBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.dao.prescriptions.PrescriptionDao;
 import ispw.uniroma2.doctorhouse.dao.prescriptions.PrescriptionFile;
+import ispw.uniroma2.doctorhouse.model.Prescription;
+import ispw.uniroma2.doctorhouse.model.Response;
 
 import java.io.File;
 import java.io.FileReader;
@@ -49,22 +49,8 @@ public class ResponseFile implements ResponseDao {
     }
 
     @Override
-    public void insertVisitResponse(ResponseBean responseBean, VisitPrescriptionBean visitPrescriptionBean) throws PersistentLayerException {
-        int prescriptionId = prescriptionDao.addVisitPrescription(visitPrescriptionBean);
-        File response = new File(path);
-        StringBuilder builder = new StringBuilder();
-        //Create file writer
-        try (FileWriter writer = new FileWriter(path, true)) {
-            builder.append(getLastKey(response) + 1 ).append(",").append(responseBean.getRequestId()).append(",").append(responseBean.getMessage()).append(",").append(prescriptionId).append("\n");
-            writer.write(builder.toString());
-        } catch (IOException e) {
-            throw new PersistentLayerException(e);
-        }
-    }
-
-    @Override
-    public void insertDrugResponse(ResponseBean responseBean, DrugPrescriptionBean drugPrescriptionBean) throws PersistentLayerException {
-        int prescriptionId = prescriptionDao.addDrugPrescription(drugPrescriptionBean);
+    public void insertResponse(ResponseBean responseBean, PrescriptionBean prescriptionBean) throws PersistentLayerException {
+        int prescriptionId = prescriptionDao.savePrescription(prescriptionBean);
         File response = new File(path);
         StringBuilder builder = new StringBuilder();
         //Create file writer
@@ -77,12 +63,13 @@ public class ResponseFile implements ResponseDao {
     }
 
     @Override
-    public Optional<List<ResponsePatientBean>> responseFinder() throws PersistentLayerException {
+    public Optional<List<Response>> responseFinder() throws PersistentLayerException {
         String id = "";
         String kind = "";
         String name = "";
         String quantity = "";
-        List<ResponsePatientBean> responsePatientBeans = new ArrayList<>();
+        List<Response> responsePatientBeans = new ArrayList<>();
+        Response response = null;
         try(CSVReader reader = new CSVReader(new FileReader(path))) {
             String [] line;
             while ((line = reader.readNext()) != null) {
@@ -96,14 +83,10 @@ public class ResponseFile implements ResponseDao {
                         name = l[2];
                         quantity = l[3];
                         if(!id.isEmpty() && id.equals(prescriptionId)) {
-                            ResponsePatientBean responsePatientBean = new ResponsePatientBean();
-                            responsePatientBean.setKind(kind);
-                            responsePatientBean.setName(name);
                             if (quantity.isEmpty()) {
-                                responsePatientBean.setQuantity(0);
-                            } else responsePatientBean.setQuantity(Integer.parseInt(quantity));
-                            responsePatientBean.setMessage(message);
-                            responsePatientBeans.add(responsePatientBean);
+                                response = new Response(message, new Prescription(kind, name, 0));
+                            } else response = new Response(message, new Prescription(kind, name, Integer.parseInt(quantity)));
+                            responsePatientBeans.add(response);
                         }
                     }
                 }

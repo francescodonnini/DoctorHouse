@@ -5,6 +5,8 @@ import ispw.uniroma2.doctorhouse.beans.*;
 import ispw.uniroma2.doctorhouse.dao.exceptions.NotValidRequest;
 import ispw.uniroma2.doctorhouse.dao.prescriptions.PrescriptionDao;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
+import ispw.uniroma2.doctorhouse.model.Prescription;
+import ispw.uniroma2.doctorhouse.model.Response;
 import ispw.uniroma2.doctorhouse.model.Session;
 import java.sql.*;
 import java.util.ArrayList;
@@ -25,21 +27,8 @@ public class ResponseDatabase implements ResponseDao{
     }
 
     @Override
-    public void insertVisitResponse(ResponseBean responseBean, VisitPrescriptionBean visitPrescriptionBean) throws PersistentLayerException {
-        int prescriptionId = prescriptionDao.addVisitPrescription(visitPrescriptionBean);
-        try (PreparedStatement ps = connection.prepareStatement(QUERY)){
-            ps.setInt(1, responseBean.getRequestId());
-            ps.setString(2, responseBean.getMessage());
-            ps.setInt(3, prescriptionId);
-            ps.execute();
-        } catch (SQLException e) {
-            throw new PersistentLayerException(e);
-        }
-    }
-
-    @Override
-    public void insertDrugResponse(ResponseBean responseBean, DrugPrescriptionBean drugPrescriptionBean) throws PersistentLayerException, NotValidRequest {
-        int prescriptionId = prescriptionDao.addDrugPrescription(drugPrescriptionBean);
+    public void insertResponse(ResponseBean responseBean, PrescriptionBean prescriptionBean) throws PersistentLayerException, NotValidRequest {
+        int prescriptionId = prescriptionDao.savePrescription(prescriptionBean);
         try (PreparedStatement ps = connection.prepareStatement(QUERY)){
             ps.setInt(1, responseBean.getRequestId());
             ps.setString(2, responseBean.getMessage());
@@ -52,21 +41,21 @@ public class ResponseDatabase implements ResponseDao{
         }
     }
 
-    public Optional<List<ResponsePatientBean>> responseFinder() throws PersistentLayerException {
-        List<ResponsePatientBean> bean = new ArrayList<>();
+    public Optional<List<Response>> responseFinder() throws PersistentLayerException {
+        List<Response> responses = new ArrayList<>();
         try(PreparedStatement ps = connection.prepareStatement("CALL view_response(?)")){
             ps.setString(1, Session.getSession().getUser().getEmail());
             ps.execute();
             ResultSet rs = ps.getResultSet();
             while(rs.next()) {
-                ResponsePatientBean responsePatientBean = new ResponsePatientBean();
-                responsePatientBean.setMessage(rs.getString(1));
-                responsePatientBean.setKind(rs.getString(2));
-                responsePatientBean.setName(rs.getString(3));
-                responsePatientBean.setQuantity(rs.getInt(4));
-                bean.add(responsePatientBean);
+                String message = rs.getString(1);
+                String kind = rs.getString(2);
+                String name = rs.getString(3);
+                int quantity = rs.getInt(4);
+                Response response = new Response(message, new Prescription(kind, name, quantity));
+                responses.add(response);
             }
-            return Optional.of(bean);
+            return Optional.of(responses);
         } catch (SQLException e) {
             throw new PersistentLayerException(e);
         }

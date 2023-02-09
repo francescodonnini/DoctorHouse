@@ -2,7 +2,7 @@ package ispw.uniroma2.doctorhouse.secondinterface.responserequest;
 
 import ispw.uniroma2.doctorhouse.Logout;
 import ispw.uniroma2.doctorhouse.beans.DoctorRequestBean;
-import ispw.uniroma2.doctorhouse.beans.DrugPrescriptionBean;
+import ispw.uniroma2.doctorhouse.beans.PrescriptionBean;
 import ispw.uniroma2.doctorhouse.beans.UserBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.NotValidRequest;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
@@ -58,10 +58,10 @@ public class CreateDrugPrescriptionState implements State {
     @Override
     public void enter(CommandLine commandLine, String command) throws PersistentLayerException, NotValidRequest {
         if(command.contains("-n") && command.contains("-q")) {
-            DrugPrescriptionBean drugPrescriptionBean = new DrugPrescriptionBean();
-            drugPrescriptionBean.setName(getName(command));
-            drugPrescriptionBean.setQuantity(getQuantity(command));
-            responseRequest.insertDrugPrescriptionResponse(ResponsePrescriptionState.responseBean, drugPrescriptionBean);
+            PrescriptionBean prescriptionBean = new PrescriptionBean();
+            prescriptionBean.setName(getName(command));
+            prescriptionBean.setQuantity(getQuantity(command));
+            responseRequest.insertResponse(ResponsePrescriptionState.responseBean, prescriptionBean);
             commandLine.setState(stateFactory.createResponsePrescriptionState(loggedUser, logout));
             commandLine.setState(stateFactory.createResponsePrescriptionState(loggedUser, logout));
             commandLine.setResponse(COMMAND);

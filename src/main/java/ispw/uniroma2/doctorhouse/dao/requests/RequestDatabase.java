@@ -1,7 +1,7 @@
 package ispw.uniroma2.doctorhouse.dao.requests;
 
-import ispw.uniroma2.doctorhouse.beans.DoctorRequestBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
+import ispw.uniroma2.doctorhouse.model.Request;
 import ispw.uniroma2.doctorhouse.model.Session;
 
 import java.sql.Connection;
@@ -34,20 +34,20 @@ public class RequestDatabase implements RequestDao{
     }
 
     @Override
-    public Optional<List<DoctorRequestBean>> requestFinder() throws PersistentLayerException {
-        List<DoctorRequestBean> bean = new ArrayList<>();
+    public Optional<List<Request>> requestFinder() throws PersistentLayerException {
+        List<Request> requests = new ArrayList<>();
         try (PreparedStatement ps = connection.prepareStatement("CALL  search_request(?);")) {
             ps.setString(1, Session.getSession().getUser().getEmail());
             ps.execute();
             ResultSet rs = ps.getResultSet();
             while(rs.next()) {
-                DoctorRequestBean requestBean = new DoctorRequestBean();
-                requestBean.setId(rs.getInt(1));
-                requestBean.setPatient(rs.getString(3));
-                requestBean.setMessage(rs.getString(4));
-                bean.add(requestBean);
+                int id = rs.getInt(1);
+                String patientEmail = rs.getString(3);
+                String message = rs.getString(4);
+                Request request = new Request(id, patientEmail, message);
+                requests.add(request);
             }
-            return Optional.of(bean);
+            return Optional.of(requests);
         } catch (SQLException e) {
             throw new PersistentLayerException(e);
         }

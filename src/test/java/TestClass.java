@@ -4,8 +4,6 @@ import ispw.uniroma2.doctorhouse.auth.LoginFactoryImpl;
 import ispw.uniroma2.doctorhouse.auth.exceptions.UserNotFound;
 import ispw.uniroma2.doctorhouse.beans.DoctorRequestBean;
 import ispw.uniroma2.doctorhouse.beans.LoginRequestBean;
-import ispw.uniroma2.doctorhouse.beans.ResponseBean;
-import ispw.uniroma2.doctorhouse.beans.ResponsePatientBean;
 import ispw.uniroma2.doctorhouse.dao.ConnectionFactory;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.dao.office.OfficeDatabase;
@@ -16,6 +14,8 @@ import ispw.uniroma2.doctorhouse.dao.responses.ResponseDatabase;
 import ispw.uniroma2.doctorhouse.dao.shift.ShiftDatabase;
 import ispw.uniroma2.doctorhouse.dao.specialty.SpecialtyDatabase;
 import ispw.uniroma2.doctorhouse.dao.users.UserDatabase;
+import ispw.uniroma2.doctorhouse.model.Request;
+import ispw.uniroma2.doctorhouse.model.Response;
 import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescription;
 import org.junit.jupiter.api.Test;
 
@@ -37,10 +37,10 @@ class TestClass {
         loginRequestBean.setPassword("1234");
         login.login(loginRequestBean);
         ResponseDao responseDao = new ResponseDatabase(ConnectionFactory.getConnection(), new PrescriptionDatabase(ConnectionFactory.getConnection()));
-        Optional<List<ResponsePatientBean>> responses = responseDao.responseFinder();
+        Optional<List<Response>> responses = responseDao.responseFinder();
         responses.get().forEach(f -> {
-            if(f.getKind() != null)
-                assertTrue(!f.getName().isEmpty());
+            if(f.getPrescription().getKind() != null)
+                assertTrue(!f.getPrescription().getName().isEmpty());
         });
     }
 
@@ -56,7 +56,7 @@ class TestClass {
         RequestDatabase requestDatabase = new RequestDatabase(ConnectionFactory.getConnection());
         RequestPrescription requestPrescription = new RequestPrescription(requestDatabase, new ResponseDatabase(ConnectionFactory.getConnection(), new PrescriptionDatabase(ConnectionFactory.getConnection())));
         requestPrescription.sendPrescriptionRequest("Testing");
-        Optional<List<DoctorRequestBean>> doctorRequestBeans = requestDatabase.requestFinder();
+        Optional<List<Request>> doctorRequestBeans = requestDatabase.requestFinder();
         doctorRequestBeans.get().forEach(f -> {
             if(f.getMessage() != null)
                 if(f.getMessage().equals("Testing"))

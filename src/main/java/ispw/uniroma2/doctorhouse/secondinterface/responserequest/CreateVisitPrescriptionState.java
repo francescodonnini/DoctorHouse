@@ -2,8 +2,9 @@ package ispw.uniroma2.doctorhouse.secondinterface.responserequest;
 
 import ispw.uniroma2.doctorhouse.Logout;
 import ispw.uniroma2.doctorhouse.beans.DoctorRequestBean;
+import ispw.uniroma2.doctorhouse.beans.PrescriptionBean;
 import ispw.uniroma2.doctorhouse.beans.UserBean;
-import ispw.uniroma2.doctorhouse.beans.VisitPrescriptionBean;
+import ispw.uniroma2.doctorhouse.dao.exceptions.NotValidRequest;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.requestprescription.ResponseRequest;
 import ispw.uniroma2.doctorhouse.secondinterface.CommandLine;
@@ -42,11 +43,12 @@ public class CreateVisitPrescriptionState implements State {
 
     //add home page and undo
     @Override
-    public void enter(CommandLine commandLine, String command) throws PersistentLayerException {
+    public void enter(CommandLine commandLine, String command) throws PersistentLayerException, NotValidRequest {
         if(command.contains("-n")) {
-            VisitPrescriptionBean visitPrescriptionBean = new VisitPrescriptionBean();
-            visitPrescriptionBean.setName(getName(command));
-            responseRequest.insertVisitPrescriptionResponse(ResponsePrescriptionState.responseBean, visitPrescriptionBean);
+            PrescriptionBean prescriptionBean = new PrescriptionBean();
+            prescriptionBean.setName(getName(command));
+            prescriptionBean.setQuantity(0);
+            responseRequest.insertResponse(ResponsePrescriptionState.responseBean, prescriptionBean);
             commandLine.setState(stateFactory.createResponsePrescriptionState(loggedUser, logout));
             commandLine.setResponse("WELCOME TO RESPONSE REQUEST PAGE- possible command: " + "\n" +
                     "1)show request " + "\n" +

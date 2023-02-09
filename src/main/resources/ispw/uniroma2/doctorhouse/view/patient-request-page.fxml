@@ -18,9 +18,10 @@
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints maxHeight="129.60001220703126" minHeight="10.0" prefHeight="10.79998779296875" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="258.39998874664303" minHeight="10.0" prefHeight="85.00000610351563" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="258.39998874664303" minHeight="10.0" prefHeight="220.1999938964844" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="129.60001220703126" minHeight="10.0" prefHeight="68.00000038146973" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="258.39998874664303" minHeight="10.0" prefHeight="82.00000000000001" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="258.39998874664303" minHeight="10.0" prefHeight="70.80000000000001" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="382.4000152587891" minHeight="10.0" prefHeight="347.8000091552734" vgrow="SOMETIMES" />
         </rowConstraints>
          <BorderPane.margin>
             <Insets left="50.0" right="50.0" top="50.0" />
@@ -28,7 +29,7 @@
          <children>
             <TextField fx:id="textRequest" prefHeight="57.0" prefWidth="499.0" GridPane.rowIndex="1" GridPane.valignment="TOP" />
             <Label prefHeight="18.0" prefWidth="505.0" text="Specify the motivation of prescription request" GridPane.valignment="BOTTOM" />
-            <Button fx:id="sendRequest" mnemonicParsing="false" onAction="#sendRequest" text="Send request" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+            <Button fx:id="sendRequest" mnemonicParsing="false" onAction="#sendRequest" text="Send request" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                <GridPane.margin>
                   <Insets right="100.0" />
                </GridPane.margin></Button>
@@ -37,12 +38,12 @@
                   <Insets />
                </GridPane.margin>
             </Label>
-            <Button fx:id="showResponse" mnemonicParsing="false" onAction="#showResponse" text="Show response" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+            <Button fx:id="showResponse" mnemonicParsing="false" onAction="#showResponse" text="Show response" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                <GridPane.margin>
                   <Insets left="100.0" />
                </GridPane.margin>
             </Button>
-            <TableView fx:id="responseTable" prefHeight="119.0" prefWidth="398.0" GridPane.rowIndex="2" GridPane.valignment="TOP">
+            <TableView fx:id="responseTable" prefHeight="119.0" prefWidth="398.0" GridPane.rowIndex="3" GridPane.valignment="TOP">
               <columns>
                 <TableColumn fx:id="col1" prefWidth="128.00000607967377" text="Message" />
                 <TableColumn fx:id="col2" prefWidth="87.99993896484375" text="Kind" />
@@ -53,9 +54,9 @@
                   <Insets bottom="10.0" left="50.0" right="50.0" top="10.0" />
                </GridPane.margin>
             </TableView>
-            <Label fx:id="persError" text="Persistent error occured" textFill="RED" GridPane.rowIndex="1">
+            <Label fx:id="persError" text="Persistent error occured" textFill="RED" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
                <GridPane.margin>
-                  <Insets bottom="50.0" />
+                  <Insets />
                </GridPane.margin>
             </Label>
          </children>

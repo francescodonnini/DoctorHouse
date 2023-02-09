@@ -4,7 +4,9 @@ import ispw.uniroma2.doctorhouse.beans.ResponsePatientBean;
 import ispw.uniroma2.doctorhouse.dao.requests.RequestDao;
 import ispw.uniroma2.doctorhouse.dao.responses.ResponseDao;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
+import ispw.uniroma2.doctorhouse.model.Response;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +24,16 @@ public class RequestPrescription {
     }
 
     public Optional<List<ResponsePatientBean>> getResponse() throws PersistentLayerException {
-        return responseDao.responseFinder();
+        List<ResponsePatientBean> responsePatientBeans = new ArrayList<>();
+        Optional<List<Response>> responses = responseDao.responseFinder();
+        responses.orElseThrow().forEach(f -> {
+            ResponsePatientBean responsePatientBean = new ResponsePatientBean();
+            responsePatientBean.setMessage(f.getMessage());
+            responsePatientBean.setKind(f.getPrescription().getKind());
+            responsePatientBean.setName(f.getPrescription().getName());
+            responsePatientBean.setQuantity(f.getPrescription().getQuantity());
+            responsePatientBeans.add(responsePatientBean);
+        });
+        return Optional.of(responsePatientBeans);
     }
 }

@@ -2,8 +2,8 @@ package ispw.uniroma2.doctorhouse.dao.requests;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import ispw.uniroma2.doctorhouse.beans.DoctorRequestBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
+import ispw.uniroma2.doctorhouse.model.Request;
 import ispw.uniroma2.doctorhouse.model.Session;
 
 import java.io.*;
@@ -58,8 +58,8 @@ public class RequestFile implements RequestDao {
     }
 
     @Override
-    public Optional<List<DoctorRequestBean>> requestFinder() throws PersistentLayerException {
-        List<DoctorRequestBean> doctorRequestBeans = new ArrayList<>();
+    public Optional<List<Request>> requestFinder() throws PersistentLayerException {
+        List<Request> requests = new ArrayList<>();
         try (CSVReader reader = new CSVReader(new FileReader(path))) {
             String[] line;
             while ((line = reader.readNext()) != null) {
@@ -70,14 +70,11 @@ public class RequestFile implements RequestDao {
                 String message = line[MESSAGE];
                 String doctorEmail = line[DOCTOR_EMAIL];
                 if(doctorEmail.equals(Session.getSession().getUser().getEmail())) {
-                    DoctorRequestBean bean = new DoctorRequestBean();
-                    bean.setId(Integer.parseInt(id));
-                    bean.setPatient(patientEmail);
-                    bean.setMessage(message);
-                    doctorRequestBeans.add(bean);
+                    Request request = new Request(Integer.parseInt(id), patientEmail, message);
+                    requests.add(request);
                 }
             }
-            return Optional.of(doctorRequestBeans);
+            return Optional.of(requests);
         } catch (IOException | CsvValidationException e) {
             throw new PersistentLayerException(e);
         }

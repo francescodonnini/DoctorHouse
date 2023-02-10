@@ -6,6 +6,7 @@ public class ResponseBean {
 
     private String message;
 
+
     public String getMessage() {
         return message;
     }

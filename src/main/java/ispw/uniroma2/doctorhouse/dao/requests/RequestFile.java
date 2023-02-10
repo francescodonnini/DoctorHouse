@@ -2,14 +2,16 @@ package ispw.uniroma2.doctorhouse.dao.requests;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
+import ispw.uniroma2.doctorhouse.Main;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
+import ispw.uniroma2.doctorhouse.dao.responses.ResponseDao;
 import ispw.uniroma2.doctorhouse.model.Request;
+import ispw.uniroma2.doctorhouse.model.Response;
 import ispw.uniroma2.doctorhouse.model.Session;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 
@@ -23,8 +25,11 @@ public class RequestFile implements RequestDao {
 
     private final String path;
 
-    public RequestFile() {
-        this.path = Objects.requireNonNull(getClass().getResource("requests.csv")).getPath();
+    private final ResponseDao responseDao;
+
+    public RequestFile(String path, ResponseDao responseDao) {
+        this.path = path;
+        this.responseDao = responseDao;
     }
 
     private int getLastKey(File file) throws PersistentLayerException {
@@ -66,15 +71,43 @@ public class RequestFile implements RequestDao {
                 String id = line[ID];
                 if(id.isEmpty())
                     break;
-                String patientEmail = line[PATIENT_EMAIL];
-                String message = line[MESSAGE];
-                String doctorEmail = line[DOCTOR_EMAIL];
-                if(doctorEmail.equals(Session.getSession().getUser().getEmail())) {
-                    Request request = new Request(Integer.parseInt(id), patientEmail, message);
-                    requests.add(request);
+                if(!in(Integer.parseInt(id))) {
+                    String patientEmail = line[PATIENT_EMAIL];
+                    String message = line[MESSAGE];
+                    String doctorEmail = line[DOCTOR_EMAIL];
+                    if (doctorEmail.equals(Session.getSession().getUser().getEmail())) {
+                        Request request = new Request(Integer.parseInt(id), patientEmail, message);
+                        requests.add(request);
+                    }
                 }
             }
             return Optional.of(requests);
+        } catch (IOException | CsvValidationException e) {
+            throw new PersistentLayerException(e);
+        }
+    }
+
+    private boolean in(int key) throws PersistentLayerException {
+        Optional<List<Response>> responses = responseDao.responseFinder();
+        List<Response> responseList = responses.orElseThrow();
+        for(int i = 0; i<responseList.size(); i++)
+            if(responseList.get(i).getRequestId() == key)
+                return true;
+        return false;
+    }
+
+    public static boolean checkRequest(int requestId) throws PersistentLayerException {
+        try (CSVReader reader = new CSVReader(new FileReader(Main.APP_DIR_PATH + "/requests.csv"))) {
+            String[] line;
+            while ((line = reader.readNext()) != null) {
+                String id = line[ID];
+                if(id.isEmpty())
+                    break;
+                if((requestId == Integer.parseInt(id)) && (line[PATIENT_EMAIL].equals(Session.getSession().getUser().getEmail()))) {
+                    return true;
+                }
+            }
+            return false;
         } catch (IOException | CsvValidationException e) {
             throw new PersistentLayerException(e);
         }

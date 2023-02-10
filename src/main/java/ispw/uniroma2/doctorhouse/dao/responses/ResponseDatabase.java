@@ -49,10 +49,10 @@ public class ResponseDatabase implements ResponseDao{
             ResultSet rs = ps.getResultSet();
             while(rs.next()) {
                 String message = rs.getString(1);
-                String kind = rs.getString(2);
-                String name = rs.getString(3);
-                int quantity = rs.getInt(4);
-                Response response = new Response(message, new Prescription(kind, name, quantity));
+                int requestId = rs.getInt(2);
+                int prescriptionId = rs.getInt(3);
+                Prescription prescription = prescriptionDao.getPrescription(prescriptionId);
+                Response response = new Response(message, prescription, requestId);
                 responses.add(response);
             }
             return Optional.of(responses);
@@ -71,6 +71,5 @@ public class ResponseDatabase implements ResponseDao{
             throw new PersistentLayerException(e);
         }
     }
-
 }
 

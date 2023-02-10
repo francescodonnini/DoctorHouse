@@ -29,9 +29,15 @@ public class RequestPrescription {
         responses.orElseThrow().forEach(f -> {
             ResponsePatientBean responsePatientBean = new ResponsePatientBean();
             responsePatientBean.setMessage(f.getMessage());
-            responsePatientBean.setKind(f.getPrescription().getKind());
-            responsePatientBean.setName(f.getPrescription().getName());
-            responsePatientBean.setQuantity(f.getPrescription().getQuantity());
+            if(f.getPrescription() != null) {
+                responsePatientBean.setKind(f.getPrescription().getKind());
+                responsePatientBean.setName(f.getPrescription().getName());
+                responsePatientBean.setQuantity(f.getPrescription().getQuantity());
+            } else {
+                responsePatientBean.setKind("");
+                responsePatientBean.setName("");
+                responsePatientBean.setQuantity(0);
+            }
             responsePatientBeans.add(responsePatientBean);
         });
         return Optional.of(responsePatientBeans);

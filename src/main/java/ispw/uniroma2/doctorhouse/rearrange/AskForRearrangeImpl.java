@@ -5,11 +5,8 @@ import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDao;
 import ispw.uniroma2.doctorhouse.dao.exceptions.InvalidTimeSlot;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.dao.office.OfficeDao;
-import ispw.uniroma2.doctorhouse.dao.slot.SlotDao;
 import ispw.uniroma2.doctorhouse.model.*;
-import ispw.uniroma2.doctorhouse.model.appointment.Appointment;
-import ispw.uniroma2.doctorhouse.model.appointment.AppointmentMemento;
-import ispw.uniroma2.doctorhouse.model.appointment.IncomingInfo;
+import ispw.uniroma2.doctorhouse.model.appointment.*;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -23,13 +20,11 @@ import java.util.Optional;
 
 public class AskForRearrangeImpl implements AskForRearrange {
     private final AppointmentDao appointmentDao;
-    private final SlotDao slotDao;
     private final OfficeDao officeDao;
     private final Map<AppointmentBean, Appointment> appointmentMap;
 
-    public AskForRearrangeImpl(AppointmentDao appointmentDao, SlotDao slotDao, OfficeDao officeDao) {
+    public AskForRearrangeImpl(AppointmentDao appointmentDao, OfficeDao officeDao) {
         this.appointmentDao = appointmentDao;
-        this.slotDao = slotDao;
         this.officeDao = officeDao;
         appointmentMap = new HashMap<>();
     }
@@ -75,9 +70,15 @@ public class AskForRearrangeImpl implements AskForRearrange {
         }
         Office office = optionalOffice.get();
         Duration specialtyDuration = bean.getSpecialty().getDuration();
-        Map<LocalDate, List<TakenSlot>> slots = new HashMap<>();
-        for (TakenSlot slot : slotDao.getSlots(officeId, doctorEmail)) {
-            slots.computeIfAbsent(slot.getDateTime().toLocalDate(), m -> new ArrayList<>()).add(slot);
+        List<Appointment> appointments = appointmentDao.findByOffice(doctorEmail, office.getId(), IncomingInfo.class);
+        appointments.addAll(appointmentDao.findByOffice(doctorEmail, office.getId(), PendingInfo.class));
+        Map<LocalDate, List<Slot>> slots = new HashMap<>();
+        for (Appointment a : appointments) {
+            Optional<Slot> optional = a.getInfo().getSlot();
+            if (optional.isPresent()) {
+                Slot slot = optional.get();
+                slots.computeIfAbsent(slot.getDateTime().toLocalDate(), m -> new ArrayList<>()).add(slot);
+            }
         }
         List<DateTimeInterval> freeSlots = new ArrayList<>();
         for (LocalDate date = start; !date.isAfter(endInclusive); date = date.plusDays(1)) {
@@ -88,7 +89,7 @@ public class AskForRearrangeImpl implements AskForRearrange {
             Shift shift = optionalShift.get();
             for (ClockInterval interval : shift.getIntervals()) {
                 TimeIntervalSet set = new TimeIntervalSet(interval);
-                for (TakenSlot slot : slots.getOrDefault(date, List.of())) {
+                for (Slot slot : slots.getOrDefault(date, List.of())) {
                     set.add(slot.getInterval());
                 }
                 for (TimeInterval i : set.complementary()) {
@@ -114,7 +115,7 @@ public class AskForRearrangeImpl implements AskForRearrange {
     public List<AppointmentBean> getIncomingAppointments() throws PersistentLayerException {
         appointmentMap.clear();
         String email = Session.getSession().getUser().getEmail();
-        appointmentDao.find(email, IncomingInfo.class).forEach(a -> appointmentMap.put(new AppointmentBeanAdapter(a), a));
+        appointmentDao.findByEmail(email, IncomingInfo.class).forEach(a -> appointmentMap.put(new AppointmentBeanAdapter(a), a));
         return new ArrayList<>(appointmentMap.keySet());
     }
 }

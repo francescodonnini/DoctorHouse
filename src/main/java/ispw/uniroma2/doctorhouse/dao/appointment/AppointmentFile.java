@@ -12,7 +12,6 @@ import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.dao.office.OfficeDao;
 import ispw.uniroma2.doctorhouse.dao.specialty.SpecialtyDao;
 import ispw.uniroma2.doctorhouse.dao.users.UserDao;
-import ispw.uniroma2.doctorhouse.model.TakenSlot;
 import ispw.uniroma2.doctorhouse.model.User;
 import ispw.uniroma2.doctorhouse.model.appointment.*;
 
@@ -21,7 +20,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class AppointmentFile implements AppointmentDao {
     private static final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
@@ -102,58 +100,68 @@ public class AppointmentFile implements AppointmentDao {
     }
 
     @Override
-    public List<Appointment> find(String email, Class<? extends AppointmentInfo> type) throws PersistentLayerException {
+    public List<Appointment> findByEmail(String email, Class<? extends AppointmentInfo> typeName) throws PersistentLayerException {
         try (CSVReader reader = getReader()) {
             Predicate<String[]> filter;
-            if (type.equals(PendingInfo.class)) {
+            if (typeName.equals(PendingInfo.class)) {
                 filter = createPendingFilter(email);
             } else {
-                filter = createOthersFilter(email, getStateName(type));
+                filter = createOthersFilter(email, getStateName(typeName));
             }
-            List<Appointment> appointments = new ArrayList<>();
-            AppointmentBuilder builder = new AppointmentBuilderImpl();
-            String[] line;
             reader.readNext();
-            while ((line = reader.readNext()) != null) {
-                if (filter.test(line)) {
-                    String patient = getColumn(line, PATIENT_KEY).orElse("");
-                    userDao.getUser(patient).ifPresent(builder::setPatient);
-                    String doctor = getColumn(line, DOCTOR_KEY).orElse("");
-                    userDao.getDoctor(doctor).ifPresent(builder::setDoctor);
-                    Optional<String> col = getColumn(line, DATE_KEY);
-                    if (col.isPresent()) {
-                        LocalDateTime date = LocalDateTime.parse(col.get(), DateTimeFormatter.ofPattern(DATETIME_PATTERN));
-                        builder.setDate(date);
-                    }
-                    String office = getColumn(line, OFFICE_KEY).orElse("");
-                    if (!office.isEmpty()) {
-                        int officeId = Integer.parseInt(office);
-                        officeDao.getOffice(officeId, doctor).ifPresent(builder::setOffice);
-                    }
-                    String specialtyName = getColumn(line, SPECIALTY_NAME_KEY).orElse("");
-                    String specialtyDoctor = getColumn(line, SPECIALTY_DOCTOR_KEY).orElse("");
-                    specialtyDao.getSpecialty(specialtyName, specialtyDoctor).ifPresent(builder::setSpecialty);
-                    String oldDate = getColumn(line, OLD_DATE_KEY).orElse("");
-                    if (!oldDate.isEmpty()) {
-                        builder.setOldDate(LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern(DATETIME_PATTERN)));
-                    }
-                    String initiator = getColumn(line, INITIATOR_KEY).orElse("");
-                    userDao.getUser(initiator).ifPresent(builder::setInitiator);
-                    appointments.add(builder.build(type));
-                }
-            }
-            return appointments;
+            return fromLine(reader, filter, typeName);
         } catch (IOException | CsvValidationException e) {
             throw new PersistentLayerException(e);
         }
     }
 
     @Override
-    public List<TakenSlot> find(String doctorEmail) throws PersistentLayerException {
-        List<TakenSlot> slots = new ArrayList<>();
-        slots.addAll(find(doctorEmail, IncomingInfo.class).stream().map(a -> (TakenSlot) a.getInfo()).collect(Collectors.toList()));
-        slots.addAll(find(doctorEmail, PendingInfo.class).stream().map(a -> (TakenSlot) a.getInfo()).collect(Collectors.toList()));
-        return slots;
+    public List<Appointment> findByOffice(String doctorEmail, int officeId, Class<? extends AppointmentInfo> typeName) throws PersistentLayerException {
+        try (CSVReader reader = getReader()) {
+            reader.readNext();
+            Predicate<String[]> filter = createOfficeFilter(officeId, typeName);
+            return fromLine(reader, filter, typeName);
+        } catch (IOException | CsvValidationException e) {
+            throw new PersistentLayerException(e);
+        }
+    }
+
+    private List<Appointment> fromLine(CSVReader reader, Predicate<String[]> filter, Class<? extends AppointmentInfo> typeName) throws CsvValidationException, IOException, PersistentLayerException {
+        AppointmentBuilder builder = new AppointmentBuilderImpl();
+        List<Appointment> appointments = new ArrayList<>();
+        String[] line;
+        while ((line = reader.readNext()) != null) {
+            if (filter.test(line)) {
+                String patient = getColumn(line, PATIENT_KEY).orElse("");
+                userDao.getUser(patient).ifPresent(builder::setPatient);
+                String doctor = getColumn(line, DOCTOR_KEY).orElse("");
+                userDao.getDoctor(doctor).ifPresent(builder::setDoctor);
+                String date = getColumn(line, DATE_KEY).orElse("");
+                builder.setDate(LocalDateTime.parse(date, DateTimeFormatter.ofPattern(DATETIME_PATTERN)));
+                String specialty = getColumn(line, SPECIALTY_NAME_KEY).orElse("");
+                specialtyDao.getSpecialty(specialty, doctor).ifPresent(builder::setSpecialty);
+                int office = Integer.parseInt(getColumn(line, OFFICE_KEY).orElse(""));
+                officeDao.getOffice(office, doctor).ifPresent(builder::setOffice);
+                String oldDate = getColumn(line, OLD_DATE_KEY).orElse("");
+                if (!oldDate.isEmpty()) {
+                    builder.setOldDate(LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern(DATETIME_PATTERN)));
+                }
+                String initiator = getColumn(line, INITIATOR_KEY).orElse("");
+                if (!initiator.isEmpty()) {
+                    userDao.getUser(initiator).ifPresent(builder::setInitiator);
+                }
+                appointments.add(builder.build(typeName));
+                builder.reset();
+            }
+        }
+        return appointments;
+    }
+
+    Predicate<String[]> createOfficeFilter(int officeId, Class<? extends AppointmentInfo> typeName) {
+        return line -> {
+            int otherId = Integer.parseInt(getColumn(line, OFFICE_KEY).orElse("-1"));
+            return officeId == otherId && getStateName(typeName).equals(getColumn(line, STATE_KEY).orElse(""));
+        };
     }
 
     private Optional<String> getColumn(String[] line, String colName) {
@@ -188,8 +196,6 @@ public class AppointmentFile implements AppointmentDao {
             return "s";
         } else if (type.equals(CanceledInfo.class)) {
             return "c";
-        } else if (type.equals(ConsumedInfo.class)) {
-            return "co";
         } else if (type.equals(PendingInfo.class)) {
             return "p";
         } else {
@@ -205,8 +211,6 @@ public class AppointmentFile implements AppointmentDao {
             incoming(appointment, (IncomingInfo) appointment.getInfo());
         } else if (appointment.getInfo() instanceof PendingInfo) {
             pending(appointment, (PendingInfo) appointment.getInfo());
-        } else if (appointment.getInfo() instanceof ConsumedInfo) {
-            consume(appointment, (ConsumedInfo) appointment.getInfo());
         }
     }
 
@@ -223,33 +227,9 @@ public class AppointmentFile implements AppointmentDao {
             }
             String[] line = lines.remove((int) optional.get());
             writeColumn(line, STATE_KEY, "c");
-            Optional<User> initiator = info.getInitiator();
-            String initiatorEmail = "";
-            if (initiator.isPresent()) {
-                initiatorEmail = initiator.get().getEmail();
-            }
-            writeColumn(line, INITIATOR_KEY, initiatorEmail);
+            User initiator = info.getInitiator();
+            writeColumn(line, INITIATOR_KEY, initiator.getEmail());
             writeColumn(line, OLD_DATE_KEY, "");
-            lines.add(line);
-            saveLines(lines);
-        } catch (IOException | CsvException e) {
-            throw new PersistentLayerException(e);
-        }
-    }
-
-    private void consume(Appointment appointment, ConsumedInfo info) throws PersistentLayerException {
-        try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
-            String patient = appointment.getPatient().getEmail();
-            String doctor = appointment.getDoctor().getEmail();
-            LocalDateTime dateTime = info.getDate();
-            List<String[]> lines = reader.readAll();
-            Optional<Integer> optional = findLineByKey(lines, patient, doctor, dateTime);
-            if (optional.isEmpty()) {
-                return;
-            }
-            int index = optional.get();
-            String[] line = lines.remove(index);
-            writeColumn(line, STATE_KEY, "co");
             lines.add(line);
             saveLines(lines);
         } catch (IOException | CsvException e) {

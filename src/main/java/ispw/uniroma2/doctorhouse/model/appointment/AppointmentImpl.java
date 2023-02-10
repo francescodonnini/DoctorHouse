@@ -20,13 +20,11 @@ public class AppointmentImpl implements Appointment {
         this.specialty = specialty;
         this.office = office;
         if (info instanceof CanceledInfo) {
-            state = new Canceled((CanceledInfo) info);
+            state = new CanceledState((CanceledInfo) info);
         } else if (info instanceof PendingInfo) {
-            state = new Pending((PendingInfo) info);
+            state = new PendingState((PendingInfo) info);
         } else if (info instanceof IncomingInfo){
             state = new Incoming((IncomingInfo) info);
-        } else if (info instanceof ConsumedInfo) {
-            state = new Consumed((ConsumedInfo) info);
         } else {
             throw new IllegalArgumentException();
         }
@@ -61,13 +59,11 @@ public class AppointmentImpl implements Appointment {
     public void restore(AppointmentMemento memento) {
         AppointmentInfo info = memento.getInfo();
         if (info instanceof CanceledInfo) {
-            setState(new Canceled((CanceledInfo) info));
+            setState(new CanceledState((CanceledInfo) info));
         } else if (info instanceof IncomingInfo) {
             setState(new Incoming((IncomingInfo) info));
         } else if (info instanceof PendingInfo) {
-            setState(new Pending((PendingInfo) info));
-        } else if (info instanceof ConsumedInfo){
-            setState(new Consumed((ConsumedInfo) info));
+            setState(new PendingState((PendingInfo) info));
         }
     }
 

@@ -17,7 +17,6 @@ module ispw.uniroma2.doctorhouse {
     exports ispw.uniroma2.doctorhouse.model.appointment;
     exports ispw.uniroma2.doctorhouse.dao.exceptions;
     exports ispw.uniroma2.doctorhouse.dao.appointment;
-    exports ispw.uniroma2.doctorhouse.dao.slot;
     exports ispw.uniroma2.doctorhouse.dao.office;
     exports ispw.uniroma2.doctorhouse.dao.users;
     exports ispw.uniroma2.doctorhouse.dao.specialty;

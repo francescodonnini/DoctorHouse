@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Types;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,26 +104,6 @@ public class UserDatabase implements UserDao {
                 }
             }
             return Optional.empty();
-        } catch (SQLException e) {
-            throw new PersistentLayerException(e);
-        }
-    }
-
-    @Override
-    public List<Doctor> getByField(String field) throws PersistentLayerException {
-        try (PreparedStatement statement = connection.prepareStatement("CALL getByField(?);")) {
-            statement.setString(1, field);
-            if (statement.execute()) {
-                List<Doctor> doctors = new ArrayList<>();
-                ResultSet resultSet = statement.getResultSet();
-                while (resultSet.next()) {
-                    String email = resultSet.getString(6);
-                    List<Office> offices = officeDao.getOffices(email);
-                    doctors.add(new Doctor(email, fromResultSet(resultSet), null, field, offices));
-                }
-                return doctors;
-            }
-            return List.of();
         } catch (SQLException e) {
             throw new PersistentLayerException(e);
         }

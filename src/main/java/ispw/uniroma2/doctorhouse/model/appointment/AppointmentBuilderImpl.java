@@ -59,8 +59,6 @@ public class AppointmentBuilderImpl implements AppointmentBuilder {
             return makePendingInfo();
         } else if (type.equals(IncomingInfo.class)) {
             return makeScheduledInfo();
-        } else if (type.equals(ConsumedInfo.class)) {
-            return makeConsumedInfo();
         } else {
             throw new IllegalArgumentException();
         }
@@ -71,13 +69,6 @@ public class AppointmentBuilderImpl implements AppointmentBuilder {
             throw new IllegalStateException();
         }
         return new AppointmentImpl(doctor, patient, specialty, office, new CanceledInfo(date, initiator));
-    }
-
-    private Appointment makeConsumedInfo() {
-        if (patient == null || doctor == null || specialty == null || date == null || office == null) {
-            throw new IllegalStateException();
-        }
-        return new AppointmentImpl(doctor, patient, specialty, office, new ConsumedInfo(date));
     }
 
     private Appointment makePendingInfo() {

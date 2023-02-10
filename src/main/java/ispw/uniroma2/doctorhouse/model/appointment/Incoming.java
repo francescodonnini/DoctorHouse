@@ -19,23 +19,14 @@ public class Incoming implements AppointmentState {
     @Override
     public void cancel(AppointmentImpl appointment, User initiator) {
         CanceledInfo newStateInfo = new CanceledInfo(info.getDate(), initiator);
-        Canceled newState = new Canceled(newStateInfo);
+        CanceledState newState = new CanceledState(newStateInfo);
         appointment.setState(newState);
     }
 
     @Override
     public void reschedule(AppointmentImpl appointment, LocalDateTime newDate, User initiator) {
         PendingInfo newStateInfo = new PendingInfo(info.getDateTime(), newDate, info.getInterval().getDuration(), initiator);
-        Pending newState = new Pending(newStateInfo);
+        PendingState newState = new PendingState(newStateInfo);
         appointment.setState(newState);
-    }
-
-    @Override
-    public void tick(AppointmentImpl appointment, LocalDateTime currentDate) {
-        if (!info.getDate().isAfter(currentDate)) {
-            ConsumedInfo consumedInfo = new ConsumedInfo(info.getDate());
-            Consumed consumed = new Consumed(consumedInfo);
-            appointment.setState(consumed);
-        }
     }
 }

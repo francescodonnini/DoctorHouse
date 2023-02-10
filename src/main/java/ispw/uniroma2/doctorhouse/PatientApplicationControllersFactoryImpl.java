@@ -4,7 +4,6 @@ import ispw.uniroma2.doctorhouse.dao.requests.RequestDao;
 import ispw.uniroma2.doctorhouse.dao.responses.ResponseDao;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDao;
 import ispw.uniroma2.doctorhouse.dao.office.OfficeDao;
-import ispw.uniroma2.doctorhouse.dao.slot.SlotDao;
 import ispw.uniroma2.doctorhouse.rearrange.AskForRearrange;
 import ispw.uniroma2.doctorhouse.rearrange.AskForRearrangeImpl;
 import ispw.uniroma2.doctorhouse.rearrange.DoRearrange;
@@ -16,19 +15,17 @@ public class PatientApplicationControllersFactoryImpl implements PatientApplicat
     private final RequestDao requestDao;
     private final ResponseDao responseDao;
     private final OfficeDao officeDao;
-    private final SlotDao slotDao;
 
-    public PatientApplicationControllersFactoryImpl(AppointmentDao appointmentDao, RequestDao requestDao, ResponseDao responseDao, OfficeDao officeDao, SlotDao slotDao) {
+    public PatientApplicationControllersFactoryImpl(AppointmentDao appointmentDao, RequestDao requestDao, ResponseDao responseDao, OfficeDao officeDao) {
         this.appointmentDao = appointmentDao;
         this.requestDao = requestDao;
         this.responseDao = responseDao;
         this.officeDao = officeDao;
-        this.slotDao = slotDao;
     }
 
     @Override
     public AskForRearrange createAskForRearrange() {
-        return new AskForRearrangeImpl(appointmentDao, slotDao, officeDao);
+        return new AskForRearrangeImpl(appointmentDao, officeDao);
     }
 
     @Override

@@ -6,7 +6,6 @@ import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.Doctor;
 import ispw.uniroma2.doctorhouse.model.User;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface UserDao {
@@ -14,5 +13,4 @@ public interface UserDao {
     void create(UserRegistrationRequestBean registrationRequest) throws DuplicateEmail, PersistentLayerException;
     Optional<User> getUser(String email) throws PersistentLayerException;
     Optional<Doctor> getDoctor(String email) throws PersistentLayerException;
-    List<Doctor> getByField(String field) throws PersistentLayerException;
 }

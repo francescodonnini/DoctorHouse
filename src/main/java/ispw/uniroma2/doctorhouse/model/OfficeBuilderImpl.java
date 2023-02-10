@@ -36,7 +36,7 @@ public class OfficeBuilderImpl implements OfficeBuilder {
 
     @Override
     public Office build() {
-        return new OfficeImpl(id, location, new ArrayList<>(specialties), new ArrayList<>(shifts));
+        return new Office(id, location, new ArrayList<>(specialties), new ArrayList<>(shifts));
     }
 
     @Override

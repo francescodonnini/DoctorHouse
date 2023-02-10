@@ -6,10 +6,10 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public class IncomingInfo extends AppointmentInfo implements Slot {
+public class ScheduledInfo extends AppointmentInfo {
     private final Duration duration;
 
-    public IncomingInfo(LocalDateTime date, Duration duration) {
+    public ScheduledInfo(LocalDateTime date, Duration duration) {
         super(date);
         this.duration = duration;
     }
@@ -19,13 +19,7 @@ public class IncomingInfo extends AppointmentInfo implements Slot {
         return Optional.of(new DateTimeInterval(getDate(), duration));
     }
 
-    @Override
-    public LocalDateTime getDateTime() {
-        return getDate();
-    }
-
-    @Override
-    public TimeInterval getInterval() {
-        return new ClockInterval(getDateTime().toLocalTime(), duration);
+    public Duration getDuration() {
+        return duration;
     }
 }

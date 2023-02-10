@@ -18,7 +18,7 @@ public class UserHomePageState implements State {
 
     @Override
     public void onEnter(CommandLine commandLine) {
-        commandLine.setResponse("Welcome to the PATIENT HOMEPAGE\nType help for info\n");
+        commandLine.setResponse("Welcome to the PATIENT HOMEPAGE\nType help to see usages\n");
     }
 
     @Override

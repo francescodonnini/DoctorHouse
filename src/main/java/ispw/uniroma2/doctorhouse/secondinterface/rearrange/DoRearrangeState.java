@@ -82,8 +82,7 @@ public class DoRearrangeState implements State {
         } catch (InvalidTimeSlot e) {
             //
         } catch (PersistentLayerException e) {
-            context.setResponse("error...");
-            context.quit();
+            context.setState(createHomePage());
         }
     }
 
@@ -91,6 +90,10 @@ public class DoRearrangeState implements State {
         beans.clear();
         try {
             beans.addAll(controller.getPendingAppointments());
+            if (beans.isEmpty()) {
+                context.setResponse("You do not have any pending appointments\n");
+                return;
+            }
             StringBuilder s = new StringBuilder("please select a number between 1 and " + beans.size() + "\n");
             int k = 0;
             for (PendingAppointmentBean p : beans) {
@@ -99,67 +102,56 @@ public class DoRearrangeState implements State {
             }
             context.setResponse(s.toString());
         } catch (PersistentLayerException e) {
-            context.setResponse("error");
             context.setState(createHomePage());
         }
     }
 
     private String stringify(PendingAppointmentBean bean) {
-        return new StringBuilder()
-                .append("patient=")
-                .append(stringify(bean.getUser()))
-                .append(" doctor=")
-                .append(stringify(bean.getDoctor()))
-                .append(" office=")
-                .append(stringify(bean.getOffice()))
-                .append(" old-date=")
-                .append(stringify(bean.getOldDateTime(), bean.getSpecialty().getDuration()))
-                .append(" new-date=")
-                .append(stringify(bean.getDateTime(), bean.getSpecialty().getDuration()))
-                .append(" specialty=")
-                .append(bean.getSpecialty().getName())
-                .toString();
+        return "patient=" +
+                stringify(bean.getUser()) +
+                " doctor=" +
+                stringify(bean.getDoctor()) +
+                " office=" +
+                stringify(bean.getOffice()) +
+                " old-date=" +
+                stringify(bean.getOldDateTime(), bean.getSpecialty().getDuration()) +
+                " new-date=" +
+                stringify(bean.getDateTime(), bean.getSpecialty().getDuration()) +
+                " specialty=" +
+                bean.getSpecialty().getName();
     }
 
     private String stringify(UserBean userBean) {
-        return new StringBuilder()
-                .append(userBean.getEmail())
-                .append(" ")
-                .append(userBean.getFirstName())
-                .append(" ")
-                .append(userBean.getLastName())
-                .toString();
+        return userBean.getEmail() +
+                " " +
+                userBean.getFirstName() +
+                " " +
+                userBean.getLastName();
     }
 
     private String stringify(DoctorBean doctorBean) {
-        return new StringBuilder()
-                .append(doctorBean.getEmail())
-                .append(" ")
-                .append(doctorBean.getLastName())
-                .append(" ")
-                .append(doctorBean.getFirstName())
-                .append(" ")
-                .append(doctorBean.getField())
-                .toString();
+        return doctorBean.getEmail() +
+                " " +
+                doctorBean.getLastName() +
+                " " +
+                doctorBean.getFirstName() +
+                " " +
+                doctorBean.getField();
     }
 
     private String stringify(OfficeBean officeBean) {
-        return new StringBuilder()
-                .append(officeBean.getCountry())
-                .append(" ")
-                .append(officeBean.getProvince())
-                .append(" ")
-                .append(officeBean.getCity())
-                .append(" ")
-                .append(officeBean.getAddress())
-                .toString();
+        return officeBean.getCountry() +
+                " " +
+                officeBean.getProvince() +
+                " " +
+                officeBean.getCity() +
+                " " +
+                officeBean.getAddress();
     }
 
     private String stringify(LocalDateTime dateTime, Duration duration) {
-        return new StringBuilder()
-                .append(dateTime.format(DateTimeFormatter.ISO_DATE_TIME))
-                .append(" - ")
-                .append(duration)
-                .toString();
+        return dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) +
+                " - " +
+                duration;
     }
 }

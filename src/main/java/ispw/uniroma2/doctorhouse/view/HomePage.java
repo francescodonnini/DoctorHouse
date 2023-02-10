@@ -44,7 +44,7 @@ public class HomePage implements ViewController {
 
     @FXML
     private void initialize() {
-        Tab rearrangeTab = new Tab("Incoming Appointments", rearrangeAppointment.getView());
+        Tab rearrangeTab = new Tab("ScheduledState Appointments", rearrangeAppointment.getView());
         tabMap.put(rearrangeTab, rearrangeAppointment);
         tab.getTabs().addAll(
                 rearrangeTab,

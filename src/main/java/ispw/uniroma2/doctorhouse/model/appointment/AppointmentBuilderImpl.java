@@ -57,7 +57,7 @@ public class AppointmentBuilderImpl implements AppointmentBuilder {
             return makeCanceledInfo();
         } else if (type.equals(PendingInfo.class)) {
             return makePendingInfo();
-        } else if (type.equals(IncomingInfo.class)) {
+        } else if (type.equals(ScheduledInfo.class)) {
             return makeScheduledInfo();
         } else {
             throw new IllegalArgumentException();
@@ -82,7 +82,7 @@ public class AppointmentBuilderImpl implements AppointmentBuilder {
         if (patient == null || doctor == null || specialty == null || date == null || office == null) {
             throw new IllegalStateException();
         }
-        return new AppointmentImpl(doctor, patient, specialty, office, new IncomingInfo(date, specialty.getDuration()));
+        return new AppointmentImpl(doctor, patient, specialty, office, new ScheduledInfo(date, specialty.getDuration()));
     }
 
     @Override

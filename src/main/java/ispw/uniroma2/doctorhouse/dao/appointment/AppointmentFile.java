@@ -72,7 +72,7 @@ public class AppointmentFile implements AppointmentDao {
             builder.setDate(appointment.getDateTime());
             officeDao.getOffice(appointment.getOffice().getId(), appointment.getDoctor().getEmail()).ifPresent(builder::setOffice);
             specialtyDao.getSpecialty(appointment.getSpecialty().getName(), appointment.getSpecialty().getDoctor().getEmail()).ifPresent(builder::setSpecialty);
-            return Optional.ofNullable(builder.build(IncomingInfo.class));
+            return Optional.ofNullable(builder.build(ScheduledInfo.class));
         } catch (IOException e) {
             throw new PersistentLayerException(e);
         }
@@ -192,7 +192,7 @@ public class AppointmentFile implements AppointmentDao {
     }
 
     private String getStateName(Class<? extends AppointmentInfo> type) {
-        if (type.equals(IncomingInfo.class)) {
+        if (type.equals(ScheduledInfo.class)) {
             return "s";
         } else if (type.equals(CanceledInfo.class)) {
             return "c";
@@ -207,8 +207,8 @@ public class AppointmentFile implements AppointmentDao {
     public void save(Appointment appointment) throws PersistentLayerException, InvalidTimeSlot {
         if (appointment.getInfo() instanceof CanceledInfo) {
             cancel(appointment, (CanceledInfo) appointment.getInfo());
-        } else if (appointment.getInfo() instanceof IncomingInfo) {
-            incoming(appointment, (IncomingInfo) appointment.getInfo());
+        } else if (appointment.getInfo() instanceof ScheduledInfo) {
+            incoming(appointment, (ScheduledInfo) appointment.getInfo());
         } else if (appointment.getInfo() instanceof PendingInfo) {
             pending(appointment, (PendingInfo) appointment.getInfo());
         }
@@ -237,11 +237,11 @@ public class AppointmentFile implements AppointmentDao {
         }
     }
 
-    private void incoming(Appointment appointment, IncomingInfo info) throws PersistentLayerException {
+    private void incoming(Appointment appointment, ScheduledInfo info) throws PersistentLayerException {
         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
             String doctorEmail = appointment.getDoctor().getEmail();
             String patientEmail = appointment.getPatient().getEmail();
-            LocalDateTime dateTime = info.getDateTime();
+            LocalDateTime dateTime = info.getDate();
             List<String[]> lines = reader.readAll();
             Optional<Integer> optional = findLineByKey(lines, patientEmail, doctorEmail, dateTime);
             if (optional.isEmpty()) {

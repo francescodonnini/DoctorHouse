@@ -4,8 +4,9 @@ import ispw.uniroma2.doctorhouse.model.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
-public class PendingInfo extends AppointmentInfo implements TakenSlot {
+public class PendingInfo extends AppointmentInfo implements Slot {
     private final User initiator;
     private final LocalDateTime oldDate;
     private final Duration duration;
@@ -27,6 +28,11 @@ public class PendingInfo extends AppointmentInfo implements TakenSlot {
 
     public LocalDateTime getNewDate() {
         return getDate();
+    }
+
+    @Override
+    public Optional<Slot> getSlot() {
+        return Optional.of(new DateTimeInterval(getNewDate(), duration));
     }
 
     @Override

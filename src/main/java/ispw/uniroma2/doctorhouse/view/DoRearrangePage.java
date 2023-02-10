@@ -12,7 +12,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 
 import java.time.format.DateTimeFormatter;
@@ -80,6 +79,12 @@ public class DoRearrangePage implements ViewController {
         } catch (PersistentLayerException e) {
             error("An error occurred while trying to recover your pending appointments. Please try again later or contact support if the problem persists.");
         }
+        table.setOnMousePressed(e -> {
+            PendingAppointmentBean selected = table.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                onTableRowClicked(selected);
+            }
+        });
     }
 
     private void initTable() {
@@ -95,8 +100,7 @@ public class DoRearrangePage implements ViewController {
         serviceTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getSpecialty().getName()));
     }
 
-    @FXML
-    private void onTableRowClicked(MouseEvent ignored) {
+    private void onTableRowClicked(PendingAppointmentBean bean) {
         ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
         ButtonType reject = new ButtonType("No", ButtonBar.ButtonData.NO);
         ButtonType confirm = new ButtonType("Yes", ButtonBar.ButtonData.YES);
@@ -105,7 +109,6 @@ public class DoRearrangePage implements ViewController {
         dialog.setContentText("Do you want to accept the request?");
         dialog.getDialogPane().getButtonTypes().addAll(cancel, reject, confirm);
         dialog.showAndWait().ifPresent(a -> {
-            PendingAppointmentBean bean = table.getSelectionModel().getSelectedItem();
             try {
                 if (a.getButtonData().equals(ButtonBar.ButtonData.YES)) {
                     controller.submit(bean, What.CONFIRM);

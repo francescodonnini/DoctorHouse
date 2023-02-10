@@ -79,6 +79,16 @@ public class AskPage implements ViewController {
         return view;
     }
 
+    @Override
+    public void update() {
+        beans.clear();
+        try {
+            beans.addAll(controller.getIncomingAppointments());
+        } catch (PersistentLayerException e) {
+            persistentErrorLbl.setText("impossible to recover incoming appointments");
+        }
+    }
+
     @FXML
     private void initialize() {
         slotListView.setItems(slots);
@@ -173,16 +183,16 @@ public class AskPage implements ViewController {
         if (selected == null) {
             return;
         }
-        LocalDate date = selected.getDateTime().toLocalDate();
         LocalDate from = fromDatePicker.getValue();
         LocalDate to = toDatePicker.getValue();
         if (from == null) {
             fromDateErrorLbl.setText("This field is required");
         } else {
-            if (from.isBefore(date)) {
-                from = date;
+            if (from.isBefore(LocalDate.now())) {
+                fromDateErrorLbl.setText("This date is not valid, please try with another one");
+            } else {
+                fromDateErrorLbl.setText("");
             }
-            fromDateErrorLbl.setText("");
         }
         if (to == null) {
             toDateErrorLbl.setText("This field is required");
@@ -191,8 +201,8 @@ public class AskPage implements ViewController {
         } else {
             toDateErrorLbl.setText("");
         }
+        slots.clear();
         if (!cannotSubmit.get()) {
-            slots.clear();
             try {
                 slots.addAll(controller.getFreeSlots(selected, from, to));
                 persistentErrorLbl.setText("");

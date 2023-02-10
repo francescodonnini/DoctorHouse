@@ -2,10 +2,7 @@ package ispw.uniroma2.doctorhouse.model;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -91,5 +88,18 @@ public class TimeIntervalSet implements Iterable<TimeInterval> {
     @Override
     public void forEach(Consumer<? super TimeInterval> action) {
         items.forEach(action);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TimeIntervalSet that = (TimeIntervalSet) o;
+        return range.equals(that.range) && items.equals(that.items);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(range, items);
     }
 }

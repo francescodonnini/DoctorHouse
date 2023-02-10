@@ -15,7 +15,4 @@ interface AppointmentState {
     default void reschedule(AppointmentImpl appointment, LocalDateTime newDate, User initiator) {
         throw new UnsupportedOperationException();
     }
-    default void tick(AppointmentImpl appointment, LocalDateTime currentDate) {
-        throw new UnsupportedOperationException();
-    }
 }

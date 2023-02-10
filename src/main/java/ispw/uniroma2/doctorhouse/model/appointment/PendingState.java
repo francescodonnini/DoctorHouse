@@ -2,12 +2,10 @@ package ispw.uniroma2.doctorhouse.model.appointment;
 
 import ispw.uniroma2.doctorhouse.model.User;
 
-import java.time.LocalDateTime;
-
-public class Pending implements AppointmentState {
+public class PendingState implements AppointmentState {
     private final PendingInfo info;
 
-    public Pending(PendingInfo info) {
+    public PendingState(PendingInfo info) {
         this.info = info;
     }
 
@@ -20,7 +18,7 @@ public class Pending implements AppointmentState {
     public void cancel(AppointmentImpl appointment, User initiator) {
         if (!initiator.equals(info.getInitiator())) {
             CanceledInfo newInfo = new CanceledInfo(info.getNewDate(), initiator);
-            AppointmentState newState = new Canceled(newInfo);
+            AppointmentState newState = new CanceledState(newInfo);
             appointment.setState(newState);
         }
     }
@@ -32,14 +30,5 @@ public class Pending implements AppointmentState {
             AppointmentState newState = new Incoming(newInfo);
             appointment.setState(newState);
         }
-    }
-
-    @Override
-    public void tick(AppointmentImpl appointment, LocalDateTime currentDate) {
-       if (!info.getOldDate().isAfter(currentDate)) {
-           CanceledInfo newInfo = new CanceledInfo(info.getOldDate(), null);
-           AppointmentState newState = new Canceled(newInfo);
-           appointment.setState(newState);
-       }
     }
 }

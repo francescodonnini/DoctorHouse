@@ -1,9 +1,9 @@
 package ispw.uniroma2.doctorhouse.model.appointment;
 
-public class Canceled implements AppointmentState {
+public class CanceledState implements AppointmentState {
     private final CanceledInfo info;
 
-    public Canceled(CanceledInfo info) {
+    public CanceledState(CanceledInfo info) {
         this.info = info;
     }
 

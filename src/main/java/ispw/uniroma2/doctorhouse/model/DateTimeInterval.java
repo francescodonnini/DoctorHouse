@@ -3,7 +3,7 @@ package ispw.uniroma2.doctorhouse.model;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class DateTimeInterval implements TakenSlot {
+public class DateTimeInterval implements Slot {
     private final LocalDateTime dateTime;
     private final Duration duration;
 

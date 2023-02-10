@@ -72,14 +72,14 @@ public class Main extends Application {
         RegisterUserFactory registerUserFactory = new RegisterUserFactoryImpl(userDao);
         DoctorApplicationControllersFactory doctorApplicationControllersFactory = new DoctorApplicationControllerFactoryImpl(appointmentDao, slotDao, officeDao, responseDao, requestDao);
         LoginControllerFactoryImpl loginFactory = new LoginControllerFactoryImpl(loginControllerFactory, registerUserFactory, patientApplicationControllersFactory, doctorApplicationControllersFactory);
-       if(System.currentTimeMillis() % 2 == 0) {
+        if(System.currentTimeMillis() % 2 == 0) {
             loader.setLocation(getClass().getResource("view/navigator.fxml"));
             scene = new Scene(loader.load());
             navigatorController = loader.getController();
             LoginNavigator loginNavigator = new LoginNavigator(navigatorController, loginFactory);
             loginFactory.setLoginNavigator(loginNavigator);
             loginNavigator.navigate(LoginDestination.LOGIN);
-       } else {
+        } else {
 
             loader.setLocation(getClass().getResource("view/command_line.fxml"));
             StateFactory factory = new StateFactory(loginControllerFactory, patientApplicationControllersFactory, doctorApplicationControllersFactory);
@@ -131,18 +131,14 @@ public class Main extends Application {
             prescriptionDaoFactory = new PrescriptionDatabaseFactory(ConnectionFactory.getConnection());
             prescriptionDao = prescriptionDaoFactory.create();
             responseDaoFactory = new ResponseDaoFactoryImpl(ConnectionFactory.getConnection(), prescriptionDao);
-            responseDao = responseDaoFactory.create();
-            */
-
        } else {
-        prescriptionDaoFactory = new PrescriptionFileFactory();
-        prescriptionDao = prescriptionDaoFactory.create();
-        responseDaoFactory = new ResponseFileFactory(prescriptionDao);
-        responseDao = responseDaoFactory.create();
-        requestDaoFactory = new RequestFileFactory(responseDao);
-        requestDao = requestDaoFactory.create();
-
+            requestDaoFactory = new RequestFileFactory();
+            requestDao = requestDaoFactory.create();
+            prescriptionDaoFactory = new PrescriptionFileFactory();
+            prescriptionDao = prescriptionDaoFactory.create();
+            responseDaoFactory = new ResponseFileFactory(prescriptionDao);
         }
+        responseDao = responseDaoFactory.create();
         SlotDaoFactory slotDaoFactory = new SlotDatabaseFactory(ConnectionFactory.getConnection(), appointmentDao);
         slotDao = slotDaoFactory.create();
     }

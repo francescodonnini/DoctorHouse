@@ -10,6 +10,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class HomePage implements ViewController {
     @FXML
     private Parent view;
@@ -21,8 +24,8 @@ public class HomePage implements ViewController {
     private final ViewController doRearrangeAppointment;
     private final ViewController requestPrescription;
     private final Logout logoutController;
-
     private final LoginNavigator navigator;
+    private final Map<Tab, ViewController> tabMap;
 
 
     public HomePage(ViewController rearrangeAppointment, ViewController doRearrangeAppointment, ViewController requestPrescription, Logout logoutController, LoginNavigator navigator) {
@@ -31,6 +34,7 @@ public class HomePage implements ViewController {
         this.requestPrescription = requestPrescription;
         this.logoutController = logoutController;
         this.navigator = navigator;
+        tabMap = new HashMap<>();
     }
 
     @Override
@@ -40,11 +44,19 @@ public class HomePage implements ViewController {
 
     @FXML
     private void initialize() {
+        Tab rearrangeTab = new Tab("Incoming Appointments", rearrangeAppointment.getView());
+        tabMap.put(rearrangeTab, rearrangeAppointment);
         tab.getTabs().addAll(
-                new Tab("Rearrange", rearrangeAppointment.getView()),
-                new Tab("Do Rearrange", doRearrangeAppointment.getView()),
+                rearrangeTab,
+                new Tab("PendingState Requests of Rearrangement", doRearrangeAppointment.getView()),
                 new Tab("Request Prescription", requestPrescription.getView())
         );
+        tab.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if (newTab != null && tabMap.containsKey(newTab)) {
+                ViewController controller = tabMap.get(newTab);
+                controller.update();
+            }
+        });
     }
 
     public void logout() {

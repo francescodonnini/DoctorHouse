@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ShiftBuilderImpl implements ShiftBuilder {
     private DayOfWeek day;
-    private List<ClockInterval> intervals;
+    private final List<ClockInterval> intervals;
 
     public ShiftBuilderImpl() {
         intervals = new ArrayList<>();
@@ -36,7 +36,7 @@ public class ShiftBuilderImpl implements ShiftBuilder {
         if (day == null || intervals.isEmpty()) {
             throw new IllegalStateException();
         }
-        return new ShiftImpl(day, intervals);
+        return new Shift(day, intervals);
     }
 
     @Override

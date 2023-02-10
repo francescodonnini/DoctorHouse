@@ -4,10 +4,10 @@ import ispw.uniroma2.doctorhouse.model.User;
 
 import java.time.LocalDateTime;
 
-public class Incoming implements AppointmentState {
-    private final IncomingInfo info;
+public class ScheduledState implements AppointmentState {
+    private final ScheduledInfo info;
 
-    public Incoming(IncomingInfo info) {
+    public ScheduledState(ScheduledInfo info) {
         this.info = info;
     }
 
@@ -25,7 +25,7 @@ public class Incoming implements AppointmentState {
 
     @Override
     public void reschedule(AppointmentImpl appointment, LocalDateTime newDate, User initiator) {
-        PendingInfo newStateInfo = new PendingInfo(info.getDateTime(), newDate, info.getInterval().getDuration(), initiator);
+        PendingInfo newStateInfo = new PendingInfo(info.getDate(), newDate, info.getDuration(), initiator);
         PendingState newState = new PendingState(newStateInfo);
         appointment.setState(newState);
     }

@@ -1,5 +1,9 @@
 package ispw.uniroma2.doctorhouse.beans;
 
+import ispw.uniroma2.doctorhouse.model.appointment.Appointment;
+import ispw.uniroma2.doctorhouse.model.appointment.AppointmentInfo;
+import ispw.uniroma2.doctorhouse.model.appointment.PendingInfo;
+
 import java.time.LocalDateTime;
 
 public class PendingAppointmentBean {
@@ -9,6 +13,31 @@ public class PendingAppointmentBean {
     private OfficeBean office;
     private SpecialtyBean specialty;
     private UserBean user;
+    private UserBean initiator;
+
+    public PendingAppointmentBean(Appointment appointment) {
+        user = new UserBean(appointment.getPatient());
+        doctor = new DoctorBean(appointment.getDoctor());
+        office = new OfficeBean();
+        office.setId(appointment.getOffice().getId());
+        office.setCountry(appointment.getOffice().getLocation().getCountry());
+        office.setProvince(appointment.getOffice().getLocation().getProvince());
+        office.setCity(appointment.getOffice().getLocation().getCity());
+        office.setAddress(appointment.getOffice().getLocation().getAddress());
+        office.setDoctor(doctor);
+        specialty = new SpecialtyBean();
+        specialty.setDoctor(doctor);
+        specialty.setDuration(appointment.getSpecialty().getDuration());
+        specialty.setName(appointment.getSpecialty().getName());
+        AppointmentInfo info = appointment.getInfo();
+        if (info instanceof PendingInfo) {
+            dateTime = ((PendingInfo) info).getNewDate();
+            dateTime = ((PendingInfo) info).getOldDate();
+            initiator = new UserBean(((PendingInfo) info).getInitiator());
+        } else {
+            throw new IllegalArgumentException("expected an appointment waiting to be rearranged");
+        }
+    }
 
     public LocalDateTime getDateTime() {
         return dateTime;
@@ -56,5 +85,13 @@ public class PendingAppointmentBean {
 
     public void setUser(UserBean user) {
         this.user = user;
+    }
+
+    public UserBean getInitiator() {
+        return initiator;
+    }
+
+    public void setInitiator(UserBean initiator) {
+        this.initiator = initiator;
     }
 }

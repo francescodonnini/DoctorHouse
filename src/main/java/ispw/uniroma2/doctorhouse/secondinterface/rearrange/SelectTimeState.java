@@ -63,8 +63,8 @@ public class SelectTimeState implements State {
     public void enter(CommandLine context, String line) throws PersistentLayerException {
         line = line.trim();
         if (line.equals("help")) {
-            context.setResponse("%d hh:mm\nquit\n");
-        } else if (line.equals("quit")) {
+            context.setResponse("%d hh:mm\nback\n");
+        } else if (line.equals("back")) {
             goBackHome(context);
         } else {
             String[] tokens = line.split("\\s+");

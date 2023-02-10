@@ -72,7 +72,7 @@ public class Main extends Application {
         RegisterUserFactory registerUserFactory = new RegisterUserFactoryImpl(userDao);
         DoctorApplicationControllersFactory doctorApplicationControllersFactory = new DoctorApplicationControllerFactoryImpl(appointmentDao, slotDao, officeDao, responseDao, requestDao);
         LoginControllerFactoryImpl loginFactory = new LoginControllerFactoryImpl(loginControllerFactory, registerUserFactory, patientApplicationControllersFactory, doctorApplicationControllersFactory);
-        if(System.currentTimeMillis() % 2 == 0) {
+        if(System.currentTimeMillis() % 2 == 1) {
             loader.setLocation(getClass().getResource("view/navigator.fxml"));
             scene = new Scene(loader.load());
             navigatorController = loader.getController();
@@ -80,7 +80,6 @@ public class Main extends Application {
             loginFactory.setLoginNavigator(loginNavigator);
             loginNavigator.navigate(LoginDestination.LOGIN);
         } else {
-
             loader.setLocation(getClass().getResource("view/command_line.fxml"));
             StateFactory factory = new StateFactory(loginControllerFactory, patientApplicationControllersFactory, doctorApplicationControllersFactory);
             loader.setControllerFactory(f -> new CommandLine(factory.createLoginState()));

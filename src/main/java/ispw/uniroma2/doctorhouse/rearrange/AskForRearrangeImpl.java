@@ -70,7 +70,7 @@ public class AskForRearrangeImpl implements AskForRearrange {
         }
         Office office = optionalOffice.get();
         Duration specialtyDuration = bean.getSpecialty().getDuration();
-        List<Appointment> appointments = appointmentDao.findByOffice(doctorEmail, office.getId(), IncomingInfo.class);
+        List<Appointment> appointments = appointmentDao.findByOffice(doctorEmail, office.getId(), ScheduledInfo.class);
         appointments.addAll(appointmentDao.findByOffice(doctorEmail, office.getId(), PendingInfo.class));
         Map<LocalDate, List<Slot>> slots = new HashMap<>();
         for (Appointment a : appointments) {
@@ -115,7 +115,7 @@ public class AskForRearrangeImpl implements AskForRearrange {
     public List<AppointmentBean> getIncomingAppointments() throws PersistentLayerException {
         appointmentMap.clear();
         String email = Session.getSession().getUser().getEmail();
-        appointmentDao.findByEmail(email, IncomingInfo.class).forEach(a -> appointmentMap.put(new AppointmentBeanAdapter(a), a));
+        appointmentDao.findByEmail(email, ScheduledInfo.class).stream().filter(a -> !a.getInfo().getDate().isBefore(LocalDateTime.now())).forEach(a -> appointmentMap.put(new AppointmentBean(a), a));
         return new ArrayList<>(appointmentMap.keySet());
     }
 }

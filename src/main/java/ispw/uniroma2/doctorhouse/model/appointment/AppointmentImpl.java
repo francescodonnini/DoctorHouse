@@ -23,8 +23,8 @@ public class AppointmentImpl implements Appointment {
             state = new CanceledState((CanceledInfo) info);
         } else if (info instanceof PendingInfo) {
             state = new PendingState((PendingInfo) info);
-        } else if (info instanceof IncomingInfo){
-            state = new Incoming((IncomingInfo) info);
+        } else if (info instanceof ScheduledInfo){
+            state = new ScheduledState((ScheduledInfo) info);
         } else {
             throw new IllegalArgumentException();
         }
@@ -60,8 +60,8 @@ public class AppointmentImpl implements Appointment {
         AppointmentInfo info = memento.getInfo();
         if (info instanceof CanceledInfo) {
             setState(new CanceledState((CanceledInfo) info));
-        } else if (info instanceof IncomingInfo) {
-            setState(new Incoming((IncomingInfo) info));
+        } else if (info instanceof ScheduledInfo) {
+            setState(new ScheduledState((ScheduledInfo) info));
         } else if (info instanceof PendingInfo) {
             setState(new PendingState((PendingInfo) info));
         }

@@ -45,7 +45,7 @@ public class AppointmentDatabase implements AppointmentDao {
             OfficeBean office = appointment.getOffice();
             officeDao.getOffice(office.getId(), office.getDoctor().getEmail()).ifPresent(builder::setOffice);
             builder.setDate(appointment.getDateTime());
-            return Optional.ofNullable(builder.build(IncomingInfo.class));
+            return Optional.ofNullable(builder.build(ScheduledInfo.class));
         } catch (SQLException e) {
             throw new PersistentLayerException(e);
         }
@@ -108,8 +108,8 @@ public class AppointmentDatabase implements AppointmentDao {
         AppointmentInfo info = appointment.getInfo();
         if (info instanceof CanceledInfo) {
             cancel(appointment, (CanceledInfo) info);
-        } else if (info instanceof IncomingInfo) {
-            incoming(appointment, (IncomingInfo)info);
+        } else if (info instanceof ScheduledInfo) {
+            incoming(appointment, (ScheduledInfo)info);
         } else if (info instanceof PendingInfo) {
            pending(appointment, (PendingInfo)info);
         }
@@ -130,7 +130,7 @@ public class AppointmentDatabase implements AppointmentDao {
         }
     }
 
-    private void incoming(Appointment appointment, IncomingInfo info) throws InvalidTimeSlot, PersistentLayerException {
+    private void incoming(Appointment appointment, ScheduledInfo info) throws InvalidTimeSlot, PersistentLayerException {
         try (PreparedStatement statement = connection.prepareStatement("CALL incoming(?, ?, ?);")) {
             statement.setString(1, appointment.getDoctor().getEmail());
             statement.setString(2, appointment.getPatient().getEmail());
@@ -160,7 +160,7 @@ public class AppointmentDatabase implements AppointmentDao {
     private String getStateName(Class<? extends AppointmentInfo> stateClass) {
         if (CanceledInfo.class.equals(stateClass)) {
             return "c";
-        } else if (IncomingInfo.class.equals(stateClass)) {
+        } else if (ScheduledInfo.class.equals(stateClass)) {
             return "s";
         } else if (PendingInfo.class.equals(stateClass)) {
             return "p";

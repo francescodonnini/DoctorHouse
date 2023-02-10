@@ -11,10 +11,12 @@ import ispw.uniroma2.doctorhouse.secondinterface.StateFactory;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AskState implements State {
+    private static final String DATE_PATTERN = "dd-MM-yyyy";
     private final StateFactory factory;
     private final AskForRearrange controller;
     private final UserBean loggedUser;
@@ -36,36 +38,42 @@ public class AskState implements State {
     public void enter(CommandLine context, String line) throws PersistentLayerException {
         line = line.trim();
         if (line.equals("help")) {
-            context.setResponse("refresh\n%d start-date [end-date]\n");
+            context.setResponse("back\nrefresh\n%d dd-MM-yyyy [dd-MM-yyyy]\n");
+        } else if (line.equals("back")) {
+            goBackHome(context);
         } else if (line.equals("refresh")) {
             refresh(context);
         } else if (!beans.isEmpty()) {
-            String[] tokens = line.split("\\s+");
-            String fromStr;
-            String toStr;
-            switch (tokens.length) {
-                case 2:
-                    fromStr = tokens[1];
-                    toStr = null;
-                    break;
-                case 3:
-                    fromStr = tokens[1];
-                    toStr = tokens[2];
-                    break;
-                default:
-                    context.setResponse("invalid command " + line);
-                    return;
-            }
-            int index = Integer.parseInt(tokens[0]);
-            if (index < 0 || index >= beans.size()) {
-                context.setResponse("invalid index " + index);
-                return;
-            }
-            LocalDate from = LocalDate.parse(fromStr);
-            LocalDate to = toStr == null ? from.plusDays(7) : LocalDate.parse(toStr);
-            context.setState(factory.createSelectDateState(beans.get(index), from, to, loggedUser));
+            parseCommand(context, line);
         } else {
-            context.setResponse("invalid command " + line);
+            context.setResponse(invalidCommand(line));
+        }
+    }
+
+    private void parseCommand(CommandLine context, String line) {
+        String[] tokens = line.split("\\s+");
+        if (tokens.length < 2 || tokens.length > 3) {
+            context.setResponse(invalidCommand(line));
+            return;
+        }
+        if (!tokens[0].matches("\\d")) {
+            context.setResponse("expected number, got " + line);
+            return;
+        }
+        int index = Integer.parseInt(tokens[0]);
+        if (index < 0 || index >= beans.size()) {
+            context.setResponse("invalid index " + index);
+            return;
+        }
+        try {
+            LocalDate from = LocalDate.parse(tokens[1], DateTimeFormatter.ofPattern(DATE_PATTERN));
+            LocalDate to = from.plusDays(7);
+            if (tokens.length == 3) {
+                to = LocalDate.parse(tokens[2], DateTimeFormatter.ofPattern(DATE_PATTERN));
+            }
+            context.setState(factory.createSelectDateState(beans.get(index), from, to, loggedUser));
+        } catch (DateTimeParseException ignored) {
+            context.setResponse(invalidCommand(line));
         }
     }
 
@@ -84,9 +92,12 @@ public class AskState implements State {
             }
             context.setResponse(s.toString());
         } catch (PersistentLayerException e) {
-            context.setResponse("smth went wrong");
             goBackHome(context);
         }
+    }
+
+    private String invalidCommand(String line) {
+        return "invalid command " + line;
     }
 
     private void goBackHome(CommandLine context) {
@@ -102,39 +113,33 @@ public class AskState implements State {
     }
 
     private String stringify(AppointmentBean a) {
-        return new StringBuilder()
-                .append("patient=")
-                .append(stringify(a.getPatient()))
-                .append(" doctor=")
-                .append(stringify(a.getDoctor()))
-                .append(" date=")
-                .append(a.getDateTime().format(DateTimeFormatter.ISO_DATE_TIME))
-                .append(" specialty=")
-                .append(a.getSpecialty().getName())
-                .toString();
+        return "patient=" +
+                stringify(a.getPatient()) +
+                " doctor=" +
+                stringify(a.getDoctor()) +
+                " date=" +
+                a.getDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) +
+                " specialty=" +
+                a.getSpecialty().getName();
     }
 
     private String stringify(UserBean u) {
-        return new StringBuilder()
-                .append("email=")
-                .append(u.getEmail())
-                .append(" name=")
-                .append(u.getFirstName())
-                .append(" first-name=")
-                .append(u.getFirstName())
-                .toString();
+        return "email=" +
+                u.getEmail() +
+                " name=" +
+                u.getFirstName() +
+                " first-name=" +
+                u.getFirstName();
     }
 
     private String stringify(DoctorBean d) {
-        return new StringBuilder()
-                .append("email=")
-                .append(d.getEmail())
-                .append(" name=")
-                .append(d.getFirstName())
-                .append(" first-name=")
-                .append(d.getFirstName())
-                .append(" field=")
-                .append(d.getField())
-                .toString();
+        return "email=" +
+                d.getEmail() +
+                " name=" +
+                d.getFirstName() +
+                " first-name=" +
+                d.getFirstName() +
+                " field=" +
+                d.getField();
     }
 }

@@ -6,7 +6,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public class PendingInfo extends AppointmentInfo implements Slot {
+public class PendingInfo extends AppointmentInfo {
     private final User initiator;
     private final LocalDateTime oldDate;
     private final Duration duration;
@@ -30,18 +30,12 @@ public class PendingInfo extends AppointmentInfo implements Slot {
         return getDate();
     }
 
+    public Duration getDuration() {
+        return duration;
+    }
+
     @Override
     public Optional<Slot> getSlot() {
         return Optional.of(new DateTimeInterval(getNewDate(), duration));
-    }
-
-    @Override
-    public LocalDateTime getDateTime() {
-        return getNewDate();
-    }
-
-    @Override
-    public TimeInterval getInterval() {
-        return new ClockInterval(getNewDate().toLocalTime(), duration);
     }
 }

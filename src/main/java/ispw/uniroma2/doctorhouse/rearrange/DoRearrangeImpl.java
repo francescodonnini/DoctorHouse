@@ -1,6 +1,5 @@
 package ispw.uniroma2.doctorhouse.rearrange;
 
-import ispw.uniroma2.doctorhouse.beans.PendingAppointmentAdapter;
 import ispw.uniroma2.doctorhouse.beans.PendingAppointmentBean;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentDao;
 import ispw.uniroma2.doctorhouse.dao.exceptions.InvalidTimeSlot;
@@ -38,7 +37,7 @@ public class DoRearrangeImpl implements DoRearrange {
     public List<PendingAppointmentBean> getPendingAppointments() throws PersistentLayerException {
         String email = Session.getSession().getUser().getEmail();
         appointmentMap.clear();
-        appointmentDao.findByEmail(email, PendingInfo.class).forEach(a -> appointmentMap.put(new PendingAppointmentAdapter(a), a));
+        appointmentDao.findByEmail(email, PendingInfo.class).forEach(a -> appointmentMap.put(new PendingAppointmentBean(a), a));
         return new ArrayList<>(appointmentMap.keySet());
     }
 }

@@ -26,8 +26,8 @@ public class PendingState implements AppointmentState {
     @Override
     public void confirm(AppointmentImpl appointment, User initiator) {
         if (!initiator.equals(info.getInitiator())) {
-            IncomingInfo newInfo = new IncomingInfo(info.getNewDate(), info.getInterval().getDuration());
-            AppointmentState newState = new Incoming(newInfo);
+            ScheduledInfo newInfo = new ScheduledInfo(info.getNewDate(), info.getDuration());
+            AppointmentState newState = new ScheduledState(newInfo);
             appointment.setState(newState);
         }
     }

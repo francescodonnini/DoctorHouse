@@ -25,9 +25,6 @@ import ispw.uniroma2.doctorhouse.dao.responses.ResponseFileFactory;
 import ispw.uniroma2.doctorhouse.dao.shift.ShiftDao;
 import ispw.uniroma2.doctorhouse.dao.shift.ShiftDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.shift.ShiftDatabaseFactory;
-import ispw.uniroma2.doctorhouse.dao.slot.SlotDao;
-import ispw.uniroma2.doctorhouse.dao.slot.SlotDaoFactory;
-import ispw.uniroma2.doctorhouse.dao.slot.SlotDatabaseFactory;
 import ispw.uniroma2.doctorhouse.dao.specialty.SpecialtyDao;
 import ispw.uniroma2.doctorhouse.dao.specialty.SpecialtyDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.specialty.SpecialtyDatabaseFactory;
@@ -57,7 +54,6 @@ public class Main extends Application {
     private OfficeDao officeDao;
     private RequestDao requestDao;
     private ResponseDao responseDao;
-    private SlotDao slotDao;
     private UserDao userDao;
 
     @Override
@@ -67,10 +63,10 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader();
         Scene scene;
         NavigatorController navigatorController = null;
-        PatientApplicationControllersFactory patientApplicationControllersFactory = new PatientApplicationControllersFactoryImpl(appointmentDao, requestDao, responseDao, officeDao, slotDao);
+        PatientApplicationControllersFactory patientApplicationControllersFactory = new PatientApplicationControllersFactoryImpl(appointmentDao, requestDao, responseDao, officeDao);
         LoginFactory loginControllerFactory = new LoginFactoryImpl(userDao);
         RegisterUserFactory registerUserFactory = new RegisterUserFactoryImpl(userDao);
-        DoctorApplicationControllersFactory doctorApplicationControllersFactory = new DoctorApplicationControllerFactoryImpl(appointmentDao, slotDao, officeDao, responseDao, requestDao);
+        DoctorApplicationControllersFactory doctorApplicationControllersFactory = new DoctorApplicationControllerFactoryImpl(appointmentDao, officeDao, responseDao, requestDao);
         LoginControllerFactoryImpl loginFactory = new LoginControllerFactoryImpl(loginControllerFactory, registerUserFactory, patientApplicationControllersFactory, doctorApplicationControllersFactory);
         if(System.currentTimeMillis() % 2 == 1) {
             loader.setLocation(getClass().getResource("view/navigator.fxml"));
@@ -130,16 +126,15 @@ public class Main extends Application {
             prescriptionDaoFactory = new PrescriptionDatabaseFactory(ConnectionFactory.getConnection());
             prescriptionDao = prescriptionDaoFactory.create();
             responseDaoFactory = new ResponseDaoFactoryImpl(ConnectionFactory.getConnection(), prescriptionDao);
+            responseDao = responseDaoFactory.create();
        } else {
-            requestDaoFactory = new RequestFileFactory();
-            requestDao = requestDaoFactory.create();
             prescriptionDaoFactory = new PrescriptionFileFactory();
             prescriptionDao = prescriptionDaoFactory.create();
             responseDaoFactory = new ResponseFileFactory(prescriptionDao);
+            responseDao = responseDaoFactory.create();
+            requestDaoFactory = new RequestFileFactory(responseDao);
+            requestDao = requestDaoFactory.create();
         }
-        responseDao = responseDaoFactory.create();
-        SlotDaoFactory slotDaoFactory = new SlotDatabaseFactory(ConnectionFactory.getConnection(), appointmentDao);
-        slotDao = slotDaoFactory.create();
     }
 
     public static void main(String[] args) {

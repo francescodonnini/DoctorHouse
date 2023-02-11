@@ -12,11 +12,11 @@ public class PendingAppointmentBean {
     private DoctorBean doctor;
     private OfficeBean office;
     private SpecialtyBean specialty;
-    private UserBean user;
+    private UserBean patient;
     private UserBean initiator;
 
     public PendingAppointmentBean(Appointment appointment) {
-        user = new UserBean(appointment.getPatient());
+        patient = new UserBean(appointment.getPatient());
         doctor = new DoctorBean(appointment.getDoctor());
         office = new OfficeBean();
         office.setId(appointment.getOffice().getId());
@@ -79,12 +79,12 @@ public class PendingAppointmentBean {
         this.specialty = specialty;
     }
 
-    public UserBean getUser() {
-        return user;
+    public UserBean getPatient() {
+        return patient;
     }
 
-    public void setUser(UserBean user) {
-        this.user = user;
+    public void setPatient(UserBean patient) {
+        this.patient = patient;
     }
 
     public UserBean getInitiator() {

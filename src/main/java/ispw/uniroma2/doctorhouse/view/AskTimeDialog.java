@@ -35,7 +35,6 @@ public class AskTimeDialog extends Dialog<LocalTime> {
         ButtonType cancel = new ButtonType("No", ButtonBar.ButtonData.NO);
         ButtonType confirm = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         getDialogPane().getButtonTypes().addAll(cancel, confirm);
-        getDialogPane().lookupButton(confirm).setDisable(true);
         allowedRangeLbl.setText(String.format("%s and %s", allowedRange.getStart(), allowedRange.getEnd()));
         selectedTime.addListener((observable, oldVal, newVal) -> update(newVal));
         intervalSlider.setMin(allowedRange.getStart().toSecondOfDay());
@@ -45,7 +44,6 @@ public class AskTimeDialog extends Dialog<LocalTime> {
             if (val % 60 != 0) {
                 val = (val / 60) * 60;
             }
-            getDialogPane().lookupButton(confirm).setDisable(false);
             update(val);
         });
         update(Math.round(intervalSlider.getValue()));

@@ -12,7 +12,6 @@ import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.dao.office.OfficeDao;
 import ispw.uniroma2.doctorhouse.dao.specialty.SpecialtyDao;
 import ispw.uniroma2.doctorhouse.dao.users.UserDao;
-import ispw.uniroma2.doctorhouse.model.User;
 import ispw.uniroma2.doctorhouse.model.appointment.*;
 
 import java.io.*;
@@ -194,8 +193,6 @@ public class AppointmentFile implements AppointmentDao {
     private String getStateName(Class<? extends AppointmentInfo> type) {
         if (type.equals(ScheduledInfo.class)) {
             return "s";
-        } else if (type.equals(CanceledInfo.class)) {
-            return "c";
         } else if (type.equals(PendingInfo.class)) {
             return "p";
         } else {
@@ -225,12 +222,7 @@ public class AppointmentFile implements AppointmentDao {
             if (optional.isEmpty()) {
                 return;
             }
-            String[] line = lines.remove((int) optional.get());
-            writeColumn(line, STATE_KEY, "c");
-            User initiator = info.getInitiator();
-            writeColumn(line, INITIATOR_KEY, initiator.getEmail());
-            writeColumn(line, OLD_DATE_KEY, "");
-            lines.add(line);
+            lines.remove((int) optional.get());
             saveLines(lines);
         } catch (IOException | CsvException e) {
             throw new PersistentLayerException(e);

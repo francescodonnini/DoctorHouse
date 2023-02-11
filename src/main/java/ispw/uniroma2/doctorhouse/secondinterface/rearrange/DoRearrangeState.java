@@ -108,7 +108,7 @@ public class DoRearrangeState implements State {
 
     private String stringify(PendingAppointmentBean bean) {
         return "patient=" +
-                stringify(bean.getUser()) +
+                stringify(bean.getPatient()) +
                 " doctor=" +
                 stringify(bean.getDoctor()) +
                 " office=" +

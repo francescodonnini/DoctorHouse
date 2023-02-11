@@ -25,6 +25,7 @@ public class AppointmentBean {
         specialty.setDoctor(doctor);
         specialty.setDuration(appointment.getSpecialty().getDuration());
         specialty.setName(appointment.getSpecialty().getName());
+        dateTime = appointment.getInfo().getDate();
     }
 
     public AppointmentBean() {}

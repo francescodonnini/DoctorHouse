@@ -32,7 +32,7 @@ public class PendingAppointmentBean {
         AppointmentInfo info = appointment.getInfo();
         if (info instanceof PendingInfo) {
             dateTime = ((PendingInfo) info).getNewDate();
-            dateTime = ((PendingInfo) info).getOldDate();
+            oldDateTime = ((PendingInfo) info).getOldDate();
             initiator = new UserBean(((PendingInfo) info).getInitiator());
         } else {
             throw new IllegalArgumentException("expected an appointment waiting to be rearranged");

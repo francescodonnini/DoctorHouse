@@ -68,7 +68,7 @@ public class Main extends Application {
         RegisterUserFactory registerUserFactory = new RegisterUserFactoryImpl(userDao);
         DoctorApplicationControllersFactory doctorApplicationControllersFactory = new DoctorApplicationControllerFactoryImpl(appointmentDao, officeDao, responseDao, requestDao);
         LoginControllerFactoryImpl loginFactory = new LoginControllerFactoryImpl(loginControllerFactory, registerUserFactory, patientApplicationControllersFactory, doctorApplicationControllersFactory);
-        if(System.currentTimeMillis() % 2 == 1) {
+        if(System.currentTimeMillis() % 2 == 0) {
             loader.setLocation(getClass().getResource("view/navigator.fxml"));
             scene = new Scene(loader.load());
             navigatorController = loader.getController();

@@ -44,11 +44,11 @@ public class HomePage implements ViewController {
 
     @FXML
     private void initialize() {
-        Tab rearrangeTab = new Tab("ScheduledState Appointments", rearrangeAppointment.getView());
+        Tab rearrangeTab = new Tab("Scheduled Appointments", rearrangeAppointment.getView());
         tabMap.put(rearrangeTab, rearrangeAppointment);
         tab.getTabs().addAll(
                 rearrangeTab,
-                new Tab("PendingState Requests of Rearrangement", doRearrangeAppointment.getView()),
+                new Tab("Requests of Rearrangement", doRearrangeAppointment.getView()),
                 new Tab("Request Prescription", requestPrescription.getView())
         );
         tab.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {

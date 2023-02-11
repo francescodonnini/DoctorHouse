@@ -12,6 +12,10 @@ import ispw.uniroma2.doctorhouse.secondinterface.State;
 import ispw.uniroma2.doctorhouse.secondinterface.StateFactory;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,24 +66,47 @@ public class SelectTimeState implements State {
     @Override
     public void enter(CommandLine context, String line) throws PersistentLayerException {
         line = line.trim();
-        if (line.equals("help")) {
-            context.setResponse("%d hh:mm\nback\n");
-        } else if (line.equals("back")) {
-            goBackHome(context);
-        } else {
-            String[] tokens = line.split("\\s+");
-            if (tokens.length == 2) {
-                int index = Integer.parseInt(tokens[0]);
-                trySubmit(context, intervals.get(index));
-            } else {
-                context.setResponse("invalid command " + line);
-            }
+        switch (line) {
+            case "help":
+                context.setResponse("%d hh:mm\nback\nrefresh\n");
+                break;
+            case "back":
+                goBackHome(context);
+                break;
+            case "refresh":
+                showTimeIntervals(context);
+                break;
+            default:
+                String[] tokens = line.split("\\s+");
+                if (tokens.length == 2) {
+                    int index = Integer.parseInt(tokens[0]);
+                    if (index < 0 || index >= intervals.size()) {
+                        context.setResponse("invalid index " + index);
+                        return;
+                    }
+                    try {
+                        LocalTime time = LocalTime.parse(tokens[1], DateTimeFormatter.ofPattern("HH:mm"));
+                        trySubmit(context, intervals.get(index), time);
+                        goBackHome(context);
+                    } catch (DateTimeParseException ignored) {
+                        context.setResponse("invalid date " + tokens[1]);
+                    }
+                } else {
+                    context.setResponse("invalid command " + line);
+                }
+                break;
         }
     }
 
-    private void trySubmit(CommandLine context, DateTimeInterval interval) {
+    private void trySubmit(CommandLine context, DateTimeInterval interval, LocalTime inputTime) {
         try {
-            controller.ask(selected, interval.getDateTime());
+            LocalTime start = interval.getInterval().getStart();
+            LocalTime end = interval.getInterval().getEnd();
+            if (inputTime.isBefore(start) || inputTime.plus(selected.getSpecialty().getDuration()).isAfter(end)) {
+                context.setResponse("invalid time " + inputTime);
+                return;
+            }
+            controller.ask(selected, LocalDateTime.of(interval.getDateTime().toLocalDate(), inputTime));
         } catch (InvalidTimeSlot e) {
             showTimeIntervals(context);
         } catch (PersistentLayerException e) {

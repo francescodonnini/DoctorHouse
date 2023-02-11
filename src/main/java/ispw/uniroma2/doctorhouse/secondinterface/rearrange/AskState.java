@@ -71,7 +71,7 @@ public class AskState implements State {
             if (tokens.length == 3) {
                 to = LocalDate.parse(tokens[2], DateTimeFormatter.ofPattern(DATE_PATTERN));
             }
-            context.setState(factory.createSelectDateState(beans.get(index), from, to, loggedUser));
+            context.setState(factory.createSelectDateState(controller, beans.get(index), from, to, loggedUser));
         } catch (DateTimeParseException ignored) {
             context.setResponse(invalidCommand(line));
         }

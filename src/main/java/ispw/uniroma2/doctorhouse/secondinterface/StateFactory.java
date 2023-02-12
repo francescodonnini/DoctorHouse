@@ -7,6 +7,7 @@ import ispw.uniroma2.doctorhouse.auth.LoginFactory;
 import ispw.uniroma2.doctorhouse.beans.AppointmentBean;
 import ispw.uniroma2.doctorhouse.beans.DoctorBean;
 import ispw.uniroma2.doctorhouse.beans.UserBean;
+import ispw.uniroma2.doctorhouse.rearrange.AskForRearrange;
 import ispw.uniroma2.doctorhouse.requestprescription.ResponseRequest;
 import ispw.uniroma2.doctorhouse.secondinterface.rearrange.AskState;
 import ispw.uniroma2.doctorhouse.secondinterface.rearrange.DoRearrangeState;
@@ -69,12 +70,8 @@ public class StateFactory {
         }
     }
 
-    public State createSelectDateState(AppointmentBean bean, LocalDate from, LocalDate to, UserBean loggedUser) {
-        if (loggedUser instanceof DoctorBean) {
-            return new SelectTimeState(this, doctorApplicationControllersFactory.createAskForRearrange(), from, to, loggedUser, bean);
-        } else {
-            return new SelectTimeState(this, patientApplicationControllersFactory.createAskForRearrange(), from, to, loggedUser, bean);
-        }
+    public State createSelectDateState(AskForRearrange controller, AppointmentBean bean, LocalDate from, LocalDate to, UserBean loggedUser) {
+        return new SelectTimeState(this, controller, from, to, loggedUser, bean);
     }
 
     public State createLoginState() {

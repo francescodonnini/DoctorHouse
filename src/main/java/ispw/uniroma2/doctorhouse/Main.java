@@ -62,13 +62,13 @@ public class Main extends Application {
         initDAOs();
         FXMLLoader loader = new FXMLLoader();
         Scene scene;
-        NavigatorController navigatorController = null;
+        NavigatorController navigatorController;
         PatientApplicationControllersFactory patientApplicationControllersFactory = new PatientApplicationControllersFactoryImpl(appointmentDao, requestDao, responseDao, officeDao);
         LoginFactory loginControllerFactory = new LoginFactoryImpl(userDao);
         RegisterUserFactory registerUserFactory = new RegisterUserFactoryImpl(userDao);
         DoctorApplicationControllersFactory doctorApplicationControllersFactory = new DoctorApplicationControllerFactoryImpl(appointmentDao, officeDao, responseDao, requestDao);
         LoginControllerFactoryImpl loginFactory = new LoginControllerFactoryImpl(loginControllerFactory, registerUserFactory, patientApplicationControllersFactory, doctorApplicationControllersFactory);
-        if(System.currentTimeMillis() % 2 == 0) {
+        if(System.currentTimeMillis() % 2 == 1) {
             loader.setLocation(getClass().getResource("view/navigator.fxml"));
             scene = new Scene(loader.load());
             navigatorController = loader.getController();

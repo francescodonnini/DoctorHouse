@@ -156,11 +156,8 @@ public class AppointmentDatabase implements AppointmentDao {
         }
     }
 
-
     private String getStateName(Class<? extends AppointmentInfo> stateClass) {
-        if (CanceledInfo.class.equals(stateClass)) {
-            return "c";
-        } else if (ScheduledInfo.class.equals(stateClass)) {
+        if (ScheduledInfo.class.equals(stateClass)) {
             return "s";
         } else if (PendingInfo.class.equals(stateClass)) {
             return "p";

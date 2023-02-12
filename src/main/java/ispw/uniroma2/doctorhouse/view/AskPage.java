@@ -40,7 +40,9 @@ public class AskPage implements ViewController {
     private TableColumn<AppointmentBean, String> endTimeTblCol;
     private final DateTimeFormatter timeFmt;
     @FXML
-    private TableColumn<AppointmentBean, String> otherTblCol;
+    private TableColumn<AppointmentBean, String> doctorTblCol;
+    @FXML
+    private TableColumn<AppointmentBean, String> patientTblCol;
     @FXML
     private TableColumn<AppointmentBean, String> provinceTblCol;
     @FXML
@@ -116,7 +118,8 @@ public class AskPage implements ViewController {
 
     private void initTable() {
         table.setItems(beans);
-        otherTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getDoctor().getEmail()));
+        patientTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getPatient().getEmail()));
+        doctorTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getDoctor().getEmail()));
         countryTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getCountry()));
         provinceTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getProvince()));
         cityTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getCity()));

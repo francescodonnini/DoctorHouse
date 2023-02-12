@@ -36,7 +36,10 @@ public class DoRearrangePage implements ViewController {
     private TableColumn<PendingAppointmentBean, String> endTimeTblCol;
 
     @FXML
-    private TableColumn<PendingAppointmentBean, String> otherTblCol;
+    private TableColumn<PendingAppointmentBean, String> doctorTblCol;
+
+    @FXML
+    private TableColumn<PendingAppointmentBean, String> patientTblCol;
 
     @FXML
     private TableColumn<PendingAppointmentBean, String> provinceTblCol;
@@ -89,7 +92,8 @@ public class DoRearrangePage implements ViewController {
 
     private void initTable() {
         table.setItems(beans);
-        otherTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getDoctor().getEmail()));
+        doctorTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getDoctor().getEmail()));
+        patientTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getPatient().getEmail()));
         countryTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getCountry()));
         provinceTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getProvince()));
         cityTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getCity()));

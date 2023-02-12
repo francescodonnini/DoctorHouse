@@ -5,7 +5,7 @@ import ispw.uniroma2.doctorhouse.beans.UserBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 
 public class UserHomePageState implements State {
-    private static final String HELP_COMMANDS = "incoming\npending\nrequest prescription\nlogout\n";
+    private static final String HELP_COMMANDS = "incoming\npending\nrefresh\nrequest prescription\nlogout\n";
     private final StateFactory stateFactory;
     private final UserBean loggedUser;
     private final Logout logout;

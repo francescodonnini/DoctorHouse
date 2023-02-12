@@ -1,8 +1,6 @@
 package ispw.uniroma2.doctorhouse.dao.appointment;
 
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
-import com.opencsv.CSVWriter;
+import com.opencsv.*;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import com.opencsv.exceptions.CsvException;
 import com.opencsv.exceptions.CsvValidationException;
@@ -12,7 +10,6 @@ import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.dao.office.OfficeDao;
 import ispw.uniroma2.doctorhouse.dao.specialty.SpecialtyDao;
 import ispw.uniroma2.doctorhouse.dao.users.UserDao;
-import ispw.uniroma2.doctorhouse.model.User;
 import ispw.uniroma2.doctorhouse.model.appointment.*;
 
 import java.io.*;
@@ -38,12 +35,13 @@ public class AppointmentFile implements AppointmentDao {
     private final SpecialtyDao specialtyDao;
     private final UserDao userDao;
 
-    public AppointmentFile(String filePath, OfficeDao officeDao, SpecialtyDao specialtyDao, UserDao userDao) {
+    public AppointmentFile(String filePath, OfficeDao officeDao, SpecialtyDao specialtyDao, UserDao userDao) throws PersistentLayerException {
         this.filePath = filePath;
         this.officeDao = officeDao;
         this.specialtyDao = specialtyDao;
         this.userDao = userDao;
         initColumnMap();
+        initFile();
     }
 
     private void initColumnMap() {
@@ -56,6 +54,21 @@ public class AppointmentFile implements AppointmentDao {
         COLUMNS.put(STATE_KEY, 6);
         COLUMNS.put(OLD_DATE_KEY, 7);
         COLUMNS.put(INITIATOR_KEY, 8);
+    }
+
+    private void initFile() throws PersistentLayerException {
+        try (ICSVWriter writer = getWriter()) {
+            writer.writeNext(new String[]{PATIENT_KEY, DOCTOR_KEY, DATE_KEY, SPECIALTY_NAME_KEY, SPECIALTY_DOCTOR_KEY, OFFICE_KEY, STATE_KEY, OLD_DATE_KEY, INITIATOR_KEY});
+        } catch (IOException e) {
+            throw new PersistentLayerException(e);
+        }
+    }
+
+    private ICSVWriter getWriter() throws IOException {
+        return new CSVWriterBuilder(new FileWriter(filePath))
+                .withLineEnd("\n")
+                .withSeparator(',')
+                .build();
     }
 
     private int columnOf(String colName) {
@@ -82,10 +95,11 @@ public class AppointmentFile implements AppointmentDao {
         String[] line = new String[9];
         writeColumn(line, PATIENT_KEY, bean.getPatient().getEmail());
         writeColumn(line, DOCTOR_KEY, bean.getDoctor().getEmail());
-        writeColumn(line, DATE_KEY, bean.getDateTime().format(DateTimeFormatter.ISO_DATE_TIME));
+        writeColumn(line, DATE_KEY, bean.getDateTime().format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)));
         writeColumn(line, OFFICE_KEY, String.valueOf(bean.getOffice().getId()));
         writeColumn(line, SPECIALTY_NAME_KEY, bean.getSpecialty().getName());
         writeColumn(line, SPECIALTY_DOCTOR_KEY, bean.getSpecialty().getDoctor().getEmail());
+        writeColumn(line, STATE_KEY, "s");
         return line;
     }
 
@@ -95,6 +109,7 @@ public class AppointmentFile implements AppointmentDao {
 
     private CSVReader getReader() throws FileNotFoundException {
         return new CSVReaderBuilder(new FileReader(filePath))
+                .withSkipLines(1)
                 .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_SEPARATORS)
                 .build();
     }
@@ -108,7 +123,6 @@ public class AppointmentFile implements AppointmentDao {
             } else {
                 filter = createOthersFilter(email, getStateName(typeName));
             }
-            reader.readNext();
             return fromLine(reader, filter, typeName);
         } catch (IOException | CsvValidationException e) {
             throw new PersistentLayerException(e);
@@ -118,7 +132,6 @@ public class AppointmentFile implements AppointmentDao {
     @Override
     public List<Appointment> findByOffice(String doctorEmail, int officeId, Class<? extends AppointmentInfo> typeName) throws PersistentLayerException {
         try (CSVReader reader = getReader()) {
-            reader.readNext();
             Predicate<String[]> filter = createOfficeFilter(officeId, typeName);
             return fromLine(reader, filter, typeName);
         } catch (IOException | CsvValidationException e) {
@@ -194,8 +207,6 @@ public class AppointmentFile implements AppointmentDao {
     private String getStateName(Class<? extends AppointmentInfo> type) {
         if (type.equals(ScheduledInfo.class)) {
             return "s";
-        } else if (type.equals(CanceledInfo.class)) {
-            return "c";
         } else if (type.equals(PendingInfo.class)) {
             return "p";
         } else {
@@ -215,7 +226,7 @@ public class AppointmentFile implements AppointmentDao {
     }
 
     private void cancel(Appointment appointment, CanceledInfo info) throws PersistentLayerException {
-        try (CSVReader reader = new CSVReader(new BufferedReader(new FileReader(filePath)))) {
+        try (CSVReader reader = getReader()) {
             List<String[]> lines = reader.readAll();
             Optional<Integer> optional = findLineByKey(
                     lines,
@@ -225,12 +236,7 @@ public class AppointmentFile implements AppointmentDao {
             if (optional.isEmpty()) {
                 return;
             }
-            String[] line = lines.remove((int) optional.get());
-            writeColumn(line, STATE_KEY, "c");
-            User initiator = info.getInitiator();
-            writeColumn(line, INITIATOR_KEY, initiator.getEmail());
-            writeColumn(line, OLD_DATE_KEY, "");
-            lines.add(line);
+            lines.remove((int) optional.get());
             saveLines(lines);
         } catch (IOException | CsvException e) {
             throw new PersistentLayerException(e);
@@ -238,7 +244,7 @@ public class AppointmentFile implements AppointmentDao {
     }
 
     private void incoming(Appointment appointment, ScheduledInfo info) throws PersistentLayerException {
-        try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
+        try (CSVReader reader = getReader()) {
             String doctorEmail = appointment.getDoctor().getEmail();
             String patientEmail = appointment.getPatient().getEmail();
             LocalDateTime dateTime = info.getDate();
@@ -260,7 +266,7 @@ public class AppointmentFile implements AppointmentDao {
     }
 
     private void pending(Appointment appointment, PendingInfo info) throws PersistentLayerException, InvalidTimeSlot {
-        try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
+        try (CSVReader reader = getReader()) {
             String patient = appointment.getPatient().getEmail();
             String doctor = appointment.getDoctor().getEmail();
             LocalDateTime dateTime = info.getOldDate();
@@ -288,7 +294,7 @@ public class AppointmentFile implements AppointmentDao {
     }
 
     private void saveLines(List<String[]> lines) throws PersistentLayerException {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
+        try (ICSVWriter writer = getWriter()) {
             for (String[] line : lines) {
                 writer.writeNext(line);
             }

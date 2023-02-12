@@ -1,3 +1,4 @@
+import com.opencsv.CSVWriter;
 import ispw.uniroma2.doctorhouse.beans.*;
 import ispw.uniroma2.doctorhouse.dao.ConnectionFactory;
 import ispw.uniroma2.doctorhouse.dao.appointment.AppointmentFile;
@@ -25,6 +26,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -44,7 +47,7 @@ class AppointmentTest {
 
     // Creates an appointment @TEST_FILE_PATH so that we can test the method AppointmentFile#findByEmail
     @BeforeEach
-    void setup() throws PersistentLayerException {
+    void setup() throws PersistentLayerException, IOException {
         connection = ConnectionFactory.getConnection();
         SpecialtyDaoFactory specialtyDaoFactory = new SpecialtyDatabaseFactory(connection);
         SpecialtyDao specialtyDao = specialtyDaoFactory.create();
@@ -54,6 +57,9 @@ class AppointmentTest {
         OfficeDao officeDao = officeDaoFactory.create();
         UserDaoFactory userDaoFactory = new UserDatabaseFactoryImpl(officeDao, connection);
         UserDao userDao = userDaoFactory.create();
+        CSVWriter writer = new CSVWriter(new FileWriter(TEST_FILE_PATH));
+        writer.writeNext(new String[]{"patient", "doctor", "date", "specialty-name", "specialty-doctor", "office", "state", "old-date", "initiator"});
+        writer.close();
         file = new AppointmentFile(TEST_FILE_PATH, officeDao, specialtyDao, userDao);
         AppointmentBean bean = new AppointmentBean();
         Optional<Doctor> optionalDoctor = userDao.getDoctor(DOCTOR_EMAIL);

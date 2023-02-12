@@ -68,16 +68,18 @@ public class ResponseFile implements ResponseDao {
         List<Response> responses = new ArrayList<>();
         try (FileReader fileReader = new FileReader(path)) {
             CSVReader csvReader = new CSVReader(fileReader);
-            while((line = csvReader.readNext()) != null ) {
+            while((line = csvReader.readNext()) != null) {
+                if(line[0].isEmpty())
+                    break;
                 requestId = line[1];
-                if(RequestFile.checkRequest(Integer.parseInt(requestId))) {
+                if (RequestFile.checkRequest(Integer.parseInt(requestId))) {
                     message = line[2];
                     prescriptionId = line[3];
                     if (!prescriptionId.isEmpty()) {
                         Prescription prescription = prescriptionDao.getPrescription(Integer.parseInt(prescriptionId));
                         responses.add(new Response(message, prescription, Integer.parseInt(requestId)));
                     } else responses.add(new Response(message, null, Integer.parseInt(requestId)));
-               }
+                }
             }
             return Optional.of(responses);
         } catch (IOException | CsvValidationException e) {

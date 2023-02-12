@@ -11,7 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 
 
-public class CommandLine {
+public class CommandLine implements CommandLineInterface{
     @FXML
     private TextField command;
     @FXML

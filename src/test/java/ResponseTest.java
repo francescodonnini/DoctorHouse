@@ -20,11 +20,11 @@ import ispw.uniroma2.doctorhouse.model.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ResponseTest {
 
@@ -39,7 +39,6 @@ class ResponseTest {
                     assertFalse(f.getPrescription().getName().isEmpty());
                 });
             } else Assertions.fail(); //If the responseList is empty the test fail
-            destroy();
         } catch (UserNotFound | PersistentLayerException e) {
             Assertions.fail();
         }
@@ -54,10 +53,5 @@ class ResponseTest {
         loginRequestBean.setEmail(email);
         loginRequestBean.setPassword(password);
         login.login(loginRequestBean);
-    }
-
-    private void destroy() {
-        Logout logout = new Logout();
-        logout.destroySession();
     }
 }

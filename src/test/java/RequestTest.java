@@ -14,10 +14,12 @@ import ispw.uniroma2.doctorhouse.dao.shift.ShiftDatabase;
 import ispw.uniroma2.doctorhouse.dao.specialty.SpecialtyDatabase;
 import ispw.uniroma2.doctorhouse.dao.users.UserDatabase;
 import ispw.uniroma2.doctorhouse.model.Request;
-import ispw.uniroma2.doctorhouse.model.Session;
 import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescription;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,17 +29,21 @@ class RequestTest {
     //Gentili Emanuele : This test check that when a user send a request the doctor correctly view the request message
     @Test
     void requestTest() throws UserNotFound, PersistentLayerException {
-        init("sheba.olympie@email.it", "1234");
-        RequestDatabase requestDatabase = new RequestDatabase(ConnectionFactory.getConnection());
-        RequestPrescription requestPrescription = new RequestPrescription(requestDatabase, new ResponseDatabase(ConnectionFactory.getConnection(), new PrescriptionDatabase(ConnectionFactory.getConnection())));
-        requestPrescription.sendPrescriptionRequest("Testing");
-        destroy();
-        init("adah.mickie@email.it", "1234");
-        Optional<List<Request>> requests = requestDatabase.requestFinder();
-        requests.orElseThrow().forEach(f -> {
-            if(f.getPatientEmail().equals("sheba.olympie@email.it"))
-                assertEquals("Testing", f.getMessage());
-        });
+        try {
+            init("sheba.olympie@email.it", "1234");
+            RequestDatabase requestDatabase = new RequestDatabase(ConnectionFactory.getConnection());
+            RequestPrescription requestPrescription = new RequestPrescription(requestDatabase, new ResponseDatabase(ConnectionFactory.getConnection(), new PrescriptionDatabase(ConnectionFactory.getConnection())));
+            requestPrescription.sendPrescriptionRequest("Testing");
+            destroy();
+            init("adah.mickie@email.it", "1234");
+            Optional<List<Request>> requests = requestDatabase.requestFinder();
+            requests.orElseThrow().forEach(f -> {
+                if (f.getPatientEmail().equals("sheba.olympie@email.it"))
+                    assertEquals("Testing", f.getMessage());
+            });
+        } catch (PersistentLayerException | UserNotFound e) {
+            Assertions.fail();
+        }
     }
 
     private void init(String email, String password) throws UserNotFound, PersistentLayerException {
@@ -53,4 +59,13 @@ class RequestTest {
         Logout logout = new Logout();
         logout.destroySession();
     }
+
+    void cleanDatabase() throws PersistentLayerException {
+        try (PreparedStatement ps = ConnectionFactory.getConnection().prepareStatement("DELETE FROM requests WHERE message = 'Testing'")){
+            ps.execute();
+        } catch (SQLException e) {
+            throw new PersistentLayerException(e);
+        }
+    }
 }
+

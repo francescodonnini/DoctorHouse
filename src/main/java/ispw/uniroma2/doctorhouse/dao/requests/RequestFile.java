@@ -69,7 +69,7 @@ public class RequestFile implements RequestDao {
                 String id = line[ID];
                 if(id.isEmpty())
                     break;
-                if(!in(Integer.parseInt(id)) && Session.getSession().getUser() instanceof Doctor) {
+                if(!in(Integer.parseInt(id))) {
                     String patientEmail = line[PATIENT_EMAIL];
                     String message = line[MESSAGE];
                     String doctorEmail = line[DOCTOR_EMAIL];

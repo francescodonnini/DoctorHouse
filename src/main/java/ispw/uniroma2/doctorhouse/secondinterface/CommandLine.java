@@ -2,7 +2,6 @@ package ispw.uniroma2.doctorhouse.secondinterface;
 
 import ispw.uniroma2.doctorhouse.dao.exceptions.NotValidRequest;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
@@ -37,9 +36,6 @@ public class CommandLine implements CommandLineInterface{
         responseProperty.set(result);
     }
 
-    public void quit() {
-        Platform.exit();
-    }
     @FXML
     public void enterCommand() {
         command.setOnKeyPressed( event -> {

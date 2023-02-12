@@ -1,6 +1,7 @@
 package ispw.uniroma2.doctorhouse.view;
 
 import ispw.uniroma2.doctorhouse.beans.PendingAppointmentBean;
+import ispw.uniroma2.doctorhouse.beans.UserBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.InvalidTimeSlot;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.navigation.ViewController;
@@ -92,8 +93,8 @@ public class DoRearrangePage implements ViewController {
 
     private void initTable() {
         table.setItems(beans);
-        doctorTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getDoctor().getEmail()));
-        patientTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getPatient().getEmail()));
+        doctorTblCol.setCellValueFactory(col -> new SimpleStringProperty(formatNames(col.getValue().getDoctor())));
+        patientTblCol.setCellValueFactory(col -> new SimpleStringProperty(formatNames(col.getValue().getPatient())));
         countryTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getCountry()));
         provinceTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getProvince()));
         cityTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getCity()));
@@ -102,6 +103,10 @@ public class DoRearrangePage implements ViewController {
         startTimeTblCol.setCellValueFactory(col -> new SimpleStringProperty(timeFmt.format(col.getValue().getDateTime())));
         endTimeTblCol.setCellValueFactory(col -> new SimpleStringProperty(timeFmt.format(col.getValue().getDateTime().plus(col.getValue().getSpecialty().getDuration()))));
         serviceTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getSpecialty().getName()));
+    }
+
+    private String formatNames(UserBean userBean) {
+        return String.format("%s %s", userBean.getFirstName(), userBean.getLastName());
     }
 
     private void onTableRowClicked(PendingAppointmentBean bean) {

@@ -18,8 +18,8 @@
    <center>
       <TableView fx:id="table" BorderPane.alignment="CENTER">
         <columns>
-            <TableColumn fx:id="patientTblCol" prefWidth="75.0" text="Patient" />
-          <TableColumn fx:id="doctorTblCol" prefWidth="75.0" text="Doctor" />
+            <TableColumn fx:id="patientTblCol" minWidth="-Infinity" prefWidth="200.0" text="Patient" />
+          <TableColumn fx:id="doctorTblCol" minWidth="-Infinity" prefWidth="200.0" text="Doctor" />
           <TableColumn prefWidth="75.0" text="Office">
                <columns>
                   <TableColumn fx:id="countryTblCol" prefWidth="75.0" text="Country" />

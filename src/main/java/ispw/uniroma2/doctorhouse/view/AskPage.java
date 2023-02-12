@@ -1,6 +1,7 @@
 package ispw.uniroma2.doctorhouse.view;
 
 import ispw.uniroma2.doctorhouse.beans.AppointmentBean;
+import ispw.uniroma2.doctorhouse.beans.UserBean;
 import ispw.uniroma2.doctorhouse.dao.exceptions.InvalidTimeSlot;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.model.DateTimeInterval;
@@ -118,8 +119,8 @@ public class AskPage implements ViewController {
 
     private void initTable() {
         table.setItems(beans);
-        patientTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getPatient().getEmail()));
-        doctorTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getDoctor().getEmail()));
+        patientTblCol.setCellValueFactory(col -> new SimpleStringProperty(formatNames(col.getValue().getPatient())));
+        doctorTblCol.setCellValueFactory(col -> new SimpleStringProperty(formatNames(col.getValue().getDoctor())));
         countryTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getCountry()));
         provinceTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getProvince()));
         cityTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getOffice().getCity()));
@@ -128,6 +129,10 @@ public class AskPage implements ViewController {
         startTimeTblCol.setCellValueFactory(col -> new SimpleStringProperty(timeFmt.format(col.getValue().getDateTime().toLocalTime())));
         endTimeTblCol.setCellValueFactory(col -> new SimpleStringProperty(timeFmt.format(col.getValue().getDateTime().plus(col.getValue().getSpecialty().getDuration()).toLocalTime())));
         serviceTblCol.setCellValueFactory(col -> new SimpleStringProperty(col.getValue().getSpecialty().getName()));
+    }
+
+    private String formatNames(UserBean userBean) {
+        return String.format("%s %s", userBean.getFirstName(), userBean.getLastName());
     }
 
     private void onMouseClicked(MouseEvent mouseEvent) {

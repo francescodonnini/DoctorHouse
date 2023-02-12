@@ -27,7 +27,7 @@ public class AppointmentFileFactory implements AppointmentDaoFactory {
         String filePath = Main.APP_DIR_PATH + "/appointments.csv";
         try {
             File file = new File(filePath);
-            if (file.length() == 0) {
+            if (!file.exists()) {
                 initCsvFile(file);
             }
         } catch (IOException e) {

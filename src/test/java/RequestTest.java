@@ -15,6 +15,7 @@ import ispw.uniroma2.doctorhouse.dao.specialty.SpecialtyDatabase;
 import ispw.uniroma2.doctorhouse.dao.users.UserDatabase;
 import ispw.uniroma2.doctorhouse.model.Request;
 import ispw.uniroma2.doctorhouse.requestprescription.RequestPrescription;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -54,15 +55,15 @@ class RequestTest {
         loginRequestBean.setPassword(password);
         login.login(loginRequestBean);
     }
-
     private void destroy() {
         Logout logout = new Logout();
         logout.destroySession();
     }
-
+    @AfterEach
     void cleanDatabase() throws PersistentLayerException {
         try (PreparedStatement ps = ConnectionFactory.getConnection().prepareStatement("DELETE FROM requests WHERE message = 'Testing'")){
             ps.execute();
+            ConnectionFactory.getConnection().close();
         } catch (SQLException e) {
             throw new PersistentLayerException(e);
         }

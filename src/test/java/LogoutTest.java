@@ -14,6 +14,8 @@ import ispw.uniroma2.doctorhouse.model.Session;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
+
 
 class LogoutTest {
     //Gentili Emanuele : This test verify that when the user logout the session is destroyed
@@ -28,9 +30,11 @@ class LogoutTest {
         Logout logout = new Logout();
         logout.destroySession();
         try {
+            ConnectionFactory.getConnection().close();
             Session.getSession();
+            Assertions.fail("The session has not been destroyed");
+        }catch (SQLException | IllegalStateException e) {
             Assertions.fail();
-        } catch (IllegalStateException ignored) {
         }
     }
 }

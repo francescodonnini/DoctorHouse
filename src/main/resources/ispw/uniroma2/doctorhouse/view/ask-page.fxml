@@ -41,7 +41,7 @@
    </center>
    <right>
        <ScrollPane BorderPane.alignment="CENTER">
-           <ListView fx:id="slotListView" prefHeight="200.0" />
+           <ListView fx:id="slotListView" />
        </ScrollPane>
    </right>
    <bottom>

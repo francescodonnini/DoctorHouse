@@ -16,7 +16,6 @@ import ispw.uniroma2.doctorhouse.dao.specialty.SpecialtyDatabaseFactory;
 import ispw.uniroma2.doctorhouse.dao.users.UserDao;
 import ispw.uniroma2.doctorhouse.dao.users.UserDaoFactory;
 import ispw.uniroma2.doctorhouse.dao.users.UserDatabaseFactoryImpl;
-import ispw.uniroma2.doctorhouse.model.Specialty;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+// Francesco Donnini
 class LoginTest {
     private Connection connection;
     private Login login;

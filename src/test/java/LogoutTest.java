@@ -31,9 +31,13 @@ class LogoutTest {
         logout.destroySession();
         try {
             ConnectionFactory.getConnection().close();
-            Session.getSession();
-            Assertions.fail("The session has not been destroyed");
-        }catch (SQLException | IllegalStateException e) {
+            try {
+                Session.getSession();
+                Assertions.fail("The session has not been destroyed");
+            } catch (IllegalStateException ignored) {
+
+            }
+        }catch (SQLException e) {
             Assertions.fail();
         }
     }

@@ -85,9 +85,9 @@ public class AskState implements State {
             if (beans.isEmpty()) {
                 s.append("You do not have any incoming appointments");
             } else {
-                s = new StringBuilder("please insert a number between 1 and " + beans.size()).append("\n");
+                s = new StringBuilder("please insert a number between 0 and " + (beans.size() - 1)).append("\n");
                 for (int i = 0; i < beans.size(); ++i) {
-                    s.append(i + 1).append(") ").append(stringify(beans.get(i))).append("\n");
+                    s.append(i).append(") ").append(stringify(beans.get(i))).append("\n");
                 }
             }
             context.setResponse(s.toString());

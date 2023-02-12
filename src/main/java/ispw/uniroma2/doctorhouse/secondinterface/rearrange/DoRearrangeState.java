@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DoRearrangeState implements State {
-    private static final String COMMANDS = "\\d (y | n)\nback\n";
+    private static final String COMMANDS = "refresh\n\\d (y | n)\nback\n";
     private final StateFactory factory;
     private final DoRearrange controller;
     private final UserBean loggedUser;
@@ -94,7 +94,7 @@ public class DoRearrangeState implements State {
                 context.setResponse("You do not have any pending appointments\n");
                 return;
             }
-            StringBuilder s = new StringBuilder("please select a number between 1 and " + beans.size() + "\n");
+            StringBuilder s = new StringBuilder("please select a number between 0 and " + (beans.size() - 1) + "\n");
             int k = 0;
             for (PendingAppointmentBean p : beans) {
                 s.append(k).append(") ").append(stringify(p)).append("\n");

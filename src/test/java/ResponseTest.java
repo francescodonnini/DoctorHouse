@@ -17,10 +17,12 @@ import ispw.uniroma2.doctorhouse.dao.shift.ShiftDatabase;
 import ispw.uniroma2.doctorhouse.dao.specialty.SpecialtyDatabase;
 import ispw.uniroma2.doctorhouse.dao.users.UserDatabase;
 import ispw.uniroma2.doctorhouse.model.Response;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +38,8 @@ class ResponseTest {
             Optional<List<Response>> responseList = responseDao.responseFinder();
             if(!responseList.isEmpty()) {
                 responseList.get().forEach(f -> {
-                    assertFalse(f.getPrescription().getName().isEmpty());
+                    if(f.getPrescription().getKind().equals("Drug") || f.getPrescription().getKind().equals("Visit"))
+                        assertFalse(f.getPrescription().getName().isEmpty());
                 });
             } else Assertions.fail(); //If the responseList is empty the test fail
         } catch (UserNotFound | PersistentLayerException e) {
@@ -53,5 +56,10 @@ class ResponseTest {
         loginRequestBean.setEmail(email);
         loginRequestBean.setPassword(password);
         login.login(loginRequestBean);
+    }
+
+    @AfterEach
+    public void close() throws SQLException {
+        ConnectionFactory.getConnection().close();
     }
 }

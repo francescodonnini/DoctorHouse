@@ -77,6 +77,8 @@ public class Main extends Application {
             loginNavigator.navigate(LoginDestination.LOGIN);
         } else {
             loader.setLocation(getClass().getResource("view/command_line.fxml"));
+
+
             StateFactory factory = new StateFactory(loginControllerFactory, patientApplicationControllersFactory, doctorApplicationControllersFactory);
             loader.setControllerFactory(f -> new CommandLine(factory.createLoginState()));
             scene = new Scene(loader.load());

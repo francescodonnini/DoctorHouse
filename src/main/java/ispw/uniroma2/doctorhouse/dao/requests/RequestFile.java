@@ -5,9 +5,7 @@ import com.opencsv.exceptions.CsvValidationException;
 import ispw.uniroma2.doctorhouse.Main;
 import ispw.uniroma2.doctorhouse.dao.exceptions.PersistentLayerException;
 import ispw.uniroma2.doctorhouse.dao.responses.ResponseDao;
-import ispw.uniroma2.doctorhouse.model.Request;
-import ispw.uniroma2.doctorhouse.model.Response;
-import ispw.uniroma2.doctorhouse.model.Session;
+import ispw.uniroma2.doctorhouse.model.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -71,7 +69,7 @@ public class RequestFile implements RequestDao {
                 String id = line[ID];
                 if(id.isEmpty())
                     break;
-                if(!in(Integer.parseInt(id))) {
+                if(!in(Integer.parseInt(id)) && Session.getSession().getUser() instanceof Doctor) {
                     String patientEmail = line[PATIENT_EMAIL];
                     String message = line[MESSAGE];
                     String doctorEmail = line[DOCTOR_EMAIL];
@@ -103,9 +101,8 @@ public class RequestFile implements RequestDao {
                 String id = line[ID];
                 if(id.isEmpty())
                     break;
-                if((requestId == Integer.parseInt(id)) && (line[PATIENT_EMAIL].equals(Session.getSession().getUser().getEmail()))) {
+                if((requestId == Integer.parseInt(id)) && (line[PATIENT_EMAIL].equals(Session.getSession().getUser().getEmail())))
                     return true;
-                }
             }
             return false;
         } catch (IOException | CsvValidationException e) {

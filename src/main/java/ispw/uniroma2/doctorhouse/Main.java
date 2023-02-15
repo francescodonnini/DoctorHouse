@@ -110,7 +110,7 @@ public class Main extends Application {
         UserDaoFactory userDaoFactory = new UserDatabaseFactoryImpl(officeDao, ConnectionFactory.getConnection());
         userDao = userDaoFactory.create();
         AppointmentDaoFactory appointmentDaoFactory;
-        if (System.currentTimeMillis() % 2 == 1) {
+        if (System.currentTimeMillis() % 2 == 0) {
             appointmentDaoFactory = new AppointmentDatabaseFactory(ConnectionFactory.getConnection(), officeDao, specialtyDao, userDao);
         } else {
             appointmentDaoFactory = new AppointmentFileFactory(officeDao, specialtyDao, userDao);

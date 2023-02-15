@@ -8,6 +8,7 @@ public class AskForRearrangeFactoryImpl implements AskForRearrangeFactory {
     private final OfficeDao officeDao;
 
     public AskForRearrangeFactoryImpl(AppointmentDao appointmentDao, OfficeDao officeDao) {
+        int b;
         this.appointmentDao = appointmentDao;
         this.officeDao = officeDao;
     }

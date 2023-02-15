@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class RequestTest {
     //Gentili Emanuele : This test check that when a user send a request the doctor correctly view the request message
     @Test
-    void requestTest() throws UserNotFound, PersistentLayerException {
+    void requestTest() {
         try {
             init("sheba.olympie@email.it", "1234");
             RequestDatabase requestDatabase = new RequestDatabase(ConnectionFactory.getConnection());
